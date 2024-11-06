@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Online_Shopping.Context;
 using Online_Shopping.Extensions;
+using Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,18 +18,9 @@ builder.Services.AddDbContext< ApplicationContext> (options =>
 
 builder.Services.ConfigureRepository();
 builder.Services.ConfigureService();
+builder.Services.AddAutoMapper(typeof(AppMapper));
 
 var app = builder.Build();
-
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("AllowAll", builder =>
-//    {
-//        builder.AllowAnyOrigin()
-//               .AllowAnyMethod()
-//               .AllowAnyHeader();
-//    });
-//});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -36,8 +28,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-//app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
