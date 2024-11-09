@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using DTOs.DTOs;
+using DTOs.Request;
 using Entities.Entities;
+using Repository.Contracts;
 using Repository.Contracts.Interfaces;
 using Service.Contracts.Interfaces;
-using System.Collections.Generic;
 
 namespace Services.Services
 {
@@ -18,17 +19,20 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        public async Task<Category> CreateNewCategory(CategoryDTO categoryDTO)
+
+        public async Task<Category> CreateNewCategory(RequestCategory requestCategory)
         {
-            if (categoryDTO == null)
+            if (requestCategory == null)
             {
                 throw new ArgumentNullException("Category must have name");
             }
-            await _categoryRepo.CreateNewCategoryAsync(categoryDTO.Name);
-            return _mapper.Map<Category>(categoryDTO);
+            Category category = new Category{ Id = Guid.NewGuid() };
+            _mapper.Map(requestCategory, category);
+            await _categoryRepo.CreateNewCategoryAsync(category);
+            return _mapper.Map<Category>(requestCategory);
         }
 
-        public async Task DeleteCategoryById(Guid Id)
+        public async Task DeleteCategoryById(string Id)
         {
             await _categoryRepo.DeleteCategoryByIdAsync(Id);
         }
@@ -40,26 +44,27 @@ namespace Services.Services
             return _mapper.Map<IEnumerable<CategoryDTO>>(allCategories);
         }
 
-        public async Task<CategoryDTO> GetCategoryById(Guid Id)
+        public async Task<CategoryDTO> GetCategoryById(string Id)
         {
             var category = await _categoryRepo.GetCategoryByIdAsync(Id);
             return _mapper.Map<CategoryDTO>(category);
         }
 
-        public async Task<CategoryDTO> UpdateCategoryById(Guid Id, CategoryDTO categoryDTO)
+        public async Task UpdateCategoryById(string Id, RequestCategory requestCategory)
         {
-            if (categoryDTO == null)
+            if (requestCategory == null || requestCategory.Name == null || requestCategory.Name == "")
             {
-                throw new ArgumentNullException($"{nameof(categoryDTO)}");
+                throw new ArgumentNullException($"{nameof(requestCategory)}");
             }
             var category = await _categoryRepo.GetCategoryByIdAsync(Id);
             if (category == null)
             {
                 throw new ArgumentException($"Cannot find CatergoryId: {Id}");
             }
-            _mapper.Map(categoryDTO, category); // dto -> category
+            
+            _mapper.Map(requestCategory, category); // dto -> category
             await _categoryRepo.UpdateCategoryAsync(category);
-            return categoryDTO;
+            
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using DTOs.DTOs;
+﻿using DTOs;
+using DTOs.DTOs;
+using DTOs.Request;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -18,19 +20,26 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpPost("add-new-category")]
-        public async Task<IActionResult> AddNewCategory([FromBody] CategoryDTO categoryDTO)
+        public async Task<IActionResult> AddNewCategory([FromBody] RequestCategory request)
         {
-            if (categoryDTO.Name == null || categoryDTO.Name == "")
+            if (request.Name == null || request.Name == "")
             {
                 return BadRequest("Category's name cannot null and must have at least 1 character");
             }
-            var newCategory = await _categoryService.CreateNewCategory(categoryDTO);
-            categoryDTO.Name = newCategory.Name;
-            return CreatedAtAction("GetCategoryById", new { id = newCategory.Id }, categoryDTO);
+            var newCategory = await _categoryService.CreateNewCategory(request);
+
+            return CreatedAtAction(
+                nameof(GetCategoryById),
+                new { id = newCategory.Id },
+                new Response<RequestCategory>
+                {
+                    Message = "New category created successfully!",
+                    Data = request
+                });
         }
 
         [HttpGet("get-all-categories")]
-        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetAllCategories()
+        public async Task<IActionResult> GetAllCategories()
         {
             var allCategories = await _categoryService.GetAllCategory();
             if (allCategories == null)
@@ -38,8 +47,8 @@ namespace Online_Shopping.Controllers
             return Ok(allCategories);
         }
 
-        [HttpGet("get-all-categories/{Id}")]
-        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategoryById(Guid Id)
+        [HttpGet("get-category/{Id}")]
+        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategoryById(string Id)
         {
             var category = await _categoryService.GetCategoryById(Id);
             if (category == null)
@@ -48,7 +57,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpDelete("delete-category/{Id}")]
-        public async Task<ActionResult> DeleteCategoryById(Guid Id)
+        public async Task<ActionResult> DeleteCategoryById(string Id)
         {
             var category = await _categoryService.GetCategoryById(Id);
             if (category == null)
@@ -59,17 +68,28 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpPatch("update-category/{Id}")]
-        public async Task<ActionResult> UpdateCategory(Guid Id, [FromBody] CategoryDTO categoryDTO)
+        public async Task<ActionResult> UpdateCategory(string Id, [FromBody] RequestCategory request)
         {
             var cateId = await _categoryService.GetCategoryById(Id);
             if (cateId == null)
                 return NotFound($"Cannot find CategoryId: {Id} to update");
 
-            if (categoryDTO.Name == null || categoryDTO.Name == "")
+            if (request.Name == null || request.Name == "")
                 return BadRequest("Category's name cannot null and must have at least 1 character");
+            try
+            {
+                await _categoryService.UpdateCategoryById(Id, request);
+                return Ok(new Response<RequestCategory>
+                {
+                    Message = "Category is updated successfully",
+                    Data = request
+                });
+            }
+            catch
+            {
+                throw new Exception("Controller: Updating is failed");
+            }
 
-            var category = await _categoryService.UpdateCategoryById(Id, categoryDTO);
-            return Ok(category);
         }
     }
 }

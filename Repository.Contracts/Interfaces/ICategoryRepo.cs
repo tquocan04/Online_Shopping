@@ -4,10 +4,10 @@ namespace Repository.Contracts.Interfaces
 {
     public interface ICategoryRepo
     {
-        Task CreateNewCategoryAsync(string categoryName);
+        Task CreateNewCategoryAsync(Category category);
         Task<IEnumerable<Category>> GetAllCategoryAsync();
-        Task<Category?> GetCategoryByIdAsync(Guid Id);
-        Task DeleteCategoryByIdAsync(Guid categoryId);
-        Task<Category?> UpdateCategoryAsync(Category category);
+        Task<Category> GetCategoryByIdAsync(string Id);
+        Task DeleteCategoryByIdAsync(string categoryId);
+        Task UpdateCategoryAsync(Category category);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DTOs.DTOs;
+using DTOs.Request;
 using Entities.Entities;
 
 namespace Services
@@ -8,8 +9,22 @@ namespace Services
     {
         public AppMapper() 
         {
-            CreateMap<Category, CategoryDTO>();
-            CreateMap<CategoryDTO, Category>();
+            CreateMap<Category, CategoryDTO>().ReverseMap();
+            CreateMap<CategoryDTO, RequestCategory>().ReverseMap();
+            CreateMap<Category, RequestCategory>().ReverseMap();
+
+            CreateMap<City, CityDTO>();
+            CreateMap<CityDTO, City>();
+            
+            CreateMap<District, DistrictDTO>();
+            CreateMap<DistrictDTO, District>();
+
+            CreateMap<Payment, PaymentDTO>();
+            CreateMap<PaymentDTO, Payment>();
+            
+            CreateMap<Product, ProductDTO>().ReverseMap();
+            CreateMap<RequestProduct, ProductDTO>().ReverseMap();
+            CreateMap<RequestProduct, Product>().ReverseMap();
         }
     }
 }

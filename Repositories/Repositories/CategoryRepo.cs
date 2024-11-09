@@ -13,29 +13,31 @@ namespace Repositories.Repositories
         {
             _applicationContext = applicationContext;
         }
-        public async Task CreateNewCategoryAsync(string categoryName)
+
+        private async Task<bool> checkNameExist(Category category)
+        {
+            if (await _applicationContext.Categories.AnyAsync(c => c.Name == category.Name))
+                return true;
+            return false;
+        }
+
+        public async Task CreateNewCategoryAsync(Category category)
         {
             // check category
-            if (await _applicationContext.Categories.AnyAsync(c => c.Name == categoryName))
+            if (await checkNameExist(category))
             {
-                throw new InvalidOperationException("Category name already exists.");
+                throw new InvalidOperationException("Repo: Category name already exists.");
             }
 
-            var newCategory = new Category
-            {
-                Id = new Guid(),
-                Name = categoryName
-            };
-
-            await _applicationContext.Categories.AddAsync(newCategory);
+            await _applicationContext.Categories.AddAsync(category);
             await _applicationContext.SaveChangesAsync();
         }
-        public async Task<Category?> GetCategoryByIdAsync(Guid Id)
+        public async Task<Category> GetCategoryByIdAsync(string Id)
         {
-            return await _applicationContext.Categories.FindAsync(Id);
+            return await _applicationContext.Categories.FindAsync(Guid.Parse(Id));
         }
 
-        public async Task DeleteCategoryByIdAsync(Guid categoryId)
+        public async Task DeleteCategoryByIdAsync(string categoryId)
         {
             var cate = await GetCategoryByIdAsync(categoryId);
             //var cate = await _applicationContext.Categories.FindAsync(categoryId);
@@ -48,20 +50,24 @@ namespace Repositories.Repositories
 
         public async Task<IEnumerable<Category>> GetAllCategoryAsync()
         {
-            return await _applicationContext.Categories.ToListAsync();
+            return await _applicationContext.Categories.Include(c => c.Products).ToListAsync();
         }
 
-        public async Task<Category?> UpdateCategoryAsync(Category category)
+        public async Task UpdateCategoryAsync(Category category)
         {
-            var cate = GetCategoryByIdAsync(category.Id);
+            var cate = await GetCategoryByIdAsync(category.Id.ToString()); //await => doi tuong dang bi DbContext Theo doi -> phai dung CurrentValues.SetValues()
             if (cate != null)
             {
-                _applicationContext.Categories.Update(category);
-                await _applicationContext.SaveChangesAsync();
-                return category;
+                if (!await checkNameExist(category))
+                {
+                    _applicationContext.Entry(cate).CurrentValues.SetValues(category);
+                    await _applicationContext.SaveChangesAsync();
+                
+                }
+                
             }
-            return null;
+            
         }
-    }
         
+    }
 }

@@ -2,10 +2,10 @@
 
 namespace DTOs.DTOs
 {
-    public class CategoryDTO
+    public class CityDTO
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }
-        public ICollection<ProductDTO>? Products { get; set; }
+        public ICollection<DistrictDTO>? Districts { get; set; }
     }
 }

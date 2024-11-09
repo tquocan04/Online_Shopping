@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Online_Shopping.Context;
 
@@ -11,9 +12,11 @@ using Online_Shopping.Context;
 namespace Online_Shopping.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20241106152734_SeedDataCity_District")]
+    partial class SeedDataCity_District
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -337,23 +340,6 @@ namespace Online_Shopping.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Payments");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("70d99884-b132-4913-9cc9-bf4b50885ec3"),
-                            Name = "Momo"
-                        },
-                        new
-                        {
-                            Id = new Guid("5f750901-00ba-4658-99b1-17b6173e8ce6"),
-                            Name = "ZaloPay"
-                        },
-                        new
-                        {
-                            Id = new Guid("79ed495e-52c0-4446-a347-64c913fad40f"),
-                            Name = "Cash"
-                        });
                 });
 
             modelBuilder.Entity("Entities.Entities.Product", b =>

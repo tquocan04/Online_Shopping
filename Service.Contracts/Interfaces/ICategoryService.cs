@@ -1,4 +1,5 @@
 ﻿using DTOs.DTOs;
+using DTOs.Request;
 using Entities.Entities;
 using System.Collections.Generic;
 
@@ -6,11 +7,11 @@ namespace Service.Contracts.Interfaces
 {
     public interface ICategoryService
     {
-        Task<Category> CreateNewCategory(CategoryDTO categoryDTO);
+        Task<Category> CreateNewCategory(RequestCategory requestCategory);
         Task<IEnumerable<CategoryDTO>> GetAllCategory();
-        Task<CategoryDTO> GetCategoryById(Guid Id);
-        Task DeleteCategoryById(Guid Id);
-        Task<CategoryDTO> UpdateCategoryById(Guid Id, CategoryDTO categoryDTO);
+        Task<CategoryDTO> GetCategoryById(string Id);
+        Task DeleteCategoryById(string Id);
+        Task UpdateCategoryById(string Id, RequestCategory requestCategory);
 
     }
 }
