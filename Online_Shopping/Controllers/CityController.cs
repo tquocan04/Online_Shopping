@@ -6,7 +6,7 @@ using Services.Services;
 
 namespace Online_Shopping.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/cities")]
     [ApiController]
     public class CityController : ControllerBase
     {

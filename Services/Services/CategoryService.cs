@@ -22,10 +22,6 @@ namespace Services.Services
 
         public async Task<Category> CreateNewCategory(RequestCategory requestCategory)
         {
-            if (requestCategory == null)
-            {
-                throw new ArgumentNullException("Category must have name");
-            }
             Category category = new Category{ Id = Guid.NewGuid() };
             _mapper.Map(requestCategory, category);
             await _categoryRepo.CreateNewCategoryAsync(category);
@@ -52,10 +48,6 @@ namespace Services.Services
 
         public async Task UpdateCategoryById(string Id, RequestCategory requestCategory)
         {
-            if (requestCategory == null || requestCategory.Name == null || requestCategory.Name == "")
-            {
-                throw new ArgumentNullException($"{nameof(requestCategory)}");
-            }
             var category = await _categoryRepo.GetCategoryByIdAsync(Id);
             if (category == null)
             {

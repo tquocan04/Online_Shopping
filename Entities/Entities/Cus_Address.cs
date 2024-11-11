@@ -11,5 +11,6 @@ namespace Entities.Entities
         public Guid UserId { get; set; }
         public User? User { get; set; }
         public string Street { get; set; } = null!;
+        public bool IsDefault { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Online_Shopping.Context;
 
@@ -11,9 +12,11 @@ using Online_Shopping.Context;
 namespace Online_Shopping.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20241109093257_InsertValueRole")]
+    partial class InsertValueRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -152,10 +155,12 @@ namespace Online_Shopping.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
+                    b.Property<Guid?>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("DistrictId", "Street", "UserId");
+
+                    b.HasIndex("CustomerId");
 
                     b.HasIndex("UserId");
 
@@ -447,8 +452,11 @@ namespace Online_Shopping.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateOnly>("Dob")
-                        .HasColumnType("date");
+                    b.Property<Guid?>("DistrictId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Dob")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(450)");
@@ -470,6 +478,8 @@ namespace Online_Shopping.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DistrictId");
 
                     b.HasIndex("Email")
                         .IsUnique()
@@ -567,6 +577,10 @@ namespace Online_Shopping.Migrations
 
             modelBuilder.Entity("Entities.Entities.Cus_Address", b =>
                 {
+                    b.HasOne("Entities.Entities.Customer", null)
+                        .WithMany("CusAddresses")
+                        .HasForeignKey("CustomerId");
+
                     b.HasOne("Entities.Entities.District", "District")
                         .WithMany("CusAddresses")
                         .HasForeignKey("DistrictId")
@@ -693,6 +707,13 @@ namespace Online_Shopping.Migrations
                     b.Navigation("District");
                 });
 
+            modelBuilder.Entity("Entities.Entities.User", b =>
+                {
+                    b.HasOne("Entities.Entities.District", null)
+                        .WithMany("Users")
+                        .HasForeignKey("DistrictId");
+                });
+
             modelBuilder.Entity("Entities.Entities.Bill", b =>
                 {
                     b.Navigation("BuyProducts");
@@ -714,6 +735,8 @@ namespace Online_Shopping.Migrations
 
                     b.Navigation("Carts");
 
+                    b.Navigation("CusAddresses");
+
                     b.Navigation("CusVouchers");
                 });
 
@@ -722,6 +745,8 @@ namespace Online_Shopping.Migrations
                     b.Navigation("CusAddresses");
 
                     b.Navigation("Suppliers");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Entities.Entities.Import_Bill", b =>

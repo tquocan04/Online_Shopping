@@ -40,7 +40,7 @@ namespace Repositories.Repositories
         public async Task DeleteCategoryByIdAsync(string categoryId)
         {
             var cate = await GetCategoryByIdAsync(categoryId);
-            //var cate = await _applicationContext.Categories.FindAsync(categoryId);
+            
             if (cate != null)
             {
                 _applicationContext.Categories.Remove(cate);
@@ -50,7 +50,7 @@ namespace Repositories.Repositories
 
         public async Task<IEnumerable<Category>> GetAllCategoryAsync()
         {
-            return await _applicationContext.Categories.Include(c => c.Products).ToListAsync();
+            return await _applicationContext.Categories.ToListAsync();
         }
 
         public async Task UpdateCategoryAsync(Category category)

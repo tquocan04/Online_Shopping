@@ -8,7 +8,7 @@ using Service.Contracts.Interfaces;
 
 namespace Online_Shopping.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/categories")]
     [ApiController]
     public class CategoryController : ControllerBase
     {
@@ -22,10 +22,6 @@ namespace Online_Shopping.Controllers
         [HttpPost("add-new-category")]
         public async Task<IActionResult> AddNewCategory([FromBody] RequestCategory request)
         {
-            if (request.Name == null || request.Name == "")
-            {
-                return BadRequest("Category's name cannot null and must have at least 1 character");
-            }
             var newCategory = await _categoryService.CreateNewCategory(request);
 
             return CreatedAtAction(
@@ -38,7 +34,7 @@ namespace Online_Shopping.Controllers
                 });
         }
 
-        [HttpGet("get-all-categories")]
+        [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
             var allCategories = await _categoryService.GetAllCategory();
@@ -47,8 +43,8 @@ namespace Online_Shopping.Controllers
             return Ok(allCategories);
         }
 
-        [HttpGet("get-category/{Id}")]
-        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategoryById(string Id)
+        [HttpGet("get-category")]
+        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategoryById([FromQuery]string Id)
         {
             var category = await _categoryService.GetCategoryById(Id);
             if (category == null)
@@ -74,8 +70,6 @@ namespace Online_Shopping.Controllers
             if (cateId == null)
                 return NotFound($"Cannot find CategoryId: {Id} to update");
 
-            if (request.Name == null || request.Name == "")
-                return BadRequest("Category's name cannot null and must have at least 1 character");
             try
             {
                 await _categoryService.UpdateCategoryById(Id, request);

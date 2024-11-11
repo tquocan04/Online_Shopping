@@ -26,10 +26,6 @@ namespace Online_Shopping.Controllers
         [HttpPost("add-new-product")]
         public async Task<IActionResult> CreateNewProduct([FromBody] RequestProduct request)
         {
-            if (request == null || request.Name == null || request.Name == "")
-            {
-                return BadRequest("Controller: Product cannot be null");
-            }
             var newProduct = await _productService.CreateNewProduct(request);
             return CreatedAtAction(nameof(GetProductById), new { id = newProduct.Id },
                 new Response<RequestProduct>

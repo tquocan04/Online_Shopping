@@ -15,6 +15,7 @@ namespace Online_Shopping.Extensions
             services.AddScoped<ICityService, CityService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IUserService, UserService>();
             return services;
         }
         public static IServiceCollection ConfigureRepository(this IServiceCollection services)
@@ -23,6 +24,7 @@ namespace Online_Shopping.Extensions
             services.AddScoped<ICityRepo, CityRepo>();
             services.AddScoped<IPaymentRepo, PaymentRepo>();
             services.AddScoped<IProductRepo, ProductRepo>();
+            services.AddScoped<IUserRepo,UserRepo>();
             services.AddScoped(typeof(IBaseRepo<>), typeof(BaseRepo<>));
             return services;
         }

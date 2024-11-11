@@ -164,6 +164,21 @@ namespace Online_Shopping.Context
                         Image = null
                     });
             });
+            
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.HasData(
+                    new Role
+                    {
+                        Id = Guid.Parse("11ae3454-c2a0-4b13-ae85-7e0063d1391f"),
+                        Name = "STAFF",
+                    },
+                    new Role
+                    {
+                        Id = Guid.Parse("64442b7e-5955-469f-bbc9-2e6df052cb9c"),
+                        Name = "ADMIN",
+                    });
+            });
         }
 
     }

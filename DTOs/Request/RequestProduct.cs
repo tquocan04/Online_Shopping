@@ -1,7 +1,10 @@
-﻿namespace DTOs.Request
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DTOs.Request
 {
     public class RequestProduct
     {
+        [Required]
         public string? Name { get; set; }
         public string? Description { get; set; }
         public double? Price { get; set; }
