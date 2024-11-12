@@ -28,6 +28,7 @@ namespace Online_Shopping.Extensions
         {
             services.AddScoped<ICategoryRepo, CategoryRepo>();
             services.AddScoped<ICityRepo, CityRepo>();
+            services.AddScoped<IDistrictRepo, DistrictRepo>();
             services.AddScoped<IPaymentRepo, PaymentRepo>();
             services.AddScoped<IProductRepo, ProductRepo>();
             services.AddScoped<IUserRepo, UserRepo>();

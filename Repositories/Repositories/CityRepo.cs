@@ -16,12 +16,18 @@ namespace Repositories.Repositories
 
         public async Task<IEnumerable<City>> GetAllCitiesAsync()
         {
-            return await _applicationContext.Cities.Include(c => c.Districts).ToListAsync();
+            return await _applicationContext.Cities.AsNoTracking().Include(c => c.Districts).ToListAsync();
         }
 
         public async Task<IEnumerable<District>> GetDistrictsByCityIdAsync(Guid cityId)
         {
-            return await _applicationContext.Districts.Where(d => d.CityId == cityId).ToListAsync();
+            return await _applicationContext.Districts.AsNoTracking().Where(d => d.CityId == cityId).ToListAsync();
+        }
+
+        public async Task<City> GetCityByCityIdAsync(Guid cityId)
+        {
+            //var district = await GetDistrictsIdAsync(Id);
+            return await _applicationContext.Cities.FindAsync(cityId);
         }
     }
 }

@@ -87,5 +87,12 @@ namespace Online_Shopping.Controllers
                 Data = requestUser
             });
         }
+
+        [HttpGet("get-profile/id/{Id}")]
+        public async Task<IActionResult> GetProfileUser(string Id)
+        {
+            var user = await _userService.GetProfileUser(Id);
+            return Ok(user);
+        }
     }
 }

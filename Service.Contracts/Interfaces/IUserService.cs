@@ -1,4 +1,5 @@
-﻿using DTOs.Request;
+﻿using DTOs.DTOs;
+using DTOs.Request;
 using Entities.Entities;
 
 namespace Service.Contracts.Interfaces
@@ -8,5 +9,6 @@ namespace Service.Contracts.Interfaces
         Task<User> CreateNewUser(RequestUser requestUser);
         //Task CreateNewCustomer(User user);
         Task<bool> UpdateInforUser(string id, string districtId, RequestUser requestUser);
+        Task<UserDTO> GetProfileUser(string userId);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Entities.Entities;
+using Online_Shopping.Context;
 
 namespace Repository.Contracts.Interfaces
 {
@@ -6,5 +7,6 @@ namespace Repository.Contracts.Interfaces
     {
         Task<IEnumerable<City>> GetAllCitiesAsync();
         Task<IEnumerable<District>> GetDistrictsByCityIdAsync(Guid cityId);
+        Task<City> GetCityByCityIdAsync(Guid cityId);
     }
 }

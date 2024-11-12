@@ -5,7 +5,6 @@ namespace DTOs.DTOs
 {
     public class UserDTO
     {
-        public Guid Id { get; set; }
         public string? Name { get; set; }
         [EmailAddress]
         public string? Email { get; set; }
@@ -17,5 +16,8 @@ namespace DTOs.DTOs
         public string? Phone_number { get; set; }
         public DateOnly Dob { get; set; }
         public string? Image { get; set; }
+        public string? City { get; set; }
+        public string? District { get; set; }
+        public string? Street { get; set; }
     }
 }

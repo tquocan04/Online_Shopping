@@ -44,7 +44,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpGet("get-category")]
-        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategoryById([FromQuery]string Id)
+        public async Task<IActionResult> GetCategoryById([FromQuery]string Id)
         {
             var category = await _categoryService.GetCategoryById(Id);
             if (category == null)

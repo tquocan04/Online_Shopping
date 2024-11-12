@@ -15,9 +15,8 @@ namespace Services
 
             CreateMap<City, CityDTO>();
             CreateMap<CityDTO, City>();
-            
-            CreateMap<District, DistrictDTO>();
-            CreateMap<DistrictDTO, District>();
+
+            CreateMap<District, DistrictDTO>().ReverseMap();
 
             CreateMap<Payment, PaymentDTO>();
             CreateMap<PaymentDTO, Payment>();

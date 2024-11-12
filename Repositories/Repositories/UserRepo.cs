@@ -108,6 +108,7 @@ namespace Repositories.Repositories
         public async Task<Guid> GetDistrictDefaultByUserIdAsync(Guid userId)
         {
             var cus_Address = await _applicationContext.CusAddresses
+                .AsNoTracking()
                 .FirstOrDefaultAsync(ca => ca.UserId == userId && ca.IsDefault);
 
             return cus_Address.DistrictId;
@@ -115,11 +116,15 @@ namespace Repositories.Repositories
 
         public async Task UpdateCusAddress(Cus_Address cus_Address)
         {
-            //Cus_Address cus = new Cus_Address();
-
-            //_applicationContext.CusAddresses.Entry(cus).CurrentValues.SetValues(cus_Address);
             _applicationContext.CusAddresses.Update(cus_Address);
             await _applicationContext.SaveChangesAsync();
+        }
+
+        public async Task<User> GetProfileByUserIdIdAsync(Guid id)
+        {
+            //var districtId = await GetDistrictDefaultByUserIdAsync(id);
+            //var street = 
+            return await _applicationContext.Users.FindAsync(id);
         }
     }
 }

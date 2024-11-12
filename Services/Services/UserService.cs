@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DTOs.DTOs;
 using DTOs.Request;
 using Entities.Entities;
 using Repository.Contracts.Interfaces;
@@ -9,12 +10,20 @@ namespace Services.Services
     public class UserService : IUserService
     {
         private readonly IUserRepo _userRepo;
+        private readonly IDistrictRepo _districtRepo;
         private readonly IMapper _mapper;
+        private readonly ICityRepo _cityRepo;
 
-        public UserService(IUserRepo userRepo, IMapper mapper) 
+        public UserService
+            (IUserRepo userRepo, 
+            IMapper mapper, 
+            IDistrictRepo districtRepo,
+            ICityRepo cityRepo) 
         {
             _userRepo = userRepo;
             _mapper = mapper;
+            _districtRepo = districtRepo;
+            _cityRepo = cityRepo;
         }
 
         public async Task<User> CreateNewUser(RequestUser requestUser)
@@ -100,6 +109,23 @@ namespace Services.Services
 
             
             return true;
+        }
+
+        public async Task<UserDTO> GetProfileUser(string userId)
+        {
+            var districtId = await _userRepo.GetDistrictDefaultByUserIdAsync(Guid.Parse(userId));
+            var district = await _districtRepo.GetDistrictsIdAsync(districtId);
+            var city = await _cityRepo.GetCityByCityIdAsync(district.CityId);
+            var street = await _userRepo.GetStreetDefaultByUserIdAsync(Guid.Parse(userId));
+            var user = await _userRepo.GetUserByIdAsync(Guid.Parse(userId));
+
+            UserDTO userDTO = new UserDTO();
+            _mapper.Map(user, userDTO);
+            userDTO.Street = street;
+            userDTO.District = district.Name;
+            userDTO.City = city.Name;
+            return userDTO;
+            
         }
     }
 }
