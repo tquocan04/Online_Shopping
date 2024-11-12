@@ -13,9 +13,9 @@ namespace DTOs.DTOs
         public string? Username { get; set; }
         [MinLength(6)]
         public string? Password { get; set; }
-        [Range(9, 12)]
+        [MaxLength(10)]
         public string? Phone_number { get; set; }
-        public DateTime Dob { get; set; }
+        public DateOnly Dob { get; set; }
         public string? Image { get; set; }
     }
 }

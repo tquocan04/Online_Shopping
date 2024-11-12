@@ -20,6 +20,8 @@ builder.Services.ConfigureRepository();
 builder.Services.ConfigureService();
 builder.Services.AddAutoMapper(typeof(AppMapper));
 
+builder.Services.ConfigureJWT(builder.Configuration);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -29,6 +31,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication ();
 app.UseAuthorization();
 
 app.MapControllers();

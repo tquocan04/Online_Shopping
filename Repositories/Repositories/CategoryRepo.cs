@@ -34,12 +34,14 @@ namespace Repositories.Repositories
         }
         public async Task<Category> GetCategoryByIdAsync(string Id)
         {
-            return await _applicationContext.Categories.FindAsync(Guid.Parse(Id));
+            return await _applicationContext.Categories
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == Guid.Parse(Id));
         }
 
         public async Task DeleteCategoryByIdAsync(string categoryId)
         {
-            var cate = await GetCategoryByIdAsync(categoryId);
+            var cate = await _applicationContext.Categories.FindAsync(Guid.Parse(categoryId));
             
             if (cate != null)
             {
@@ -50,12 +52,12 @@ namespace Repositories.Repositories
 
         public async Task<IEnumerable<Category>> GetAllCategoryAsync()
         {
-            return await _applicationContext.Categories.ToListAsync();
+            return await _applicationContext.Categories.AsNoTracking().ToListAsync();
         }
 
         public async Task UpdateCategoryAsync(Category category)
         {
-            var cate = await GetCategoryByIdAsync(category.Id.ToString()); //await => doi tuong dang bi DbContext Theo doi -> phai dung CurrentValues.SetValues()
+            var cate = await _applicationContext.Categories.FindAsync(category.Id); //await => doi tuong dang bi DbContext Theo doi -> phai dung CurrentValues.SetValues()
             if (cate != null)
             {
                 if (!await checkNameExist(category))
@@ -63,10 +65,8 @@ namespace Repositories.Repositories
                     _applicationContext.Entry(cate).CurrentValues.SetValues(category);
                     await _applicationContext.SaveChangesAsync();
                 
-                }
-                
+                }   
             }
-            
         }
         
     }
