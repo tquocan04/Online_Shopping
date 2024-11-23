@@ -15,7 +15,7 @@ namespace Repositories.Repositories
 
         public async Task<bool> checkLoginAsync(string email, string password)
         {
-            var check = await _applicationContext.Users
+            var check = await _applicationContext.Customers
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
             if (check != null)

@@ -2,12 +2,12 @@
 
 namespace Entities.Entities
 {
-    public class Payment
+    public class Region
     {
         [Required]
         public string Id { get; set; } = null!;
+        [Required]
         public string? Name { get; set; }
-        public string? Image { get; set; }
-        public ICollection<Order>? Orders { get; set; }
+        public ICollection<City>? Cities { get; set; }
     }
 }

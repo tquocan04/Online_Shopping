@@ -7,17 +7,16 @@ namespace Repository.Contracts.Interfaces
         Task<bool> checkUsernameExist(string username);
         Task<bool> checkEmailExist(string email);
         Task<bool> checkDOB(DateOnly dob);
-        Task CreateNewUser(User user);
         Task CreateNewCustomer(Customer customer);
-        Task CreateNewCusAddress(Cus_Address cus_Address);
-        Task<User?> GetUserByIdAsync(Guid id);
-        Task<User?> GetProfileByUserIdIdAsync(Guid id);
-        Task UpdateInforUser(User user);
-        Task CreateCusAddress(Cus_Address cus_Address);
-        Task<Cus_Address?> GetCusAddressByMultiPKAsync(Guid userId, Guid districtId, string Street);
-        Task<string?> GetStreetDefaultByUserIdAsync(Guid userId);
-        Task<Guid> GetDistrictDefaultByUserIdAsync(Guid userId);
-        Task DeleteCusAddress(Cus_Address cus_Address);
-        Task UpdateCusAddress(Cus_Address cus_Address);
+        Task CreateNewAddress(Address address);
+        Task<Customer?> GetCustomerByIdAsync(Guid id);
+        Task<Customer?> GetProfileByCustomerIdIdAsync(Guid id);
+        Task UpdateInforCustomer(Customer customer);
+        Task CreateAddress(Address address);
+        Task<Address?> GetAddressByMultiPKAsync(Guid customerId, Guid districtId, string Street);
+        Task<string?> GetStreetDefaultByCustomerIdAsync(Guid customerId);
+        Task<Guid> GetDistrictDefaultByCustomerIdAsync(Guid customerId);
+        Task DeleteAddress(Address address);
+        Task UpdateAddress(Address address);
     }
 }

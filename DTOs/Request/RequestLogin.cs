@@ -7,7 +7,7 @@ namespace DTOs.Request
     {
         [Required(ErrorMessage = "Email cannot null")]
         [EmailAddress(ErrorMessage = "Email is invalid")]
-        public string? Email { get; set; }
+        public string Email { get; set; } = null!;
         [Required(ErrorMessage = "Password cannot null")]
         [MinLength(6)]
         public string? Password { get; set; }

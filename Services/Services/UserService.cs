@@ -26,31 +26,31 @@ namespace Services.Services
             _cityRepo = cityRepo;
         }
 
-        public async Task<User> CreateNewUser(RequestUser requestUser)
+        public async Task<Customer> CreateNewUser(RequestUser requestUser)
         {
-            User user = new User
+            Customer user = new Customer
             {
                 Id = new Guid(),
                 Dob = new DateOnly(requestUser.Year, requestUser.Month, requestUser.Day)
             };
             _mapper.Map(requestUser, user);
             
-            await _userRepo.CreateNewUser(user);
+            await _userRepo.CreateNewCustomer(user);
             return user;
         }
 
-        private async Task UpdateCusAddress(string id)
+        private async Task UpdateAddress(string id)
         {
-            var street = await _userRepo.GetStreetDefaultByUserIdAsync(Guid.Parse(id));
-            var district = await _userRepo.GetDistrictDefaultByUserIdAsync(Guid.Parse(id));
-            var old_cus_address = await _userRepo.GetCusAddressByMultiPKAsync(Guid.Parse(id), district, street);
-            old_cus_address.IsDefault = false;
-            await _userRepo.UpdateCusAddress(old_cus_address);
+            var street = await _userRepo.GetStreetDefaultByCustomerIdAsync(Guid.Parse(id));
+            var district = await _userRepo.GetDistrictDefaultByCustomerIdAsync(Guid.Parse(id));
+            var old_address = await _userRepo.GetAddressByMultiPKAsync(Guid.Parse(id), district, street);
+            old_address.IsDefault = false;
+            await _userRepo.UpdateAddress(old_address);
         }
 
         public async Task<bool> UpdateInforUser(string id, string districtId, RequestUser requestUser)
         {
-            var user = await _userRepo.GetUserByIdAsync(Guid.Parse(id));
+            var user = await _userRepo.GetCustomerByIdAsync(Guid.Parse(id));
             if (user == null)
             {
                 throw new ArgumentNullException("User cannot be found");
@@ -62,7 +62,7 @@ namespace Services.Services
 
 
             // truy van tim record:
-            var cus_address = await _userRepo.GetCusAddressByMultiPKAsync
+            var address = await _userRepo.GetAddressByMultiPKAsync
                 (
                 Guid.Parse(id),
                 Guid.Parse(districtId),
@@ -70,31 +70,31 @@ namespace Services.Services
                 );
             // 1. neu ton tai -> khong cap nhat -> giu nguyen
             // 2. neu chua ton tai -> cap nhat record cu = false -> tao moi
-            if (cus_address == null)
+            if (address == null)
             {
                 // cap nhat record cu
-                await UpdateCusAddress(id);
+                await UpdateAddress(id);
 
                 // tao moi
-                Cus_Address newCusAdd = new Cus_Address
+                Address newAddress = new Address
                 {
-                    UserId = Guid.Parse(id),
+                    ObjectId = Guid.Parse(id),
                     DistrictId = Guid.Parse(districtId),
                     Street = requestUser.Street,
                     IsDefault = true
                 };
-                await _userRepo.CreateCusAddress(newCusAdd);
+                await _userRepo.CreateAddress(newAddress);
             }
 
             // 3.neu ton tai va false -> cap nhat lai = true
-            if (cus_address != null && !cus_address.IsDefault)
+            if (address != null && !address.IsDefault)
             {
                 // cap nhat record hien tai = false
-                await UpdateCusAddress(id);
+                await UpdateAddress(id);
 
                 // cap nhat lai = true
-                cus_address.IsDefault = true;
-                await _userRepo.UpdateCusAddress(cus_address);
+                address.IsDefault = true;
+                await _userRepo.UpdateAddress(address);
             }
 
 
@@ -105,21 +105,21 @@ namespace Services.Services
 
             _mapper.Map(requestUser, user);
             user.Dob = dob;
-            await _userRepo.UpdateInforUser(user);
+            await _userRepo.UpdateInforCustomer(user);
 
             
             return true;
         }
 
-        public async Task<UserDTO> GetProfileUser(string userId)
+        public async Task<CustomerDTO> GetProfileUser(string userId)
         {
-            var districtId = await _userRepo.GetDistrictDefaultByUserIdAsync(Guid.Parse(userId));
+            var districtId = await _userRepo.GetDistrictDefaultByCustomerIdAsync(Guid.Parse(userId));
             var district = await _districtRepo.GetDistrictsIdAsync(districtId);
             var city = await _cityRepo.GetCityByCityIdAsync(district.CityId);
-            var street = await _userRepo.GetStreetDefaultByUserIdAsync(Guid.Parse(userId));
-            var user = await _userRepo.GetUserByIdAsync(Guid.Parse(userId));
+            var street = await _userRepo.GetStreetDefaultByCustomerIdAsync(Guid.Parse(userId));
+            var user = await _userRepo.GetCustomerByIdAsync(Guid.Parse(userId));
 
-            UserDTO userDTO = new UserDTO();
+            CustomerDTO userDTO = new CustomerDTO();
             _mapper.Map(user, userDTO);
             userDTO.Street = street;
             userDTO.District = district.Name;

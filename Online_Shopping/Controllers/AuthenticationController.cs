@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DTOs;
 using DTOs.Request;
+using DTOs.Responses;
 using Entities.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -55,21 +56,20 @@ namespace Online_Shopping.Controllers
             Customer customer = new Customer
             {
                 Id = new Guid(),
-                UserId = user.Id,
             };
             await _userRepo.CreateNewCustomer(customer);
 
 
-            Cus_Address cus_Address = new Cus_Address 
+            Address address = new Address 
             { 
-                UserId = user.Id, 
+                ObjectId = user.Id, 
                 IsDefault = true,
                 DistrictId = Guid.Parse(districtId),
             };
 
-            _mapper.Map(requestUser, cus_Address);
+            _mapper.Map(requestUser, address);
 
-            await _userRepo.CreateNewCusAddress(cus_Address);
+            await _userRepo.CreateNewAddress(address);
 
             return CreatedAtAction("Register", new { id = user.Id }, user);
         }

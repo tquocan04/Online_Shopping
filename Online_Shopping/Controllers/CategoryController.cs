@@ -1,6 +1,8 @@
 ﻿using DTOs;
 using DTOs.DTOs;
 using DTOs.Request;
+using DTOs.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +37,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllCategories()
         {
             var allCategories = await _categoryService.GetAllCategory();

@@ -16,7 +16,7 @@ namespace Repositories.Repositories
 
         public async Task<bool> checkUsernameExist(string username)
         {
-            if (await _applicationContext.Users.AnyAsync(u => u.Username == username))
+            if (await _applicationContext.Customers.AnyAsync(u => u.Username == username))
             {
                 return true;
             }
@@ -25,7 +25,7 @@ namespace Repositories.Repositories
         
         public async Task<bool> checkEmailExist(string email)
         {
-            if (await _applicationContext.Users.AnyAsync(u => u.Email == email))
+            if (await _applicationContext.Customers.AnyAsync(u => u.Email == email))
             {
                 return true;
             }
@@ -34,17 +34,11 @@ namespace Repositories.Repositories
 
         public async Task<bool> checkDOB(DateOnly dob)
         {
-            if (await _applicationContext.Users.AnyAsync(u => u.Dob.Year < DateTime.Now.Year))
+            if (await _applicationContext.Customers.AnyAsync(u => u.Dob.Year < DateTime.Now.Year))
             {
                 return true;
             }
             return false;
-        }
-
-        public async Task CreateNewUser(User user)
-        {
-            await _applicationContext.Users.AddAsync(user);
-            await _applicationContext.SaveChangesAsync();
         }
 
         public async Task CreateNewCustomer(Customer customer)
@@ -53,78 +47,78 @@ namespace Repositories.Repositories
             await _applicationContext.SaveChangesAsync();
         }
 
-        public async Task CreateNewCusAddress(Cus_Address cus_Address)
+        public async Task CreateNewAddress(Address address)
         {
-            await _applicationContext.CusAddresses.AddAsync(cus_Address);
+            await _applicationContext.Addresses.AddAsync(address);
             await _applicationContext.SaveChangesAsync();
         }
 
-        public async Task<User?> GetUserByIdAsync(Guid id)
+        public async Task<Customer?> GetCustomerByIdAsync(Guid id)
         {
-            return await _applicationContext.Users.FindAsync(id);
+            return await _applicationContext.Customers.FindAsync(id);
         }
 
-        public async Task UpdateInforUser(User user)
+        public async Task UpdateInforCustomer(Customer customer)
         {
-            _applicationContext.Users.Update(user);
+            _applicationContext.Customers.Update(customer);
             await _applicationContext.SaveChangesAsync();
         }
 
-        public async Task DeleteCusAddress(Cus_Address cus_Address)
+        public async Task DeleteAddress(Address address)
         {
-            _applicationContext.CusAddresses.Remove(cus_Address);
+            _applicationContext.Addresses.Remove(address);
             await _applicationContext.SaveChangesAsync();
         }
 
-        public async Task CreateCusAddress(Cus_Address cus_Address)
+        public async Task CreateAddress(Address address)
         {
             try
             {
-                _applicationContext.CusAddresses.Add(cus_Address);
+                _applicationContext.Addresses.Add(address);
                 await _applicationContext.SaveChangesAsync();
             }
             catch 
             {
-                throw new Exception("Cannot update Cus_Address");
+                throw new Exception("Cannot update Address");
             }
         }
 
-        public async Task<Cus_Address?> GetCusAddressByMultiPKAsync(Guid userId, Guid districtId, string Street)
+        public async Task<Address?> GetAddressByMultiPKAsync(Guid customerId, Guid districtId, string Street)
         {
-            return await _applicationContext.CusAddresses
-                .FirstOrDefaultAsync(ca => ca.UserId == userId
-                &&  ca.DistrictId == districtId
-                && ca.Street == Street);
+            return await _applicationContext.Addresses
+                .FirstOrDefaultAsync(ca => ca.ObjectId == customerId
+                                            &&  ca.DistrictId == districtId
+                                            && ca.Street == Street);
         }
 
-        public async Task<string?> GetStreetDefaultByUserIdAsync(Guid userId)
+        public async Task<string?> GetStreetDefaultByCustomerIdAsync(Guid customerId)
         {
-            var cus_Address =  await _applicationContext.CusAddresses
-                .FirstOrDefaultAsync(ca => ca.UserId == userId && ca.IsDefault);
+            var address =  await _applicationContext.Addresses
+                .FirstOrDefaultAsync(ca => ca.ObjectId == customerId && ca.IsDefault);
 
-            return cus_Address?.Street;
+            return address?.Street;
         }
 
-        public async Task<Guid> GetDistrictDefaultByUserIdAsync(Guid userId)
+        public async Task<Guid> GetDistrictDefaultByCustomerIdAsync(Guid customerId)
         {
-            var cus_Address = await _applicationContext.CusAddresses
+            var address = await _applicationContext.Addresses
                 .AsNoTracking()
-                .FirstOrDefaultAsync(ca => ca.UserId == userId && ca.IsDefault);
+                .FirstOrDefaultAsync(ca => ca.ObjectId == customerId && ca.IsDefault);
 
-            return cus_Address.DistrictId;
+            return address.DistrictId;
         }
 
-        public async Task UpdateCusAddress(Cus_Address cus_Address)
+        public async Task UpdateAddress(Address cus_Address)
         {
-            _applicationContext.CusAddresses.Update(cus_Address);
+            _applicationContext.Addresses.Update(cus_Address);
             await _applicationContext.SaveChangesAsync();
         }
 
-        public async Task<User> GetProfileByUserIdIdAsync(Guid id)
+        public async Task<Customer> GetProfileByCustomerIdIdAsync(Guid id)
         {
             //var districtId = await GetDistrictDefaultByUserIdAsync(id);
             //var street = 
-            return await _applicationContext.Users.FindAsync(id);
+            return await _applicationContext.Customers.FindAsync(id);
         }
     }
 }

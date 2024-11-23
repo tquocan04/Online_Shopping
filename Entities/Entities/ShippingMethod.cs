@@ -2,12 +2,11 @@
 
 namespace Entities.Entities
 {
-    public class Payment
+    public class ShippingMethod
     {
         [Required]
         public string Id { get; set; } = null!;
         public string? Name { get; set; }
-        public string? Image { get; set; }
-        public ICollection<Order>? Orders { get; set; }
+        public ICollection<Order>? Oders { get; set; }
     }
 }

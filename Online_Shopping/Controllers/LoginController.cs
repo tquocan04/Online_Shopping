@@ -1,5 +1,6 @@
 ﻿using DTOs;
 using DTOs.Request;
+using DTOs.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts.Interfaces;

@@ -23,7 +23,7 @@ namespace Services.Services
         {
             var claims = new List<Claim>    // các thông tin về người dùng sẽ được lưu trong token JWT
             {
-                new Claim(ClaimTypes.Name, requestLogin.Email),
+                new Claim(ClaimTypes.Email, requestLogin.Email),
                 // Add additional claims as needed (Id, email, role,...)
             };
             return claims;
@@ -32,6 +32,7 @@ namespace Services.Services
         public string GenerateToken(RequestLogin requestLogin)
         {
             var expiryhour = int.Parse(_configuration["Jwt:TokenExpiredInHour"]);
+
             
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]));
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);

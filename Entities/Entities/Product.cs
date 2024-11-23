@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Entities.Entities
 {
@@ -14,8 +15,9 @@ namespace Entities.Entities
         [ForeignKey(nameof(Category))]
         public Guid CategoryId { get; set; }
         public Category? Category { get; set; }
-        public ICollection<Import_Product>? ImportProducts { get; set; }
-        public ICollection<Cart>? Carts { get; set; }
-        public ICollection<Buy_Product>? BuyProducts { get; set; }
+        [JsonIgnore]
+        public ICollection<Branch_Product>? BranchProducts { get; set; }
+        [JsonIgnore]
+        public ICollection<Item>? Items { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using DTOs;
 using DTOs.DTOs;
 using DTOs.Request;
+using DTOs.Responses;
 using Entities.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

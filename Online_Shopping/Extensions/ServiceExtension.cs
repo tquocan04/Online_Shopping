@@ -33,6 +33,7 @@ namespace Online_Shopping.Extensions
             services.AddScoped<IProductRepo, ProductRepo>();
             services.AddScoped<IUserRepo, UserRepo>();
             services.AddScoped<ILoginRepo,LoginRepo>();
+            services.AddScoped<ICustomerRepo, CustomerRepo>();
             services.AddScoped(typeof(IBaseRepo<>), typeof(BaseRepo<>));
 
             return services;
@@ -49,11 +50,11 @@ namespace Online_Shopping.Extensions
                 options.TokenValidationParameters = new TokenValidationParameters   //tham so xac thuc cho jwt
                 {
                     //cap token: true-> dich vu, false->tu cap
-                    ValidateIssuer = true,
-                    ValidIssuer = jwtSetting["Issuer"],
+                    ValidateIssuer = false,
+                    //ValidIssuer = jwtSetting["Issuer"],
 
-                    ValidateAudience = true,
-                    ValidAudience = jwtSetting["Audience"],
+                    ValidateAudience = false,
+                    //ValidAudience = jwtSetting["Audience"],
 
                     ClockSkew = TimeSpan.Zero, // bo tg chenh lech
                     ValidateLifetime = true,    //xac thuc thoi gian ton tai cua token

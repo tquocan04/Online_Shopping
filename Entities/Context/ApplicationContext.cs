@@ -7,23 +7,22 @@ namespace Online_Shopping.Context
     public class ApplicationContext : DbContext
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
-        public DbSet<Bill> Bills { get; set; }
-        public DbSet<Buy_Product> Buy_Products { get; set; }
-        public DbSet<Cart> Carts { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Branch> Branchs { get; set; }
+        public DbSet<Branch_Product> BranchProducts { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<City> Cities { get; set; }
-        public DbSet<Cus_Address> CusAddresses { get; set; }
-        public DbSet<Cus_Voucher> CusVouchers { get; set; }
+        public DbSet<Credential> Credentials { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<District> Districts { get; set; }
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<Import_Bill> ImportBills { get; set; }
-        public DbSet<Import_Product> ImportProducts { get; set; }
+        public DbSet<Item> Items { get; set; }
+        public DbSet<Order> Orders { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Region> Regions { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<Supplier> Suppliers { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<ShippingMethod> ShippingMethods { get; set; }
         public DbSet<Voucher> Vouchers { get; set; }
 
 
@@ -34,59 +33,70 @@ namespace Online_Shopping.Context
                 entity.HasIndex(c => c.Name).IsUnique();
             });
 
+            modelBuilder.Entity<Customer>(entity =>
+            {
+                entity.HasIndex(c => c.Email).IsUnique();
+                entity.HasIndex(c => c.Username).IsUnique();
+            });
+
             modelBuilder.Entity<Product>(entity =>
             {
                 entity.HasIndex(p => p.Name).IsUnique();
             });
-
-            modelBuilder.Entity<Supplier>(entity =>
+            
+            modelBuilder.Entity<Item>(entity =>
             {
-                entity.HasIndex(s => s.Name).IsUnique();
+                entity.HasKey(i => new { i.ProductId, i.OrderId });
+            });
+            
+            modelBuilder.Entity<Branch_Product>(entity =>
+            {
+                entity.HasKey(bp => new { bp.ProductId, bp.BranchId });
             });
 
-            modelBuilder.Entity<User>(entity =>
+            modelBuilder.Entity<Address>(entity =>
             {
-                entity.HasIndex(u => u.Username).IsUnique();
-                entity.HasIndex(u => u.Email).IsUnique();
-            });
-
-            modelBuilder.Entity<Cart>(entity =>
-            {
-                entity.HasKey(c => new { c.ProductId, c.CustomerId });
-            });
-
-            modelBuilder.Entity<Buy_Product>(entity =>
-            {
-                entity.HasKey(bp => new { bp.ProductId, bp.CustomerId, bp.BillId });
-            });
-
-            modelBuilder.Entity<Import_Product>(entity =>
-            {
-                entity.HasKey(ip => new { ip.ProductId, ip.ImportBillId, ip.SupplierId });
-            });
-
-            modelBuilder.Entity<Cus_Address>(entity =>
-            {
-                entity.HasKey(ca => new { ca.DistrictId, ca.Street, ca.UserId });
+                entity.HasKey(ca => new { ca.ObjectId, ca.DistrictId, ca.Street });
             });
 
             modelBuilder.Entity<Employee>(entity =>
             {
-                entity.HasKey(e => new { e.RoleId, e.UserId });
+                entity.HasIndex(c => c.Email).IsUnique();
+                entity.HasIndex(c => c.Username).IsUnique();
             });
             
-            modelBuilder.Entity<Cus_Voucher>(entity =>
+            modelBuilder.Entity<Region>(entity =>
             {
-                entity.HasKey(cv => new { cv.VoucherId, cv.CustomerId });
+                entity.HasIndex(c => c.Name).IsUnique();
+                entity.HasData(
+                    new Region { Id = "Bac", Name = "Miền Bắc" },
+                    new Region { Id = "Trung", Name = "Miền Trung" },
+                    new Region { Id = "Nam", Name = "Miền Nam" }
+                );
             });
 
             modelBuilder.Entity<City>(entity =>
             {
                 entity.HasIndex(c => c.Name).IsUnique();
                 entity.HasData(
-                    new City { Id = Guid.Parse("1b84594b-aa7f-4a69-b54a-96cbf9b17c6e"), Name = "Hà Nội" },
-                    new City { Id = Guid.Parse("fc446281-359c-46ec-a2b9-bf9f26014f88"), Name = "Đà Nẵng" },
-                    new City { Id = Guid.Parse("6f624665-053e-45d2-8dd6-42baa124b481"), Name = "Hồ Chí Minh" }
+                    new City 
+                    { 
+                        Id = Guid.Parse("1b84594b-aa7f-4a69-b54a-96cbf9b17c6e"), 
+                        Name = "Hà Nội",
+                        RegionId = "Bac"
+                    },
+                    new City 
+                    { 
+                        Id = Guid.Parse("fc446281-359c-46ec-a2b9-bf9f26014f88"), 
+                        Name = "Đà Nẵng",
+                        RegionId = "Trung"
+                    },
+                    new City 
+                    { 
+                        Id = Guid.Parse("6f624665-053e-45d2-8dd6-42baa124b481"), 
+                        Name = "Hồ Chí Minh",
+                        RegionId = "Nam"
+                    }
                 );
             });
 
@@ -147,20 +157,20 @@ namespace Online_Shopping.Context
                 entity.HasData(
                     new Payment
                     {
-                        Id = Guid.Parse("70d99884-b132-4913-9cc9-bf4b50885ec3"),
-                        Name = "Momo",
+                        Id = "MOMO",
+                        Name = "MOMO",
                         Image = null
                     },
                     new Payment
                     {
-                        Id = Guid.Parse("5f750901-00ba-4658-99b1-17b6173e8ce6"),
-                        Name = "ZaloPay",
+                        Id = "ZALOPAY",
+                        Name = "ZALOPAY",
                         Image = null
                     },
                     new Payment
                     {
-                        Id = Guid.Parse("79ed495e-52c0-4446-a347-64c913fad40f"),
-                        Name = "Cash",
+                        Id = "CASH",
+                        Name = "CASH",
                         Image = null
                     });
             });
@@ -170,13 +180,33 @@ namespace Online_Shopping.Context
                 entity.HasData(
                     new Role
                     {
-                        Id = Guid.Parse("11ae3454-c2a0-4b13-ae85-7e0063d1391f"),
+                        Id = "Staff",
                         Name = "STAFF",
                     },
                     new Role
                     {
-                        Id = Guid.Parse("64442b7e-5955-469f-bbc9-2e6df052cb9c"),
+                        Id = "Admin",
                         Name = "ADMIN",
+                    });
+            });
+
+            modelBuilder.Entity<ShippingMethod>(entity =>
+            {
+                entity.HasData(
+                    new ShippingMethod
+                    {
+                        Id = "GRAB",
+                        Name = "GRAB",
+                    },
+                    new ShippingMethod
+                    {
+                        Id = "BE",
+                        Name = "BE",
+                    },
+                    new ShippingMethod
+                    {
+                        Id = "SHOPEEFOOD",
+                        Name = "SHOPEE FOOD",
                     });
             });
         }
