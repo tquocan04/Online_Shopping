@@ -5,11 +5,11 @@ namespace DTOs.Request
 {
     public class RequestLogin
     {
-        [Required(ErrorMessage = "Email cannot null")]
+        [Required(ErrorMessage = "Phone number cannot null")]
         [EmailAddress(ErrorMessage = "Email is invalid")]
         public string Email { get; set; } = null!;
         [Required(ErrorMessage = "Password cannot null")]
         [MinLength(6)]
-        public string? Password { get; set; }
+        public string Password { get; set; } = null!;
     }
 }

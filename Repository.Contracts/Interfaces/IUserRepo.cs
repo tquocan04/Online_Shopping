@@ -6,7 +6,7 @@ namespace Repository.Contracts.Interfaces
     {
         Task<bool> checkUsernameExist(string username);
         Task<bool> checkEmailExist(string email);
-        Task<bool> checkDOB(DateOnly dob);
+        public bool checkDOB(int year);
         Task CreateNewCustomer(Customer customer);
         Task CreateNewAddress(Address address);
         Task<Customer?> GetCustomerByIdAsync(Guid id);

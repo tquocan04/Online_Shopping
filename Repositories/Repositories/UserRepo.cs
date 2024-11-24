@@ -32,9 +32,9 @@ namespace Repositories.Repositories
             return false;
         }
 
-        public async Task<bool> checkDOB(DateOnly dob)
-        {
-            if (await _applicationContext.Customers.AnyAsync(u => u.Dob.Year < DateTime.Now.Year))
+        public bool checkDOB(int year)
+        { 
+            if (year < DateTime.Now.Year)
             {
                 return true;
             }
@@ -72,15 +72,8 @@ namespace Repositories.Repositories
 
         public async Task CreateAddress(Address address)
         {
-            try
-            {
-                _applicationContext.Addresses.Add(address);
-                await _applicationContext.SaveChangesAsync();
-            }
-            catch 
-            {
-                throw new Exception("Cannot update Address");
-            }
+            _applicationContext.Addresses.Add(address);
+            await _applicationContext.SaveChangesAsync();
         }
 
         public async Task<Address?> GetAddressByMultiPKAsync(Guid customerId, Guid districtId, string Street)
@@ -120,5 +113,6 @@ namespace Repositories.Repositories
             //var street = 
             return await _applicationContext.Customers.FindAsync(id);
         }
+
     }
 }

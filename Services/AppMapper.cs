@@ -33,10 +33,7 @@ namespace Services
                 .ForMember( dest => dest.Dob,
                             opt => opt.Ignore())
                 .ReverseMap();
-            CreateMap<RequestUser, Address>()
-                .ForMember(dest => dest.Street,
-                            opt => opt.MapFrom(src => src.Street));
-            
+            CreateMap<RequestUser, Address>();
         }
     }
 }

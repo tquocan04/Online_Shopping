@@ -28,7 +28,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(string districtId, [FromBody] RequestUser requestUser)
+        public async Task<IActionResult> Register([FromBody] RequestUser requestUser)
         {
             if (!ModelState.IsValid)
             {
@@ -45,33 +45,30 @@ namespace Online_Shopping.Controllers
                 return BadRequest("Username is existed");
             }
 
-            DateOnly dob = new DateOnly(requestUser.Year, requestUser.Month, requestUser.Day);
-            if (!await _userRepo.checkDOB(dob))
+            if (!_userRepo.checkDOB(requestUser.Year))
             {
                 return BadRequest("DoB is invalid");
             }
-            var user = await _userService.CreateNewUser(requestUser);
-
 
             Customer customer = new Customer
             {
                 Id = new Guid(),
+                Dob = new DateOnly(requestUser.Year, requestUser.Month, requestUser.Day)
             };
+            _mapper.Map(requestUser, customer);
             await _userRepo.CreateNewCustomer(customer);
-
 
             Address address = new Address 
             { 
-                ObjectId = user.Id, 
+                ObjectId = customer.Id,
                 IsDefault = true,
-                DistrictId = Guid.Parse(districtId),
             };
 
             _mapper.Map(requestUser, address);
 
             await _userRepo.CreateNewAddress(address);
 
-            return CreatedAtAction("Register", new { id = user.Id }, user);
+            return CreatedAtAction("Register", new { id = customer.Id }, customer);
         }
 
         [HttpPut("update-information-user/id/{userId}")]

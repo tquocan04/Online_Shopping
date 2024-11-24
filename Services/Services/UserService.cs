@@ -26,17 +26,17 @@ namespace Services.Services
             _cityRepo = cityRepo;
         }
 
-        public async Task<Customer> CreateNewUser(RequestUser requestUser)
+        public async Task<Customer> CreateNewUser(Guid Id, RequestUser requestUser)
         {
-            Customer user = new Customer
+            Customer customer = new Customer
             {
                 Id = new Guid(),
                 Dob = new DateOnly(requestUser.Year, requestUser.Month, requestUser.Day)
             };
-            _mapper.Map(requestUser, user);
+            _mapper.Map(requestUser, customer);
             
-            await _userRepo.CreateNewCustomer(user);
-            return user;
+            await _userRepo.CreateNewCustomer(customer);
+            return customer;
         }
 
         private async Task UpdateAddress(string id)
@@ -100,7 +100,7 @@ namespace Services.Services
 
 
             DateOnly dob = new DateOnly(requestUser.Year, requestUser.Month, requestUser.Day);
-            if (!await _userRepo.checkDOB(dob))
+            if (!_userRepo.checkDOB(requestUser.Year))
                 throw new Exception("Dob is invalid");
 
             _mapper.Map(requestUser, user);

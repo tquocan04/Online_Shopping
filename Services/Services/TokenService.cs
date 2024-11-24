@@ -21,7 +21,7 @@ namespace Services.Services
 
         private List<Claim> GetClaim(RequestLogin requestLogin)
         {
-            var claims = new List<Claim>    // các thông tin về người dùng sẽ được lưu trong token JWT
+            var claims = new List<Claim> 
             {
                 new Claim(ClaimTypes.Email, requestLogin.Email),
                 // Add additional claims as needed (Id, email, role,...)
