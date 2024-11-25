@@ -39,6 +39,7 @@ namespace Services
 
             CreateMap<Order, OrderCartDTO>().ReverseMap();
             CreateMap<Item, ItemDTO>().ReverseMap();
+            CreateMap<ShippingMethod, ShippingDTO>().ReverseMap();
         }
     }
 }

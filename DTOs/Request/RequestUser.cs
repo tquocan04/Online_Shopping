@@ -18,6 +18,7 @@ namespace DTOs.Request
         [MaxLength(10)]
         [RegularExpression(@"^\d+$", ErrorMessage = "Phone number must contain only digits.")]
         public string? PhoneNumber { get; set; }
+        public string? Gender { get; set; }
         public int Year {  get; set; }
         public int Month { get; set; }
         public int Day { get; set; }

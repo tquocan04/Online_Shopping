@@ -11,9 +11,11 @@ namespace DTOs.DTOs
         [MinLength(6)]
         public string? Password { get; set; }
         [MaxLength(10)]
-        public string? Phone_number { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? Gender { get; set; }
         public DateOnly Dob { get; set; }
         public string? Image { get; set; }
+        public string? Region { get; set; }
         public string? City { get; set; }
         public string? District { get; set; }
         public string? Street { get; set; }

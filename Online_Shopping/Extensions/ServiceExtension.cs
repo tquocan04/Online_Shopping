@@ -22,6 +22,7 @@ namespace Online_Shopping.Extensions
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IShippingService, ShippingService>();
 
             return services;
         }
@@ -35,6 +36,7 @@ namespace Online_Shopping.Extensions
             services.AddScoped<IUserRepo, UserRepo>();
             services.AddScoped<ILoginRepo,LoginRepo>();
             services.AddScoped<IOrderRepo,OrderRepo>();
+            services.AddScoped<IShippingRepo, ShippingRepo>();
             services.AddScoped(typeof(IBaseRepo<>), typeof(BaseRepo<>));
 
             return services;
