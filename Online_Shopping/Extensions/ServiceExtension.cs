@@ -21,19 +21,20 @@ namespace Online_Shopping.Extensions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IOrderService, OrderService>();
 
             return services;
         }
         public static IServiceCollection ConfigureRepository(this IServiceCollection services)
         {
             services.AddScoped<ICategoryRepo, CategoryRepo>();
+            services.AddScoped<IRegionRepo, RegionRepo>();
             services.AddScoped<ICityRepo, CityRepo>();
-            services.AddScoped<IDistrictRepo, DistrictRepo>();
             services.AddScoped<IPaymentRepo, PaymentRepo>();
             services.AddScoped<IProductRepo, ProductRepo>();
             services.AddScoped<IUserRepo, UserRepo>();
             services.AddScoped<ILoginRepo,LoginRepo>();
-            services.AddScoped<ICustomerRepo, CustomerRepo>();
+            services.AddScoped<IOrderRepo,OrderRepo>();
             services.AddScoped(typeof(IBaseRepo<>), typeof(BaseRepo<>));
 
             return services;

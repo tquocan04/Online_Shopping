@@ -17,6 +17,8 @@ namespace Services
             CreateMap<City, CityDTO>();
             CreateMap<CityDTO, City>();
 
+            CreateMap<RegionDTO, Region>().ReverseMap();
+
             CreateMap<District, DistrictDTO>().ReverseMap();
 
             CreateMap<Payment, PaymentDTO>();
@@ -34,6 +36,9 @@ namespace Services
                             opt => opt.Ignore())
                 .ReverseMap();
             CreateMap<RequestUser, Address>();
+
+            CreateMap<Order, OrderCartDTO>().ReverseMap();
+            CreateMap<Item, ItemDTO>().ReverseMap();
         }
     }
 }

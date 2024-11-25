@@ -10,6 +10,6 @@ namespace Entities.Entities
         [ForeignKey(nameof(Product))]
         public Guid ProductId { get; set; }
         public Product? Product { get; set; }
-        public int Quantity { get; set; }
+        public int Quantity { get; set; } = 0;
     }
 }

@@ -37,7 +37,8 @@ namespace Repositories.Repositories
 
         public async Task<Product> GetProductByIdAsync(string id)
         {
-            return await _applicationContext.Products.FindAsync(Guid.Parse(id));
+            return await _applicationContext.Products.AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == Guid.Parse(id));
         }
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()

@@ -1,4 +1,5 @@
-﻿using DTOs;
+﻿using AutoMapper;
+using DTOs;
 using DTOs.Request;
 using DTOs.Responses;
 using Microsoft.AspNetCore.Http;
@@ -31,6 +32,7 @@ namespace Online_Shopping.Controllers
             if (!check)
                 return BadRequest("Email or password is wrong! Please try again");
             var token = _tokenService.GenerateToken(requestLogin);
+            
             return Ok(new AuthResponse
             {
                 AccessToken = $"Bearer {token}"

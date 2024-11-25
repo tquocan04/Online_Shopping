@@ -2,8 +2,8 @@
 
 namespace Repository.Contracts.Interfaces
 {
-    public interface ICustomerRepo
+    public interface IRegionRepo
     {
-        Task<Customer> GetCustomerIdAsync(Guid userId);
+        Task<IEnumerable<Region>> GetAllRegions();
     }
 }

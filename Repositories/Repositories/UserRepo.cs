@@ -13,15 +13,6 @@ namespace Repositories.Repositories
         {
             _applicationContext = applicationContext;
         }
-
-        public async Task<bool> checkUsernameExist(string username)
-        {
-            if (await _applicationContext.Customers.AnyAsync(u => u.Username == username))
-            {
-                return true;
-            }
-            return false;
-        }
         
         public async Task<bool> checkEmailExist(string email)
         {

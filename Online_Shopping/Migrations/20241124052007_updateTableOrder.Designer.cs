@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Online_Shopping.Context;
 
@@ -11,9 +12,11 @@ using Online_Shopping.Context;
 namespace Online_Shopping.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20241124052007_updateTableOrder")]
+    partial class updateTableOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -369,8 +372,8 @@ namespace Online_Shopping.Migrations
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("TotalPrice")
+                        .HasColumnType("float");
 
                     b.Property<Guid?>("VoucherId")
                         .HasColumnType("uniqueidentifier");
@@ -442,8 +445,8 @@ namespace Online_Shopping.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double?>("Price")
+                        .HasColumnType("float");
 
                     b.Property<int?>("Stock")
                         .HasColumnType("int");
@@ -560,11 +563,11 @@ namespace Online_Shopping.Migrations
                     b.Property<DateOnly?>("ExpiryDate")
                         .HasColumnType("date");
 
-                    b.Property<decimal?>("MaxDiscount")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double?>("MaxDiscount")
+                        .HasColumnType("float");
 
-                    b.Property<decimal?>("MinOrderValue")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double?>("MinOrderValue")
+                        .HasColumnType("float");
 
                     b.Property<int?>("Percentage")
                         .HasColumnType("int");
@@ -694,8 +697,7 @@ namespace Online_Shopping.Migrations
                 {
                     b.HasOne("Entities.Entities.Customer", "Customer")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CustomerId");
 
                     b.HasOne("Entities.Entities.Payment", "Payment")
                         .WithMany("Orders")

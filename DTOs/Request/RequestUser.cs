@@ -13,9 +13,6 @@ namespace DTOs.Request
         [EmailAddress(ErrorMessage = "Email is invalid")]
         public string? Email { get; set; }
         [Required]
-        [MinLength(3)]
-        public string? Username { get; set; }
-        [Required]
         [MinLength(6)]
         public string? Password { get; set; }
         [MaxLength(10)]

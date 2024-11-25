@@ -5,6 +5,7 @@ using DTOs.Responses;
 using Entities.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Repositories.Repositories;
 using Repository.Contracts.Interfaces;
 using Service.Contracts.Interfaces;
 using Services.Services;
@@ -18,13 +19,15 @@ namespace Online_Shopping.Controllers
         private readonly IUserRepo _userRepo;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly IOrderRepo _orderRepo;
 
         public AuthenticationController(IUserRepo userRepo, IUserService userService,
-            IMapper mapper) 
+            IMapper mapper, IOrderRepo orderRepo) 
         {
             _userRepo = userRepo;
             _userService = userService;
             _mapper = mapper;
+            _orderRepo = orderRepo;
         }
 
         [HttpPost("register")]
@@ -38,11 +41,6 @@ namespace Online_Shopping.Controllers
             if (await _userRepo.checkEmailExist(requestUser.Email))
             {
                 return BadRequest("Email is existed");
-            }
-
-            if (await _userRepo.checkUsernameExist(requestUser.Username))
-            {
-                return BadRequest("Username is existed");
             }
 
             if (!_userRepo.checkDOB(requestUser.Year))
@@ -63,11 +61,18 @@ namespace Online_Shopping.Controllers
                 ObjectId = customer.Id,
                 IsDefault = true,
             };
-
             _mapper.Map(requestUser, address);
-
             await _userRepo.CreateNewAddress(address);
 
+            Order order = new Order
+            {
+                Id = new Guid(),
+                CustomerId = customer.Id,
+                TotalPrice = 0,
+                OrderDate = DateTime.Now,
+            };
+
+            await _orderRepo.CreateOrder(order);
             return CreatedAtAction("Register", new { id = customer.Id }, customer);
         }
 

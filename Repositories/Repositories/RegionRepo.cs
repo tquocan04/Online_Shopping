@@ -5,19 +5,18 @@ using Repository.Contracts.Interfaces;
 
 namespace Repositories.Repositories
 {
-    public class CustomerRepo : ICustomerRepo
+    public class RegionRepo : IRegionRepo
     {
         private readonly ApplicationContext _applicationContext;
 
-        public CustomerRepo(ApplicationContext applicationContext) 
+        public RegionRepo(ApplicationContext applicationContext) 
         {
             _applicationContext = applicationContext;
         }
-        public async Task<Customer> GetCustomerIdAsync(Guid customerId)
+
+        public async Task<IEnumerable<Region>> GetAllRegions()
         {
-            return await _applicationContext.Customers
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == customerId);
+            return await _applicationContext.Regions.AsNoTracking().Include(r => r.Cities).ThenInclude(c => c.Districts).ToListAsync();
         }
     }
 }

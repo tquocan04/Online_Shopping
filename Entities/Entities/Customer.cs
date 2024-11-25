@@ -11,8 +11,6 @@ namespace Entities.Entities
         public string? Gender { get; set; }
         [EmailAddress]
         public string? Email { get; set; }
-        [MinLength(3)]
-        public string? Username { get; set; }
         [MinLength(6)]
         public string? Password { get; set; }
         [Range(9, 11)]
@@ -21,6 +19,7 @@ namespace Entities.Entities
         public string? Picture { get; set; }
         [JsonIgnore]
         public ICollection<Address>? Addresses { get; set; }
+        [JsonIgnore]
         public ICollection<Order>? Orders { get; set; }
         public ICollection<Credential>? Credentials { get; set; }
     }

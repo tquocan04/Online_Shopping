@@ -37,7 +37,6 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetAllCategories()
         {
             var allCategories = await _categoryService.GetAllCategory();
