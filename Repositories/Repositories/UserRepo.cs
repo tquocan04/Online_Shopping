@@ -38,12 +38,6 @@ namespace Repositories.Repositories
             await _applicationContext.SaveChangesAsync();
         }
 
-        public async Task CreateNewAddress(Address address)
-        {
-            await _applicationContext.Addresses.AddAsync(address);
-            await _applicationContext.SaveChangesAsync();
-        }
-
         public async Task<Customer?> GetCustomerByIdAsync(Guid id)
         {
             return await _applicationContext.Customers.FindAsync(id);
@@ -53,26 +47,6 @@ namespace Repositories.Repositories
         {
             _applicationContext.Customers.Update(customer);
             await _applicationContext.SaveChangesAsync();
-        }
-
-        public async Task DeleteAddress(Address address)
-        {
-            _applicationContext.Addresses.Remove(address);
-            await _applicationContext.SaveChangesAsync();
-        }
-
-        public async Task CreateAddress(Address address)
-        {
-            _applicationContext.Addresses.Add(address);
-            await _applicationContext.SaveChangesAsync();
-        }
-
-        public async Task<Address?> GetAddressByMultiPKAsync(Guid customerId, Guid districtId, string Street)
-        {
-            return await _applicationContext.Addresses
-                .FirstOrDefaultAsync(ca => ca.ObjectId == customerId
-                                            &&  ca.DistrictId == districtId
-                                            && ca.Street == Street);
         }
 
         public async Task<string?> GetStreetDefaultByCustomerIdAsync(Guid customerId)
@@ -92,16 +66,8 @@ namespace Repositories.Repositories
             return address.DistrictId;
         }
 
-        public async Task UpdateAddress(Address cus_Address)
-        {
-            _applicationContext.Addresses.Update(cus_Address);
-            await _applicationContext.SaveChangesAsync();
-        }
-
         public async Task<Customer> GetProfileByCustomerIdIdAsync(Guid id)
         {
-            //var districtId = await GetDistrictDefaultByUserIdAsync(id);
-            //var street = 
             return await _applicationContext.Customers.FindAsync(id);
         }
 

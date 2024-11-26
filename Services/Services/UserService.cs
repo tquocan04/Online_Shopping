@@ -13,17 +13,20 @@ namespace Services.Services
         //private readonly IDistrictRepo _districtRepo;
         private readonly IMapper _mapper;
         private readonly ICityRepo _cityRepo;
+        private readonly IAddressRepo _addressRepo;
 
         public UserService
             (IUserRepo userRepo, 
             IMapper mapper, 
             //IDistrictRepo districtRepo,
-            ICityRepo cityRepo) 
+            ICityRepo cityRepo,
+            IAddressRepo addressRepo) 
         {
             _userRepo = userRepo;
             _mapper = mapper;
             //_districtRepo = districtRepo;
             _cityRepo = cityRepo;
+            _addressRepo = addressRepo;
         }
 
         public async Task<Customer> CreateNewUser(Guid Id, RequestUser requestUser)
@@ -43,9 +46,9 @@ namespace Services.Services
         {
             var street = await _userRepo.GetStreetDefaultByCustomerIdAsync(Guid.Parse(id));
             var district = await _userRepo.GetDistrictDefaultByCustomerIdAsync(Guid.Parse(id));
-            var old_address = await _userRepo.GetAddressByMultiPKAsync(Guid.Parse(id), district, street);
+            var old_address = await _addressRepo.GetAddressByMultiPKAsync(Guid.Parse(id), district, street);
             old_address.IsDefault = false;
-            await _userRepo.UpdateAddress(old_address);
+            await _addressRepo.UpdateAddress(old_address);
         }
 
         public async Task<bool> UpdateInforUser(string id, string districtId, RequestUser requestUser)
@@ -62,7 +65,7 @@ namespace Services.Services
 
 
             // truy van tim record:
-            var address = await _userRepo.GetAddressByMultiPKAsync
+            var address = await _addressRepo.GetAddressByMultiPKAsync
                 (
                 Guid.Parse(id),
                 Guid.Parse(districtId),
@@ -83,7 +86,7 @@ namespace Services.Services
                     Street = requestUser.Street,
                     IsDefault = true
                 };
-                await _userRepo.CreateAddress(newAddress);
+                await _addressRepo.CreateNewAddress(newAddress);
             }
 
             // 3.neu ton tai va false -> cap nhat lai = true
@@ -94,7 +97,7 @@ namespace Services.Services
 
                 // cap nhat lai = true
                 address.IsDefault = true;
-                await _userRepo.UpdateAddress(address);
+                await _addressRepo.UpdateAddress(address);
             }
 
 

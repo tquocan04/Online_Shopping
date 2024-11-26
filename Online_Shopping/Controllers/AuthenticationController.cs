@@ -20,14 +20,16 @@ namespace Online_Shopping.Controllers
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly IOrderRepo _orderRepo;
+        private readonly IAddressRepo _addressRepo;
 
         public AuthenticationController(IUserRepo userRepo, IUserService userService,
-            IMapper mapper, IOrderRepo orderRepo) 
+            IMapper mapper, IOrderRepo orderRepo, IAddressRepo addressRepo) 
         {
             _userRepo = userRepo;
             _userService = userService;
             _mapper = mapper;
             _orderRepo = orderRepo;
+            _addressRepo = addressRepo;
         }
 
         [HttpPost("register")]
@@ -62,7 +64,7 @@ namespace Online_Shopping.Controllers
                 IsDefault = true,
             };
             _mapper.Map(requestUser, address);
-            await _userRepo.CreateNewAddress(address);
+            await _addressRepo.CreateNewAddress(address);
 
             Order order = new Order
             {

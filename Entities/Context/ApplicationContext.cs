@@ -61,14 +61,13 @@ namespace Online_Shopping.Context
             modelBuilder.Entity<Employee>(entity =>
             {
                 entity.HasIndex(c => c.Email).IsUnique();
-                entity.HasIndex(c => c.Username).IsUnique();
             });
 
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Customer) // Thiết lập quan hệ 1-n
                 .WithMany(c => c.Orders) // Customer có nhiều Orders
                 .OnDelete(DeleteBehavior.Cascade); // Xóa cascade
-
+            
             modelBuilder.Entity<Region>(entity =>
             {
                 entity.HasIndex(c => c.Name).IsUnique();
