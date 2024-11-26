@@ -5,6 +5,6 @@ namespace Service.Contracts.Interfaces
 {
     public interface ITokenService
     {
-        string GenerateToken(RequestLogin requestLogin);
+        string GenerateToken(RequestLogin requestLogin, string role);
     }
 }

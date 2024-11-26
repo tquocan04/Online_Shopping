@@ -10,26 +10,20 @@ namespace Services.Services
     public class UserService : IUserService
     {
         private readonly IUserRepo _userRepo;
-        //private readonly IDistrictRepo _districtRepo;
         private readonly IMapper _mapper;
-        private readonly ICityRepo _cityRepo;
         private readonly IAddressRepo _addressRepo;
 
         public UserService
             (IUserRepo userRepo, 
             IMapper mapper, 
-            //IDistrictRepo districtRepo,
-            ICityRepo cityRepo,
             IAddressRepo addressRepo) 
         {
             _userRepo = userRepo;
             _mapper = mapper;
-            //_districtRepo = districtRepo;
-            _cityRepo = cityRepo;
             _addressRepo = addressRepo;
         }
 
-        public async Task<Customer> CreateNewUser(Guid Id, RequestUser requestUser)
+        public async Task<Customer> CreateNewUser(Guid Id, RequestCustomer requestUser)
         {
             Customer customer = new Customer
             {
@@ -44,14 +38,12 @@ namespace Services.Services
 
         private async Task UpdateAddress(string id)
         {
-            var street = await _userRepo.GetStreetDefaultByCustomerIdAsync(Guid.Parse(id));
-            var district = await _userRepo.GetDistrictDefaultByCustomerIdAsync(Guid.Parse(id));
-            var old_address = await _addressRepo.GetAddressByMultiPKAsync(Guid.Parse(id), district, street);
-            old_address.IsDefault = false;
-            await _addressRepo.UpdateAddress(old_address);
+            var address = await _addressRepo.GetAddressByObjectIdAsync(Guid.Parse(id));
+            address.IsDefault = false;
+            await _addressRepo.UpdateAddress(address);
         }
 
-        public async Task<bool> UpdateInforUser(string id, string districtId, RequestUser requestUser)
+        public async Task<bool> UpdateInforUser(string id, string districtId, RequestCustomer requestUser)
         {
             var user = await _userRepo.GetCustomerByIdAsync(Guid.Parse(id));
             if (user == null)
@@ -62,7 +54,6 @@ namespace Services.Services
             {
                 throw new ArgumentNullException("Information cannot be null");
             }
-
 
             // truy van tim record:
             var address = await _addressRepo.GetAddressByMultiPKAsync
@@ -100,8 +91,6 @@ namespace Services.Services
                 await _addressRepo.UpdateAddress(address);
             }
 
-
-
             DateOnly dob = new DateOnly(requestUser.Year, requestUser.Month, requestUser.Day);
             if (!_userRepo.checkDOB(requestUser.Year))
                 throw new Exception("Dob is invalid");
@@ -110,24 +99,23 @@ namespace Services.Services
             user.Dob = dob;
             await _userRepo.UpdateInforCustomer(user);
 
-            
             return true;
         }
 
-        public async Task<CustomerDTO> GetProfileUser(string userId)
+        public async Task<CustomerDTO> GetProfileUser(string cusId)
         {
-            var districtId = await _userRepo.GetDistrictDefaultByCustomerIdAsync(Guid.Parse(userId));
-            //var district = await _districtRepo.GetDistrictsIdAsync(districtId);
-            //var city = await _cityRepo.GetCityByCityIdAsync(district.CityId);
-            var street = await _userRepo.GetStreetDefaultByCustomerIdAsync(Guid.Parse(userId));
-            var user = await _userRepo.GetCustomerByIdAsync(Guid.Parse(userId));
+            var districtId = await _userRepo.GetDistrictDefaultByCustomerIdAsync(Guid.Parse(cusId));
+            
+            var cus = await _userRepo.GetCustomerByIdAsync(Guid.Parse(cusId));
 
-            CustomerDTO userDTO = new CustomerDTO();
-            _mapper.Map(user, userDTO);
-            userDTO.Street = street;
-            //userDTO.District = district.Name;
-            //userDTO.City = city.Name;
-            return userDTO;
+            CustomerDTO cusDTO = _mapper.Map<CustomerDTO>(cus);
+
+            cusDTO.Street = await _userRepo.GetStreetDefaultByCustomerIdAsync(Guid.Parse(cusId));
+            cusDTO.CityId = await _addressRepo.GetCityIdByDistrictIdAsync(districtId);
+            cusDTO.RegionId = await _addressRepo.GetRegionIdByCityIdAsync(cusDTO.CityId);
+            cusDTO.DistrictId = districtId;
+
+            return cusDTO;
             
         }
     }

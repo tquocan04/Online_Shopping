@@ -52,7 +52,7 @@ namespace Online_Shopping.Controllers
             return Ok(list);
         }
 
-        [HttpGet("id/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetBranch(string id)
         {
             var branch = await _branchService.GetBranch(id);
@@ -61,14 +61,14 @@ namespace Online_Shopping.Controllers
             return Ok(branch);
         }
 
-        [HttpDelete("delete-branch/id/{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteBranch(string id)
         {
             await _branchService.DeleteBranch(id);
             return NoContent();
         }
 
-        [HttpPut("update-branch/id/{id}")]
+        [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateBranch(string id, [FromBody] RequestBranch requestBranch)
         {
             await _branchService.UpdateBranch(id, requestBranch);

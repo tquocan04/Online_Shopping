@@ -2,7 +2,8 @@
 {
     public interface ILoginRepo
     {
-        Task<bool> checkLoginAsync(string email, string password);
-        //Task<bool> checkPassword(string password);
+        Task<string> checkLoginCustomerAsync(string login, string password);
+        Task<string> checkLoginEmployeeAsync(string login, string password);
+        
     }
 }

@@ -18,7 +18,7 @@ namespace Online_Shopping.Controllers
             _paymentService = paymentService;
         }
 
-        [HttpGet("get-all-paymentMethods")]
+        [HttpGet]
         public async Task<IActionResult> GetAllPayments()
         {
             var payments = await _paymentService.GetPaymentListAsync();

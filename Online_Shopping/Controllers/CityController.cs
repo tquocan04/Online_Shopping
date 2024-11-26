@@ -17,7 +17,7 @@ namespace Online_Shopping.Controllers
             _cityService = cityService;
         }
 
-        [HttpGet("get-all-cities")]
+        [HttpGet]
         public async Task<IActionResult> GetAllCities()
         {
             var cities = await _cityService.GetAllCities();

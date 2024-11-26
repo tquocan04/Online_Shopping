@@ -1,24 +1,33 @@
 ﻿using Entities.Entities;
 using System.ComponentModel.DataAnnotations;
 
-namespace DTOs.DTOs
+namespace DTOs.Request
 {
-    public class CustomerDTO
+    public class RequestCustomer
     {
-        public Guid Id { get; set; }
-        public string? Name { get; set; }
-        [EmailAddress]
+        [Required]
+        public string? FirstName { get; set; }
+        [Required]
+        public string? LastName { get; set; }
+        [Required]
+        [EmailAddress(ErrorMessage = "Email is invalid")]
         public string? Email { get; set; }
+        [Required]
         [MinLength(6)]
         public string? Password { get; set; }
         [MaxLength(10)]
+        [RegularExpression(@"^\d+$", ErrorMessage = "Phone number must contain only digits.")]
         public string? PhoneNumber { get; set; }
         public string? Gender { get; set; }
-        public DateOnly Dob { get; set; }
+        public int Year {  get; set; }
+        public int Month { get; set; }
+        public int Day { get; set; }
         public string? Image { get; set; }
+        [Required]
         public string RegionId { get; set; } = null!;
         public Guid CityId { get; set; }
         public Guid DistrictId { get; set; }
+        [Required]
         public string Street { get; set; } = null!;
     }
 }

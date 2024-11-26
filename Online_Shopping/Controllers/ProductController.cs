@@ -11,7 +11,7 @@ using Services.Services;
 
 namespace Online_Shopping.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/products")]
     [ApiController]
     public class ProductController : ControllerBase
     {
@@ -36,7 +36,7 @@ namespace Online_Shopping.Controllers
                 });
         }
 
-        [HttpGet("products")]
+        [HttpGet]
         public async Task<IActionResult> GetAllProducts()
         {
             var products = await _productService.GetAllProducts();
@@ -45,7 +45,7 @@ namespace Online_Shopping.Controllers
             return Ok(products);
         }
 
-        [HttpGet("products/available")]
+        [HttpGet("available")]
         public async Task<IActionResult> GetProductsNotHidden()
         {
             var products = await _productService.GetProductsNotHidden();
@@ -54,7 +54,7 @@ namespace Online_Shopping.Controllers
             return Ok(products);
         }
 
-        [HttpGet("products/hidden")]
+        [HttpGet("hidden")]
         public async Task<IActionResult> GetProductsHidden()
         {
             var products = await _productService.GetProductsHidden();
@@ -63,7 +63,7 @@ namespace Online_Shopping.Controllers
             return Ok(products);
         }
 
-        [HttpGet("products/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(string id)
         {
             var product = await _productService.GetProductById(id);
@@ -72,7 +72,7 @@ namespace Online_Shopping.Controllers
             return Ok(product);
         }
 
-        [HttpPatch("products/{id}")]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateStatusProductById(string id)
         {
             var prodduct = await _productService.GetProductById(id);
@@ -96,7 +96,7 @@ namespace Online_Shopping.Controllers
             }
         }
 
-        [HttpPatch("products/update/{id}")]
+        [HttpPatch("update/{id}")]
         public async Task<IActionResult> UpdateInforProduct(string id,[FromBody] RequestProduct requestProduct)
         {
             var prodduct = await _productService.GetProductById(id);

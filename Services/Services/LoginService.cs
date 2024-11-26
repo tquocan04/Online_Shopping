@@ -13,13 +13,18 @@ namespace Services.Services
             _loginRepo = loginRepo;
         }
 
-        public async Task<bool> LoginAsync(RequestLogin requestLogin)
+        public async Task<string> LoginAsync(RequestLogin requestLogin)
         {
             if (requestLogin == null)
             {
                 throw new ArgumentNullException("Service: Login cannot null");
             }
-            return await _loginRepo.checkLoginAsync(requestLogin.Email, requestLogin.Password);
+
+            if (requestLogin.Login.Contains("@"))
+                return await _loginRepo.checkLoginCustomerAsync(requestLogin.Login, requestLogin.Password);
+            else
+                return await _loginRepo.checkLoginEmployeeAsync(requestLogin.Login, requestLogin.Password);
+
         }
     }
 }

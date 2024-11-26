@@ -28,10 +28,10 @@ namespace Online_Shopping.Controllers
             if(!ModelState.IsValid)
                 return BadRequest("Please fill in all login information");
 
-            var check = await _loginService.LoginAsync(requestLogin);
-            if (!check)
-                return BadRequest("Email or password is wrong! Please try again");
-            var token = _tokenService.GenerateToken(requestLogin);
+            var role = await _loginService.LoginAsync(requestLogin);
+            if (role == null)
+                return BadRequest("Account is wrong! Please try again");
+            var token = _tokenService.GenerateToken(requestLogin, role);
             
             return Ok(new AuthResponse
             {

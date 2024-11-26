@@ -28,14 +28,15 @@ namespace Services
             CreateMap<RequestProduct, ProductDTO>().ReverseMap();
             CreateMap<RequestProduct, Product>().ReverseMap();
             
-            CreateMap<RequestUser, CustomerDTO>().ReverseMap();
-            CreateMap<RequestUser, Customer>()
+            CreateMap<Customer, CustomerDTO>().ReverseMap();
+            CreateMap<RequestCustomer, CustomerDTO>().ReverseMap();
+            CreateMap<RequestCustomer, Customer>()
                 .ForMember( dest => dest.Name,
                             opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
                 .ForMember( dest => dest.Dob,
                             opt => opt.Ignore())
                 .ReverseMap();
-            CreateMap<RequestUser, Address>();
+            CreateMap<RequestCustomer, Address>();
 
             CreateMap<Order, OrderCartDTO>().ReverseMap();
             CreateMap<Item, ItemDTO>().ReverseMap();
@@ -46,6 +47,19 @@ namespace Services
             CreateMap<RequestBranch, Branch>();
             CreateMap<RequestBranch, Address>();
             CreateMap<BranchDTO, Address>().ReverseMap();
+
+            CreateMap<Employee, EmployeeDTO>().ReverseMap();
+            CreateMap<Address, EmployeeDTO>()
+                .ForMember(dest => dest.Id,
+                            opt => opt.MapFrom(src => src.ObjectId));
+            CreateMap<RequestEmployee, EmployeeDTO>()
+                .ForMember(dest => dest.Name,
+                            opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"));
+            CreateMap<RequestEmployee, Employee>()
+                .ForMember(dest => dest.Name,
+                            opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
+                .ForMember(dest => dest.Dob,
+                            opt => opt.Ignore());
         }
     }
 }

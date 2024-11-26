@@ -7,7 +7,7 @@ using Repository.Contracts.Interfaces;
 
 namespace Online_Shopping.Controllers
 {
-    [Route("api/region")]
+    [Route("api/regions")]
     [ApiController]
     public class RegionController : ControllerBase
     {

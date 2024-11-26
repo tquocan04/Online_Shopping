@@ -10,6 +10,7 @@ namespace Entities.Entities
         public Guid Id { get; set; }
         public string? Name { get; set; }
         public string? Gender { get; set; }
+        public string? Username { get; set; }
         [EmailAddress]
         public string? Email { get; set; }
         [MinLength(6)]

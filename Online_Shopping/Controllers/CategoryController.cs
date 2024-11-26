@@ -54,7 +54,7 @@ namespace Online_Shopping.Controllers
             return Ok(category);
         }
 
-        [HttpDelete("delete-category/{Id}")]
+        [HttpDelete("delete/{Id}")]
         public async Task<ActionResult> DeleteCategoryById(string Id)
         {
             var category = await _categoryService.GetCategoryById(Id);
@@ -65,27 +65,19 @@ namespace Online_Shopping.Controllers
             return NoContent();
         }
 
-        [HttpPatch("update-category/{Id}")]
+        [HttpPatch("update/{Id}")]
         public async Task<ActionResult> UpdateCategory(string Id, [FromBody] RequestCategory request)
         {
             var cateId = await _categoryService.GetCategoryById(Id);
             if (cateId == null)
                 return NotFound($"Cannot find CategoryId: {Id} to update");
 
-            try
+            await _categoryService.UpdateCategoryById(Id, request);
+            return Ok(new Response<RequestCategory>
             {
-                await _categoryService.UpdateCategoryById(Id, request);
-                return Ok(new Response<RequestCategory>
-                {
-                    Message = "Category is updated successfully",
-                    Data = request
-                });
-            }
-            catch
-            {
-                throw new Exception("Controller: Updating is failed");
-            }
-
+                Message = "Category is updated successfully",
+                Data = request
+            });
         }
     }
 }

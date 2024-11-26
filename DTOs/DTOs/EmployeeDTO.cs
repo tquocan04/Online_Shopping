@@ -1,33 +1,28 @@
 ﻿using Entities.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
-namespace DTOs.Request
+namespace DTOs.DTOs
 {
-    public class RequestUser
+    public class EmployeeDTO
     {
-        [Required]
-        public string? FirstName { get; set; }
-        [Required]
-        public string? LastName { get; set; }
-        [Required]
+        public Guid Id { get; set; }
+        public string? Name { get; set; }
+        public string? Username { get; set; }
         [EmailAddress(ErrorMessage = "Email is invalid")]
         public string? Email { get; set; }
-        [Required]
         [MinLength(6)]
         public string? Password { get; set; }
         [MaxLength(10)]
-        [RegularExpression(@"^\d+$", ErrorMessage = "Phone number must contain only digits.")]
         public string? PhoneNumber { get; set; }
         public string? Gender { get; set; }
-        public int Year {  get; set; }
-        public int Month { get; set; }
-        public int Day { get; set; }
-        public string? Image { get; set; }
-        [Required]
+        public DateOnly Dob { get; set; }
+        public string RoleId { get; set; } = null!;
+        public Guid BranchId { get; set; }
         public string RegionId { get; set; } = null!;
         public Guid CityId { get; set; }
         public Guid DistrictId { get; set; }
-        [Required]
         public string Street { get; set; } = null!;
     }
 }

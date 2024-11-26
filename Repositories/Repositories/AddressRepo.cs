@@ -39,7 +39,7 @@ namespace Repositories.Repositories
         {
             return await _applicationContext.Addresses.AsNoTracking()
                 .FirstOrDefaultAsync(ca => ca.ObjectId == objectId
-                                        && ca.IsDefault == true);
+                                        && ca.IsDefault);
         }
 
         public async Task UpdateAddress(Address address)

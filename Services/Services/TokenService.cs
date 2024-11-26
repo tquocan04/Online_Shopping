@@ -19,17 +19,18 @@ namespace Services.Services
             _configuration = configuration;
         }
 
-        private List<Claim> GetClaim(RequestLogin requestLogin)
+        private List<Claim> GetClaim(RequestLogin requestLogin, string role)
         {
             var claims = new List<Claim> 
             {
-                new Claim(ClaimTypes.Email, requestLogin.Email),
+                new Claim(ClaimTypes.Name, requestLogin.Login),
+                new Claim(ClaimTypes.Role, role)
                 // Add additional claims as needed (Id, email, role,...)
             };
             return claims;
         }
 
-        public string GenerateToken(RequestLogin requestLogin)
+        public string GenerateToken(RequestLogin requestLogin, string role)
         {
             var expiryhour = int.Parse(_configuration["Jwt:TokenExpiredInHour"]);
 
@@ -40,7 +41,7 @@ namespace Services.Services
             var tokeOptions = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
-                claims: GetClaim(requestLogin),
+                claims: GetClaim(requestLogin, role),
                 expires: DateTime.Now.AddHours(expiryhour),
                 signingCredentials: signinCredentials
             );

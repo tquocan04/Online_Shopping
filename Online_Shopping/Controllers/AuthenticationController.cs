@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DTOs;
+using DTOs.DTOs;
 using DTOs.Request;
 using DTOs.Responses;
 using Entities.Entities;
@@ -23,7 +24,8 @@ namespace Online_Shopping.Controllers
         private readonly IAddressRepo _addressRepo;
 
         public AuthenticationController(IUserRepo userRepo, IUserService userService,
-            IMapper mapper, IOrderRepo orderRepo, IAddressRepo addressRepo) 
+            IMapper mapper, IOrderRepo orderRepo, IAddressRepo addressRepo
+            ) 
         {
             _userRepo = userRepo;
             _userService = userService;
@@ -33,19 +35,19 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RequestUser requestUser)
+        public async Task<IActionResult> Register([FromBody] RequestCustomer requestCustomer)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (await _userRepo.checkEmailExist(requestUser.Email))
+            if (await _userRepo.checkEmailExist(requestCustomer.Email))
             {
                 return BadRequest("Email is existed");
             }
 
-            if (!_userRepo.checkDOB(requestUser.Year))
+            if (!_userRepo.checkDOB(requestCustomer.Year))
             {
                 return BadRequest("DoB is invalid");
             }
@@ -53,9 +55,9 @@ namespace Online_Shopping.Controllers
             Customer customer = new Customer
             {
                 Id = new Guid(),
-                Dob = new DateOnly(requestUser.Year, requestUser.Month, requestUser.Day)
+                Dob = new DateOnly(requestCustomer.Year, requestCustomer.Month, requestCustomer.Day)
             };
-            _mapper.Map(requestUser, customer);
+            _mapper.Map(requestCustomer, customer);
             await _userRepo.CreateNewCustomer(customer);
 
             Address address = new Address 
@@ -63,7 +65,7 @@ namespace Online_Shopping.Controllers
                 ObjectId = customer.Id,
                 IsDefault = true,
             };
-            _mapper.Map(requestUser, address);
+            _mapper.Map(requestCustomer, address);
             await _addressRepo.CreateNewAddress(address);
 
             Order order = new Order
@@ -71,32 +73,33 @@ namespace Online_Shopping.Controllers
                 Id = new Guid(),
                 CustomerId = customer.Id,
                 TotalPrice = 0,
-                OrderDate = DateTime.Now,
+                //OrderDate = DateTime.Now,
             };
 
             await _orderRepo.CreateOrder(order);
             return CreatedAtAction("Register", new { id = customer.Id }, customer);
         }
 
-        [HttpPut("update-information-user/id/{userId}")]
-        public async Task<IActionResult> UpdateUser(string userId, string districtId, [FromBody] RequestUser requestUser)
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateUser(string id, [FromBody] RequestCustomer requestCustomer)
         {
-            var check = await _userService.UpdateInforUser(userId, districtId, requestUser);
+            var check = await _userService.UpdateInforUser(id, requestCustomer.DistrictId.ToString(), requestCustomer);
             if (!check)
                 return BadRequest("Cannot update user");
 
-            return Ok(new Response<RequestUser>
+            return Ok(new Response<RequestCustomer>
             {
                 Message = "User is updated successfully",
-                Data = requestUser
+                Data = requestCustomer
             });
         }
 
-        [HttpGet("get-profile/id/{Id}")]
+        [HttpGet("profile/{Id}")]
         public async Task<IActionResult> GetProfileUser(string Id)
         {
             var user = await _userService.GetProfileUser(Id);
             return Ok(user);
         }
+
     }
 }

@@ -13,21 +13,30 @@ namespace Repositories.Repositories
             _applicationContext = applicationContext;
         }
 
-        public async Task<bool> checkLoginAsync(string email, string password)
+        
+        public async Task<string> checkLoginCustomerAsync(string login, string password)
         {
-            var check = await _applicationContext.Customers
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
-            if (check != null)
+            var customer = await _applicationContext.Customers
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.Email == login && u.Password == password);
+            if (customer != null)
             {
-                return true;
+                return "Customer";
             }
-            return false;
+            return null;
         }
 
-        //public Task<bool> checkPassword(string password)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public async Task<string> checkLoginEmployeeAsync(string login, string password)
+        {
+            var emp = await _applicationContext.Employees
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(e => e.Username == login && e.Password == password);
+            if (emp != null)
+            {
+                return emp.RoleId;
+            }
+            return null;
+        }
+
     }
 }
