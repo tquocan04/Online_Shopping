@@ -40,6 +40,12 @@ namespace Services
 
             CreateMap<Order, OrderCartDTO>().ReverseMap();
             CreateMap<Item, ItemDTO>().ReverseMap();
+
+            CreateMap<Product, ItemDTO>()
+                .ForMember(dest => dest.ProductId,
+                            opt => opt.MapFrom(src => src.Id));
+
+
             CreateMap<ShippingMethod, ShippingDTO>().ReverseMap();
 
             CreateMap<RequestBranch, BranchDTO>().ReverseMap();

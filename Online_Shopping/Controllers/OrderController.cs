@@ -14,15 +14,16 @@ namespace Online_Shopping.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        private readonly IOrderRepo _orderRepo;
+        
 
-        public OrderController(IOrderService orderService, IOrderRepo orderRepo) 
+        public OrderController(IOrderService orderService) 
         {
             _orderService = orderService;
-            _orderRepo = orderRepo;
+            
         }
+
         [HttpGet("cart")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetCart(string cusId) 
         {
             var cart = await _orderService.GetOrderCartAsync(cusId);
@@ -30,7 +31,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpPost("add-to-cart")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> AddToCart(string cusId, string prodId)
         {
             await _orderService.AddToCartAsync(cusId, prodId);

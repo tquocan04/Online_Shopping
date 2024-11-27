@@ -12,15 +12,19 @@ namespace Services.Services
         private readonly IUserRepo _userRepo;
         private readonly IMapper _mapper;
         private readonly IAddressRepo _addressRepo;
+        private readonly IAddressService<CustomerDTO> _addressService;
 
         public UserService
             (IUserRepo userRepo, 
             IMapper mapper, 
-            IAddressRepo addressRepo) 
+            IAddressRepo addressRepo,
+            IAddressService<CustomerDTO> addressService
+            ) 
         {
             _userRepo = userRepo;
             _mapper = mapper;
             _addressRepo = addressRepo;
+            _addressService = addressService;
         }
 
         public async Task<Customer> CreateNewUser(Guid Id, RequestCustomer requestUser)
@@ -43,7 +47,7 @@ namespace Services.Services
             await _addressRepo.UpdateAddress(address);
         }
 
-        public async Task<bool> UpdateInforUser(string id, string districtId, RequestCustomer requestUser)
+        public async Task<bool> UpdateInforUser(string id, RequestCustomer requestUser)
         {
             var user = await _userRepo.GetCustomerByIdAsync(Guid.Parse(id));
             if (user == null)
@@ -59,9 +63,10 @@ namespace Services.Services
             var address = await _addressRepo.GetAddressByMultiPKAsync
                 (
                 Guid.Parse(id),
-                Guid.Parse(districtId),
+                requestUser.DistrictId,
                 requestUser.Street
                 );
+
             // 1. neu ton tai -> khong cap nhat -> giu nguyen
             // 2. neu chua ton tai -> cap nhat record cu = false -> tao moi
             if (address == null)
@@ -73,7 +78,7 @@ namespace Services.Services
                 Address newAddress = new Address
                 {
                     ObjectId = Guid.Parse(id),
-                    DistrictId = Guid.Parse(districtId),
+                    DistrictId = requestUser.DistrictId,
                     Street = requestUser.Street,
                     IsDefault = true
                 };
@@ -104,17 +109,12 @@ namespace Services.Services
 
         public async Task<CustomerDTO> GetProfileUser(string cusId)
         {
-            var districtId = await _userRepo.GetDistrictDefaultByCustomerIdAsync(Guid.Parse(cusId));
-            
             var cus = await _userRepo.GetCustomerByIdAsync(Guid.Parse(cusId));
 
             CustomerDTO cusDTO = _mapper.Map<CustomerDTO>(cus);
 
-            cusDTO.Street = await _userRepo.GetStreetDefaultByCustomerIdAsync(Guid.Parse(cusId));
-            cusDTO.CityId = await _addressRepo.GetCityIdByDistrictIdAsync(districtId);
-            cusDTO.RegionId = await _addressRepo.GetRegionIdByCityIdAsync(cusDTO.CityId);
-            cusDTO.DistrictId = districtId;
-
+            cusDTO = await _addressService.SetAddress(cusDTO, cusDTO.Id);
+            
             return cusDTO;
             
         }

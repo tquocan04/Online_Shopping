@@ -24,7 +24,7 @@ namespace Services.Services
         {
             var cart = await _orderRepo.GetOrderIsCartByCusId(Guid.Parse(cusId));
             var cartId = cart.Id;
-            var product = await _productRepo.GetProductByIdAsync(prodId);
+            var product = await _productRepo.GetProductByIdAsync(Guid.Parse(prodId));
             var existingItem = await _orderRepo.GetItem(cartId, Guid.Parse(prodId));
 
             if (existingItem == null)
@@ -50,7 +50,7 @@ namespace Services.Services
         public async Task DeleteItemInCartAsync(string cusId, string prodId)
         {
             var cart = await _orderRepo.GetOrderIsCartByCusId(Guid.Parse(cusId));
-            var product = await _productRepo.GetProductByIdAsync(prodId);
+            var product = await _productRepo.GetProductByIdAsync(Guid.Parse(prodId));
 
             Item item = await _orderRepo.GetItem(cart.Id, product.Id);
             await _orderRepo.DeleteItemInCart(item);
@@ -61,8 +61,20 @@ namespace Services.Services
 
         public async Task<OrderCartDTO> GetOrderCartAsync(string cusId)
         {
+
             var cart = await _orderRepo.GetOrderIsCartByCusId(Guid.Parse(cusId));
-            return _mapper.Map<OrderCartDTO>(cart);
+            var cartDTO = _mapper.Map<OrderCartDTO>(cart);
+
+            if (cartDTO.Items != null)
+            {
+                foreach (var item in cartDTO.Items)
+                {
+                    var product = await _productRepo.GetProductByIdAsync(item.ProductId);
+                    _mapper.Map(product, item);
+                }
+            }
+            
+            return cartDTO;
         }
     }
 }

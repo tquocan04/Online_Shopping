@@ -35,10 +35,10 @@ namespace Repositories.Repositories
             await _applicationContext.SaveChangesAsync();
         }
 
-        public async Task<Product> GetProductByIdAsync(string id)
+        public async Task<Product> GetProductByIdAsync(Guid id)
         {
             return await _applicationContext.Products.AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == Guid.Parse(id));
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
@@ -56,7 +56,7 @@ namespace Repositories.Repositories
             return await _applicationContext.Products.Where(p => !p.IsHidden).ToListAsync();
         }
 
-        public async Task UpdatestatusProduct(string id)
+        public async Task UpdatestatusProduct(Guid id)
         {
             var product = await GetProductByIdAsync(id);
             if (product == null)
@@ -70,7 +70,7 @@ namespace Repositories.Repositories
 
         public async Task UpdateInforProduct(Product product)
         {
-            var productt = await GetProductByIdAsync(product.Id.ToString());
+            var productt = await GetProductByIdAsync(product.Id);
             if (productt == null) 
                 throw new ArgumentNullException("Repo: Product cannot be found");
 

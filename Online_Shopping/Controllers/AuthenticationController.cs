@@ -83,7 +83,7 @@ namespace Online_Shopping.Controllers
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateUser(string id, [FromBody] RequestCustomer requestCustomer)
         {
-            var check = await _userService.UpdateInforUser(id, requestCustomer.DistrictId.ToString(), requestCustomer);
+            var check = await _userService.UpdateInforUser(id, requestCustomer);
             if (!check)
                 return BadRequest("Cannot update user");
 

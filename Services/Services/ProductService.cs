@@ -4,6 +4,7 @@ using DTOs.Request;
 using Entities.Entities;
 using Repository.Contracts.Interfaces;
 using Service.Contracts.Interfaces;
+using System.Collections.Generic;
 
 namespace Services.Services
 {
@@ -11,12 +12,41 @@ namespace Services.Services
     {
         private readonly IProductRepo _productRepo;
         private readonly IMapper _mapper;
+        private readonly ICategoryRepo _categoryRepo;
 
-        public ProductService(IProductRepo productRepo, IMapper mapper) 
+        public ProductService(IProductRepo productRepo, IMapper mapper, ICategoryRepo categoryRepo) 
         {
             _productRepo = productRepo;
             _mapper = mapper;
+            _categoryRepo = categoryRepo;
         }
+
+        private async Task<ProductDTO> ConvertToProductDTO(Product product)
+        {
+            var cate = await _categoryRepo.GetCategoryByIdAsync(product.CategoryId);
+
+            var prodDTO = _mapper.Map<ProductDTO>(product);
+
+            prodDTO.CategoryName = cate.Name;
+
+            return prodDTO;
+        }
+
+        private async Task<IEnumerable<ProductDTO>> GetProducts(IEnumerable<Product> products)
+        {
+            var productDTO = _mapper.Map<IEnumerable<ProductDTO>>(products);
+            var list = products.ToList();
+            var listDTO = productDTO.ToList();
+
+            for (int i = 0; i < listDTO.Count(); i++)
+            {
+                listDTO[i] = await ConvertToProductDTO(list[i]);
+            }
+
+            productDTO = listDTO;
+            return productDTO;
+        }
+
 
         public async Task<Product> CreateNewProduct(RequestProduct request)
         {
@@ -37,25 +67,25 @@ namespace Services.Services
         public async Task<IEnumerable<ProductDTO>> GetAllProducts()
         {
             var products = await _productRepo.GetAllProductsAsync();
-            return _mapper.Map<IEnumerable<ProductDTO>>(products);
+
+            return await GetProducts(products);
         }
 
         public async Task<ProductDTO> GetProductById(string id)
-        {
-            var product = await _productRepo.GetProductByIdAsync(id);
-            return _mapper.Map<ProductDTO>(product);
+        { 
+            return await ConvertToProductDTO(await _productRepo.GetProductByIdAsync(Guid.Parse(id)));
         }
 
         public async Task<IEnumerable<ProductDTO>> GetProductsHidden()
         {
             var products = await _productRepo.GetProductsHiddenAsync();
-            return _mapper.Map<IEnumerable<ProductDTO>>(products);
+            return await GetProducts(products);
         }
 
         public async Task<IEnumerable<ProductDTO>> GetProductsNotHidden()
         {
             var products = await _productRepo.GetProductsNotHiddenAsync();
-            return _mapper.Map<IEnumerable<ProductDTO>>(products);
+            return await GetProducts(products);
         }
 
         public async Task UpdateInforProduct(string id, RequestProduct requestProduct)
@@ -79,14 +109,8 @@ namespace Services.Services
                 throw new Exception("Service: Product cannot be found");
             }
             
-            try
-            {
-                await _productRepo.UpdatestatusProduct(id);
-            }
-            catch
-            {
-                throw new Exception("Service: Product cannot be hidden");
-            }
+            await _productRepo.UpdatestatusProduct(Guid.Parse(id));
+            
         }
     }
 }

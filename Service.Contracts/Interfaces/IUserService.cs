@@ -8,7 +8,7 @@ namespace Service.Contracts.Interfaces
     {
         Task<Customer> CreateNewUser(Guid Id, RequestCustomer requestUser);
         //Task CreateNewCustomer(User user);
-        Task<bool> UpdateInforUser(string id, string districtId, RequestCustomer requestUser);
+        Task<bool> UpdateInforUser(string id, RequestCustomer requestUser);
         Task<CustomerDTO> GetProfileUser(string userId);
     }
 }

@@ -12,12 +12,17 @@ namespace Services.Services
         private readonly IEmployeeRepo _employeeRepo;
         private readonly IMapper _mapper;
         private readonly IAddressRepo _addressRepo;
+        private readonly IBranchRepo _branchRepo;
+        private readonly IAddressService<EmployeeDTO> _addressService;
 
-        public EmployeeService(IEmployeeRepo employeeRepo, IMapper mapper, IAddressRepo addressRepo) 
+        public EmployeeService(IEmployeeRepo employeeRepo, IMapper mapper, IAddressRepo addressRepo,
+            IBranchRepo branchRepo, IAddressService<EmployeeDTO> addressService) 
         {
             _employeeRepo = employeeRepo;
             _mapper = mapper;
             _addressRepo = addressRepo;
+            _branchRepo = branchRepo;
+            _addressService = addressService;
         }
 
         public async Task<EmployeeDTO> AddNewEmployee(RequestEmployee employee)
@@ -61,10 +66,10 @@ namespace Services.Services
             var emp = await _employeeRepo.GetStaffAsync(Guid.Parse(id));
             var empDTO = _mapper.Map<EmployeeDTO>(emp);
 
-            var address = await _addressRepo.GetAddressByObjectIdAsync(emp.Id);
-            _mapper.Map(address, empDTO);
-            empDTO.CityId = await _addressRepo.GetCityIdByDistrictIdAsync(empDTO.DistrictId);
-            empDTO.RegionId = await _addressRepo.GetRegionIdByCityIdAsync(empDTO.CityId);
+            empDTO = await _addressService.SetAddress(empDTO, empDTO.Id);
+
+            var branch = await _branchRepo.GetBranchAsync(empDTO.BranchId);
+            empDTO.BranchName = branch.Name;
 
             return empDTO;
         }

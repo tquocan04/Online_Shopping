@@ -32,16 +32,16 @@ namespace Repositories.Repositories
             await _applicationContext.Categories.AddAsync(category);
             await _applicationContext.SaveChangesAsync();
         }
-        public async Task<Category> GetCategoryByIdAsync(string Id)
+        public async Task<Category> GetCategoryByIdAsync(Guid Id)
         {
             return await _applicationContext.Categories
                 .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == Guid.Parse(Id));
+                .FirstOrDefaultAsync(c => c.Id == Id);
         }
 
-        public async Task DeleteCategoryByIdAsync(string categoryId)
+        public async Task DeleteCategoryByIdAsync(Guid categoryId)
         {
-            var cate = await _applicationContext.Categories.FindAsync(Guid.Parse(categoryId));
+            var cate = await _applicationContext.Categories.FindAsync(categoryId);
             
             if (cate != null)
             {

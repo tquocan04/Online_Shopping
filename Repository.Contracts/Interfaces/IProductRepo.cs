@@ -8,8 +8,8 @@ namespace Repository.Contracts.Interfaces
         Task<IEnumerable<Product>> GetAllProductsAsync();
         Task<IEnumerable<Product>> GetProductsNotHiddenAsync();
         Task<IEnumerable<Product>> GetProductsHiddenAsync();
-        Task<Product> GetProductByIdAsync(string id);
-        Task UpdatestatusProduct(string id);
+        Task<Product> GetProductByIdAsync(Guid id);
+        Task UpdatestatusProduct(Guid id);
         Task UpdateInforProduct(Product product);
     }
 }

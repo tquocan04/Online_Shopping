@@ -65,5 +65,29 @@ namespace Repositories.Repositories
                                         .FirstOrDefaultAsync();
             return result;
         }
+
+        public async Task<string> GetRegionNameByRegionIdAsync(string regionId)
+        {
+            return await _applicationContext.Regions.AsNoTracking()
+                .Where(r => r.Id == regionId)
+                .Select(r => r.Name)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<string> GetCityNameByCityIdAsync(Guid cityId)
+        {
+            return await _applicationContext.Cities.AsNoTracking()
+                .Where(c => c.Id == cityId)
+                .Select(c => c.Name)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<string> GetDistrictNameByDistrictIdAsync(Guid districtId)
+        {
+            return await _applicationContext.Districts.AsNoTracking()
+                .Where(d => d.Id == districtId)
+                .Select(d => d.Name)
+                .FirstOrDefaultAsync();
+        }
     }
 }

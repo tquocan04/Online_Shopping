@@ -1,4 +1,5 @@
-﻿using Entities.Entities;
+﻿using DTOs.DTOs;
+using Entities.Entities;
 using Microsoft.EntityFrameworkCore;
 using Online_Shopping.Context;
 using Repository.Contracts.Interfaces;
@@ -47,6 +48,29 @@ namespace Repositories.Repositories
             return await _applicationContext.Orders.AsNoTracking().Include(o => o.Items)
                 .FirstAsync(o => o.CustomerId == cusId
                                      && o.IsCart == true);
+        }
+
+        public async Task<Guid> GetOrderIdByCusId(Guid cusId)
+        {
+            return await _applicationContext.Orders
+                .AsNoTracking()
+                .Where(o => o.CustomerId == cusId)
+                .Select(o => o.Id)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<ItemDTO>> GetListItemInCart(Guid cartId)
+        {
+            return await _applicationContext.Items
+                .Where(i => i.OrderId == cartId)
+                .Select(i => new ItemDTO
+                {
+                    ProductId = i.ProductId,
+                    Name = i.Product.Name,  
+                    Quantity = i.Quantity,
+                    Price = i.Product.Price,
+                })
+                .ToListAsync();
         }
 
         public async Task UpdateQuantityItemToCart(Item item)

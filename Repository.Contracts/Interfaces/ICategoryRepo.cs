@@ -6,8 +6,8 @@ namespace Repository.Contracts.Interfaces
     {
         Task CreateNewCategoryAsync(Category category);
         Task<IEnumerable<Category>> GetAllCategoryAsync();
-        Task<Category> GetCategoryByIdAsync(string Id);
-        Task DeleteCategoryByIdAsync(string categoryId);
+        Task<Category> GetCategoryByIdAsync(Guid Id);
+        Task DeleteCategoryByIdAsync(Guid categoryId);
         Task UpdateCategoryAsync(Category category);
     }
 }

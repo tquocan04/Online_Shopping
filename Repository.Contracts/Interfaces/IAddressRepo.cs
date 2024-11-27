@@ -11,5 +11,8 @@ namespace Repository.Contracts.Interfaces
         Task UpdateAddress(Address address);
         Task<Guid> GetCityIdByDistrictIdAsync(Guid districtId);
         Task<string> GetRegionIdByCityIdAsync(Guid cityId);
+        Task<string> GetRegionNameByRegionIdAsync(string regionId);
+        Task<string> GetCityNameByCityIdAsync(Guid cityId);
+        Task<string> GetDistrictNameByDistrictIdAsync(Guid districtId);
     }
 }

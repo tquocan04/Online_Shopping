@@ -30,7 +30,7 @@ namespace Services.Services
 
         public async Task DeleteCategoryById(string Id)
         {
-            await _categoryRepo.DeleteCategoryByIdAsync(Id);
+            await _categoryRepo.DeleteCategoryByIdAsync(Guid.Parse(Id));
         }
 
         public async Task<IEnumerable<CategoryDTO>> GetAllCategory()
@@ -42,13 +42,13 @@ namespace Services.Services
 
         public async Task<CategoryDTO> GetCategoryById(string Id)
         {
-            var category = await _categoryRepo.GetCategoryByIdAsync(Id);
+            var category = await _categoryRepo.GetCategoryByIdAsync(Guid.Parse(Id));
             return _mapper.Map<CategoryDTO>(category);
         }
 
         public async Task UpdateCategoryById(string Id, RequestCategory requestCategory)
         {
-            var category = await _categoryRepo.GetCategoryByIdAsync(Id);
+            var category = await _categoryRepo.GetCategoryByIdAsync(Guid.Parse(Id));
             if (category == null)
             {
                 throw new ArgumentException($"Cannot find CatergoryId: {Id}");

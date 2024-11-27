@@ -12,12 +12,15 @@ namespace Services.Services
         private readonly IBranchRepo _branchRepo;
         private readonly IMapper _mapper;
         private readonly IAddressRepo _addressRepo;
+        private readonly IAddressService<BranchDTO> _addressService;
 
-        public BranchService(IBranchRepo branchRepo, IMapper mapper, IAddressRepo addressRepo) 
+        public BranchService(IBranchRepo branchRepo, IMapper mapper, IAddressRepo addressRepo,
+            IAddressService<BranchDTO> addressService) 
         {
             _branchRepo = branchRepo;
             _mapper = mapper;
             _addressRepo = addressRepo;
+            _addressService = addressService;
         }
         private async Task<BranchDTO> SetAddress(BranchDTO branchDTO)
         {
@@ -49,8 +52,8 @@ namespace Services.Services
             
             var branchDTO = _mapper.Map<BranchDTO>(branch);
 
-            branchDTO = await SetAddress(branchDTO);
-
+            branchDTO = await _addressService.SetAddress(branchDTO, branchDTO.Id);
+            
             return branchDTO;
         }
 
@@ -63,7 +66,7 @@ namespace Services.Services
 
             for (int i = 0; i < list.Count(); i++)
             {
-                list[i] = await SetAddress(list[i]);
+                list[i] = await _addressService.SetAddress(list[i], list[i].Id);
             }
             return list;
         }
