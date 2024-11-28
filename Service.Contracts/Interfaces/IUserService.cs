@@ -1,6 +1,7 @@
 ﻿using DTOs.DTOs;
 using DTOs.Request;
 using Entities.Entities;
+using Microsoft.AspNetCore.Http;
 
 namespace Service.Contracts.Interfaces
 {
@@ -10,5 +11,7 @@ namespace Service.Contracts.Interfaces
         //Task CreateNewCustomer(User user);
         Task<bool> UpdateInforUser(string id, RequestCustomer requestUser);
         Task<CustomerDTO> GetProfileUser(string userId);
+
+        Task UploadImage(Customer customer, IFormFile file);
     }
 }

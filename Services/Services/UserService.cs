@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using DTOs.DTOs;
 using DTOs.Request;
 using Entities.Entities;
+using Microsoft.AspNetCore.Http;
 using Repository.Contracts.Interfaces;
 using Service.Contracts.Interfaces;
 
@@ -13,18 +16,21 @@ namespace Services.Services
         private readonly IMapper _mapper;
         private readonly IAddressRepo _addressRepo;
         private readonly IAddressService<CustomerDTO> _addressService;
+        private readonly Cloudinary _cloudinary;
 
         public UserService
             (IUserRepo userRepo, 
             IMapper mapper, 
             IAddressRepo addressRepo,
-            IAddressService<CustomerDTO> addressService
+            IAddressService<CustomerDTO> addressService,
+            Cloudinary cloudinary
             ) 
         {
             _userRepo = userRepo;
             _mapper = mapper;
             _addressRepo = addressRepo;
             _addressService = addressService;
+            _cloudinary = cloudinary;
         }
 
         public async Task<Customer> CreateNewUser(Guid Id, RequestCustomer requestUser)
@@ -101,6 +107,12 @@ namespace Services.Services
                 throw new Exception("Dob is invalid");
 
             _mapper.Map(requestUser, user);
+
+            if (requestUser.Picture != null && requestUser.Picture.Length > 0)
+            {
+                await UploadImage(user, requestUser.Picture);
+            }
+
             user.Dob = dob;
             await _userRepo.UpdateInforCustomer(user);
 
@@ -117,6 +129,34 @@ namespace Services.Services
             
             return cusDTO;
             
+        }
+
+        public async Task UploadImage(Customer customer, IFormFile file)
+        {
+            var fileName = $"cusonlineshopping_{file.FileName}";
+            var filePath = Path.Combine(Path.GetTempPath(), fileName);
+
+            // luu tam cua he thong C:\Users\[UserName]\AppData\Local\Temp
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            // upload anh len Cloudinary
+            var uploadParams = new ImageUploadParams()
+            {
+                File = new FileDescription(fileName, filePath),
+                PublicId = $"customer_{Guid.NewGuid()}"
+            };
+
+            var uploadResult = _cloudinary.Upload(uploadParams);
+            var imageUrl = uploadResult.SecureUrl.AbsoluteUri;
+
+            // luu url
+            customer.Picture = imageUrl;
+
+            // xoa file tam sau khi upload
+            System.IO.File.Delete(filePath);
         }
     }
 }

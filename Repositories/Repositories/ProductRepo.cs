@@ -23,10 +23,6 @@ namespace Repositories.Repositories
 
         public async Task CreateNewProductAsync(Product product)
         {
-            if (product == null)
-            {
-                throw new ArgumentNullException("Repo: Product cannot be null");
-            }
             if (await checkNameExist(product))
             {
                 throw new Exception("Repo: This name is existed");
@@ -56,29 +52,19 @@ namespace Repositories.Repositories
             return await _applicationContext.Products.Where(p => !p.IsHidden).ToListAsync();
         }
 
-        public async Task UpdatestatusProduct(Guid id)
+        public async Task UpdatestatusProduct(Product product)
         {
-            var product = await GetProductByIdAsync(id);
-            if (product == null)
-                throw new ArgumentNullException("Repo: Product cannot be found");
             if (product.IsHidden)
                 product.IsHidden = false;
             else
                 product.IsHidden = true;
+            _applicationContext.Products.Update(product);
             await _applicationContext.SaveChangesAsync();
         }
 
         public async Task UpdateInforProduct(Product product)
         {
-            var productt = await GetProductByIdAsync(product.Id);
-            if (productt == null) 
-                throw new ArgumentNullException("Repo: Product cannot be found");
-
-            if (!await checkNameExist(product))
-                throw new Exception("Repo: This name is existed");
-
-            //CurrentValues.SetValues(): cập nhật giá trị của product cho productt
-            _applicationContext.Entry(productt).CurrentValues.SetValues(product);
+            _applicationContext.Products.Update(product);
             await _applicationContext.SaveChangesAsync();
             
         }

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet.Actions;
+using CloudinaryDotNet;
 using DTOs;
 using DTOs.DTOs;
 using DTOs.Request;
@@ -22,9 +24,11 @@ namespace Online_Shopping.Controllers
         private readonly IMapper _mapper;
         private readonly IOrderRepo _orderRepo;
         private readonly IAddressRepo _addressRepo;
+        private readonly Cloudinary _cloudinary;
 
         public AuthenticationController(IUserRepo userRepo, IUserService userService,
-            IMapper mapper, IOrderRepo orderRepo, IAddressRepo addressRepo
+            IMapper mapper, IOrderRepo orderRepo, IAddressRepo addressRepo,
+            Cloudinary cloudinary
             ) 
         {
             _userRepo = userRepo;
@@ -32,10 +36,11 @@ namespace Online_Shopping.Controllers
             _mapper = mapper;
             _orderRepo = orderRepo;
             _addressRepo = addressRepo;
+            _cloudinary = cloudinary;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RequestCustomer requestCustomer)
+        public async Task<IActionResult> Register([FromForm] RequestCustomer requestCustomer)
         {
             if (!ModelState.IsValid)
             {
@@ -57,6 +62,13 @@ namespace Online_Shopping.Controllers
                 Id = new Guid(),
                 Dob = new DateOnly(requestCustomer.Year, requestCustomer.Month, requestCustomer.Day)
             };
+
+            // Xử lý ảnh và tải lên Cloudinary nếu có
+            if (requestCustomer.Picture != null && requestCustomer.Picture.Length > 0)
+            {
+                await _userService.UploadImage(customer, requestCustomer.Picture);
+            }
+
             _mapper.Map(requestCustomer, customer);
             await _userRepo.CreateNewCustomer(customer);
 
@@ -73,7 +85,6 @@ namespace Online_Shopping.Controllers
                 Id = new Guid(),
                 CustomerId = customer.Id,
                 TotalPrice = 0,
-                //OrderDate = DateTime.Now,
             };
 
             await _orderRepo.CreateOrder(order);
@@ -81,7 +92,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateUser(string id, [FromBody] RequestCustomer requestCustomer)
+        public async Task<IActionResult> UpdateUser(string id, [FromForm] RequestCustomer requestCustomer)
         {
             var check = await _userService.UpdateInforUser(id, requestCustomer);
             if (!check)

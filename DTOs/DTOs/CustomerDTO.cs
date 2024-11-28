@@ -15,7 +15,7 @@ namespace DTOs.DTOs
         public string? PhoneNumber { get; set; }
         public string? Gender { get; set; }
         public DateOnly Dob { get; set; }
-        public string? Image { get; set; }
+        public string? Picture { get; set; }
         public string RegionId { get; set; } = null!;
         public string? RegionName { get; set; }
         public Guid CityId { get; set; }

@@ -16,11 +16,13 @@ builder.Services.AddDbContext< ApplicationContext> (options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection"),
     b => b.MigrationsAssembly("Online_Shopping")));
 
+builder.Services.ConfigureCloudinary(builder.Configuration);
 builder.Services.ConfigureRepository();
 builder.Services.ConfigureService();
 builder.Services.AddAutoMapper(typeof(AppMapper));
 
 builder.Services.ConfigureJWT(builder.Configuration);
+
 
 var app = builder.Build();
 

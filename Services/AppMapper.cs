@@ -26,7 +26,9 @@ namespace Services
             
             CreateMap<Product, ProductDTO>().ReverseMap();
             CreateMap<RequestProduct, ProductDTO>().ReverseMap();
-            CreateMap<RequestProduct, Product>().ReverseMap();
+            CreateMap<RequestProduct, Product>()
+                .ForMember(dest => dest.Image,
+                            opt => opt.Ignore());
             
             CreateMap<Customer, CustomerDTO>().ReverseMap();
             CreateMap<RequestCustomer, CustomerDTO>().ReverseMap();
@@ -34,6 +36,8 @@ namespace Services
                 .ForMember( dest => dest.Name,
                             opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
                 .ForMember( dest => dest.Dob,
+                            opt => opt.Ignore())
+                .ForMember( dest => dest.Picture,
                             opt => opt.Ignore())
                 .ReverseMap();
             CreateMap<RequestCustomer, Address>();

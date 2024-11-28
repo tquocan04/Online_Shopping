@@ -25,14 +25,14 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpPost("add-new-product")]
-        public async Task<IActionResult> CreateNewProduct([FromBody] RequestProduct request)
+        public async Task<IActionResult> CreateNewProduct([FromForm] RequestProduct request)
         {
             var newProduct = await _productService.CreateNewProduct(request);
             return CreatedAtAction(nameof(GetProductById), new { id = newProduct.Id },
-                new Response<RequestProduct>
+                new Response<Product>
                 {
                     Message = "New product created successfully",
-                    Data = request
+                    Data = newProduct
                 });
         }
 
@@ -79,44 +79,25 @@ namespace Online_Shopping.Controllers
             if (prodduct == null)
                 return NotFound();
 
-            try
+            await _productService.UpdatestatusProduct(id);
+            return Ok(new Response<string>
             {
-                await _productService.UpdatestatusProduct(id);
-                return Ok(new Response<string>
-                {
-                    Message = "The status is updated successfully"
-                });
-            }
-            catch
-            {
-                return BadRequest(new Response<string>
-                {
-                    Message = "Product cannot be hidden"
-                });
-            }
+                Message = "The status is updated successfully"
+            });
+            
         }
 
-        [HttpPatch("update/{id}")]
-        public async Task<IActionResult> UpdateInforProduct(string id,[FromBody] RequestProduct requestProduct)
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateInforProduct(string id, [FromForm] RequestProduct requestProduct)
         {
             var prodduct = await _productService.GetProductById(id);
             if (prodduct == null)
                 return NotFound();
-            try
+            await _productService.UpdateInforProduct(id, requestProduct);
+            return Ok(new Response<string>
             {
-                await _productService.UpdateInforProduct(id, requestProduct);
-                return Ok(new Response<string>
-                {
-                    Message = "The information is updated successfully"
-                });
-            }
-            catch
-            {
-                return BadRequest(new Response<string>
-                {
-                    Message = "The information cannot be updated"
-                });
-            }
+                Message = "The information is updated successfully"
+            });
         }
     }
 }

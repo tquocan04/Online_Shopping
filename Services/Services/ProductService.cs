@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using DTOs.DTOs;
 using DTOs.Request;
 using Entities.Entities;
+using Microsoft.AspNetCore.Http;
 using Repository.Contracts.Interfaces;
 using Service.Contracts.Interfaces;
 using System.Collections.Generic;
@@ -13,12 +16,15 @@ namespace Services.Services
         private readonly IProductRepo _productRepo;
         private readonly IMapper _mapper;
         private readonly ICategoryRepo _categoryRepo;
+        private readonly Cloudinary _cloudinary;
 
-        public ProductService(IProductRepo productRepo, IMapper mapper, ICategoryRepo categoryRepo) 
+        public ProductService(IProductRepo productRepo, IMapper mapper, ICategoryRepo categoryRepo,
+            Cloudinary cloudinary) 
         {
             _productRepo = productRepo;
             _mapper = mapper;
             _categoryRepo = categoryRepo;
+            _cloudinary = cloudinary;
         }
 
         private async Task<ProductDTO> ConvertToProductDTO(Product product)
@@ -47,6 +53,34 @@ namespace Services.Services
             return productDTO;
         }
 
+        private async Task UploadImageProduct(Product product, IFormFile file)
+        {
+            var fileName = $"cusonlineshopping_{file.FileName}";
+            var filePath = Path.Combine(Path.GetTempPath(), fileName);
+
+            // luu tam cua he thong C:\Users\[UserName]\AppData\Local\Temp
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            // upload anh len Cloudinary
+            var uploadParams = new ImageUploadParams()
+            {
+                File = new FileDescription(fileName, filePath),
+                PublicId = $"prod_{Guid.NewGuid()}"
+            };
+
+            var uploadResult = _cloudinary.Upload(uploadParams);
+            var imageUrl = uploadResult.SecureUrl.AbsoluteUri;
+
+            // luu url
+            product.Image = imageUrl;
+
+            // xoa file tam sau khi upload
+            System.IO.File.Delete(filePath);
+        }
+
 
         public async Task<Product> CreateNewProduct(RequestProduct request)
         {
@@ -60,6 +94,11 @@ namespace Services.Services
             };
             
             _mapper.Map(request, product);
+            if (request.Image != null && request.Image.Length > 0)
+            {
+                await UploadImageProduct(product, request.Image);
+            }
+
             await _productRepo.CreateNewProductAsync(product);
             return product;
         }
@@ -90,27 +129,33 @@ namespace Services.Services
 
         public async Task UpdateInforProduct(string id, RequestProduct requestProduct)
         {
-            var productDTO = await GetProductById(id);
-            if (productDTO == null)
+            var product = await _productRepo.GetProductByIdAsync(Guid.Parse(id));
+            if (product == null)
             {
                 throw new ArgumentException("Service: Product cannot be found");
             }
-            Product product = new Product();
-            _mapper.Map(requestProduct, productDTO);
-            _mapper.Map(productDTO, product);
+
+            _mapper.Map(requestProduct, product);
+            if (requestProduct.Image != null && requestProduct.Image.Length > 0)
+            {
+                await UploadImageProduct(product, requestProduct.Image);
+            }
+
             await _productRepo.UpdateInforProduct(product);
         }
 
         public async Task UpdatestatusProduct(string id)
         {
-            var productDTO = await GetProductById(id);
-            if (productDTO == null)
+            var product = await _productRepo.GetProductByIdAsync(Guid.Parse(id));
+            if (product == null)
             {
                 throw new Exception("Service: Product cannot be found");
             }
             
-            await _productRepo.UpdatestatusProduct(Guid.Parse(id));
+            await _productRepo.UpdatestatusProduct(product);
             
         }
+
+        
     }
 }

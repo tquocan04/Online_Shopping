@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using CloudinaryDotNet;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Repositories;
 using Repositories.Repositories;
@@ -73,6 +74,23 @@ namespace Online_Shopping.Extensions
                     ValidateIssuerSigningKey = true
                 };
             });
+        }
+
+        public static IServiceCollection ConfigureCloudinary(this IServiceCollection services, IConfiguration configuration)
+        {
+            
+            var cloudinaryAccount = new Account(
+                configuration["Cloudinary:CloudName"],
+                configuration["Cloudinary:ApiKey"],
+                configuration["Cloudinary:ApiSecret"]
+            );
+
+            var cloudinary = new Cloudinary(cloudinaryAccount);
+
+            
+            services.AddSingleton(cloudinary);
+
+            return services;
         }
     }
 }
