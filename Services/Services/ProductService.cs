@@ -2,12 +2,14 @@
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using DTOs.DTOs;
+using DTOs.MongoDb;
 using DTOs.Request;
 using Entities.Entities;
 using Microsoft.AspNetCore.Http;
 using Repository.Contracts.Interfaces;
+using Service.Contracts;
 using Service.Contracts.Interfaces;
-using System.Collections.Generic;
+
 
 namespace Services.Services
 {
@@ -16,14 +18,16 @@ namespace Services.Services
         private readonly IProductRepo _productRepo;
         private readonly IMapper _mapper;
         private readonly ICategoryRepo _categoryRepo;
+        private readonly IMetadataService _metadataService;
         private readonly Cloudinary _cloudinary;
 
         public ProductService(IProductRepo productRepo, IMapper mapper, ICategoryRepo categoryRepo,
-            Cloudinary cloudinary) 
+            IMetadataService metadataService, Cloudinary cloudinary) 
         {
             _productRepo = productRepo;
             _mapper = mapper;
             _categoryRepo = categoryRepo;
+            _metadataService = metadataService;
             _cloudinary = cloudinary;
         }
 
@@ -36,6 +40,15 @@ namespace Services.Services
             prodDTO.CategoryName = cate.Name;
 
             return prodDTO;
+        }
+
+        private async Task<ProductMetadata> ConvertProductToProductMetadata(Product product)
+        {
+            ProductDTO prodDTO = await ConvertToProductDTO(product);
+
+            var prodMetadata = _mapper.Map<ProductMetadata>(prodDTO);
+            prodMetadata.Id = prodDTO.Id.ToString();
+            return prodMetadata;
         }
 
         private async Task<IEnumerable<ProductDTO>> GetProducts(IEnumerable<Product> products)
@@ -100,6 +113,11 @@ namespace Services.Services
             }
 
             await _productRepo.CreateNewProductAsync(product);
+
+
+            var prodMetadata = await ConvertProductToProductMetadata(product);
+            await _metadataService.CreateProductMetadataAsync(prodMetadata);
+            
             return product;
         }
 
@@ -142,6 +160,8 @@ namespace Services.Services
             }
 
             await _productRepo.UpdateInforProduct(product);
+
+            await _metadataService.UpdateProductMetadataAsync(await ConvertProductToProductMetadata(product));
         }
 
         public async Task UpdatestatusProduct(string id)
@@ -156,6 +176,12 @@ namespace Services.Services
             
         }
 
-        
+        public async Task DeleteProduct(string id)
+        {
+            var product = await _productRepo.GetProductByIdAsync(Guid.Parse(id));
+            await _productRepo.DeleteProductAsync(product);
+
+            await _metadataService.DeleteProductMetadataAsync(await ConvertProductToProductMetadata(product));
+        }
     }
 }

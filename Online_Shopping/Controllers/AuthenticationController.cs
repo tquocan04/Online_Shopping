@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using CloudinaryDotNet.Actions;
-using CloudinaryDotNet;
 using DTOs;
 using DTOs.DTOs;
 using DTOs.Request;
@@ -22,21 +20,14 @@ namespace Online_Shopping.Controllers
         private readonly IUserRepo _userRepo;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        private readonly IOrderRepo _orderRepo;
-        private readonly IAddressRepo _addressRepo;
-        private readonly Cloudinary _cloudinary;
 
         public AuthenticationController(IUserRepo userRepo, IUserService userService,
-            IMapper mapper, IOrderRepo orderRepo, IAddressRepo addressRepo,
-            Cloudinary cloudinary
+            IMapper mapper
             ) 
         {
             _userRepo = userRepo;
             _userService = userService;
             _mapper = mapper;
-            _orderRepo = orderRepo;
-            _addressRepo = addressRepo;
-            _cloudinary = cloudinary;
         }
 
         [HttpPost("register")]
@@ -57,38 +48,9 @@ namespace Online_Shopping.Controllers
                 return BadRequest("DoB is invalid");
             }
 
-            Customer customer = new Customer
-            {
-                Id = new Guid(),
-                Dob = new DateOnly(requestCustomer.Year, requestCustomer.Month, requestCustomer.Day)
-            };
+            var newCustomer = await _userService.CreateNewUser(requestCustomer);
 
-            // Xử lý ảnh và tải lên Cloudinary nếu có
-            if (requestCustomer.Picture != null && requestCustomer.Picture.Length > 0)
-            {
-                await _userService.UploadImage(customer, requestCustomer.Picture);
-            }
-
-            _mapper.Map(requestCustomer, customer);
-            await _userRepo.CreateNewCustomer(customer);
-
-            Address address = new Address 
-            { 
-                ObjectId = customer.Id,
-                IsDefault = true,
-            };
-            _mapper.Map(requestCustomer, address);
-            await _addressRepo.CreateNewAddress(address);
-
-            Order order = new Order
-            {
-                Id = new Guid(),
-                CustomerId = customer.Id,
-                TotalPrice = 0,
-            };
-
-            await _orderRepo.CreateOrder(order);
-            return CreatedAtAction("Register", new { id = customer.Id }, customer);
+            return CreatedAtAction("GetProfileUser", new { id = newCustomer.Id }, newCustomer);
         }
 
         [HttpPut("update/{id}")]

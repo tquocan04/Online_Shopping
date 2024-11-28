@@ -5,6 +5,7 @@ namespace Repository.Contracts.Interfaces
     public interface IUserRepo
     {
         Task<bool> checkEmailExist(string email);
+        Task<bool> checkEmailById(Guid id, string email);
         public bool checkDOB(int year);
         Task CreateNewCustomer(Customer customer);
         Task<Customer?> GetCustomerByIdAsync(Guid id);

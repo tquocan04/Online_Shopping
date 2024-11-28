@@ -47,13 +47,22 @@ namespace Online_Shopping.Controllers
                 return BadRequest("DoB is invalid");
             }
             EmployeeDTO empDTO = await _employeeService.AddNewEmployee(requestEmployee);
-            return CreatedAtAction("CreateNewStaff", new { id = empDTO.Id }, empDTO);
+            return CreatedAtAction("GetProile", new { id = empDTO.Id }, empDTO);
         }
 
         [HttpDelete("delete-staff/{id}")]
         public async Task<IActionResult> DeleteStaff(string id)
         {
             await _employeeService.DeleteEmployee(id);
+            return NoContent();
+        }
+        
+        [HttpPut("update-profile/{id}")]
+        public async Task<IActionResult> UpdateProfileStaff(string id, [FromBody] RequestEmployee requestEmployee)
+        {
+            var check = await _employeeService.UpdateProfile(id, requestEmployee);
+            if (!check)
+                return BadRequest();
             return NoContent();
         }
 

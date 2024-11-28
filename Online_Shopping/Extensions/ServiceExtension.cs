@@ -5,7 +5,9 @@ using Repositories;
 using Repositories.Repositories;
 using Repository.Contracts;
 using Repository.Contracts.Interfaces;
+using Service.Contracts;
 using Service.Contracts.Interfaces;
+using Services;
 using Services.Services;
 using System.Text;
 
@@ -26,6 +28,8 @@ namespace Online_Shopping.Extensions
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IShippingService, ShippingService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IMetadataService, MetadataService>();
+
             services.AddScoped(typeof(IAddressService<>), typeof(AddressService<>));
 
             return services;

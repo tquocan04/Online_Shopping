@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper;
 using DTOs;
 using DTOs.DTOs;
 using DTOs.Request;
@@ -98,6 +99,13 @@ namespace Online_Shopping.Controllers
             {
                 Message = "The information is updated successfully"
             });
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteProduct(string id)
+        {
+            await _productService.DeleteProduct(id);
+            return NoContent();
         }
     }
 }

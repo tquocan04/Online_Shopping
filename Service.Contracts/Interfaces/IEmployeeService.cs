@@ -8,5 +8,6 @@ namespace Service.Contracts.Interfaces
         Task<EmployeeDTO> AddNewEmployee(RequestEmployee employee);
         Task DeleteEmployee(string id);
         Task<EmployeeDTO> GetProfileEmployee(string id);
+        Task<bool> UpdateProfile(string id, RequestEmployee requestEmployee);
     }
 }

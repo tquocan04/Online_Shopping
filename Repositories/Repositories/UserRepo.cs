@@ -22,6 +22,14 @@ namespace Repositories.Repositories
             }
             return false;
         }
+        public async Task<bool> checkEmailById(Guid id, string email)
+        {
+            if (await _applicationContext.Customers.AnyAsync(u => u.Email == email && u.Id != id))
+            {
+                return false;
+            }
+            return true;
+        }
 
         public bool checkDOB(int year)
         { 
@@ -71,5 +79,6 @@ namespace Repositories.Repositories
             return await _applicationContext.Customers.FindAsync(id);
         }
 
+        
     }
 }

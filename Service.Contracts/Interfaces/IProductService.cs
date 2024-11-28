@@ -13,6 +13,7 @@ namespace Service.Contracts.Interfaces
         Task<ProductDTO> GetProductById(string id);
         Task UpdatestatusProduct(string id);
         Task UpdateInforProduct(string id, RequestProduct requestProduct);
+        Task DeleteProduct(string id);
 
     }
 }

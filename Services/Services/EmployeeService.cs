@@ -3,7 +3,9 @@ using DTOs.DTOs;
 using DTOs.Request;
 using Entities.Entities;
 using Repository.Contracts.Interfaces;
+using Service.Contracts;
 using Service.Contracts.Interfaces;
+using System.Net;
 
 namespace Services.Services
 {
@@ -14,15 +16,18 @@ namespace Services.Services
         private readonly IAddressRepo _addressRepo;
         private readonly IBranchRepo _branchRepo;
         private readonly IAddressService<EmployeeDTO> _addressService;
+        private readonly IUserRepo _userRepo;
 
         public EmployeeService(IEmployeeRepo employeeRepo, IMapper mapper, IAddressRepo addressRepo,
-            IBranchRepo branchRepo, IAddressService<EmployeeDTO> addressService) 
+            IBranchRepo branchRepo, IAddressService<EmployeeDTO> addressService,
+            IUserRepo userRepo) 
         {
             _employeeRepo = employeeRepo;
             _mapper = mapper;
             _addressRepo = addressRepo;
             _branchRepo = branchRepo;
             _addressService = addressService;
+            _userRepo = userRepo;
         }
 
         public async Task<EmployeeDTO> AddNewEmployee(RequestEmployee employee)
@@ -72,6 +77,53 @@ namespace Services.Services
             empDTO.BranchName = branch.Name;
 
             return empDTO;
+        }
+
+        public async Task<bool> UpdateProfile(string id, RequestEmployee requestEmployee)
+        {
+            var emp = await _employeeRepo.GetStaffAsync(Guid.Parse(id));
+            if (emp == null)
+            {
+                throw new ArgumentNullException("User cannot be found");
+                return false;
+            }
+            if (requestEmployee == null)
+            {
+                throw new ArgumentNullException("Information cannot be null");
+                return false;
+            }
+
+            var existingAddress = await _addressRepo.GetAddressByObjectIdAsync(Guid.Parse(id));
+
+            await _addressRepo.DeleteAddress(existingAddress);
+
+            Address newAddress = new Address
+            {
+                ObjectId = Guid.Parse(id),
+                DistrictId = requestEmployee.DistrictId,
+                Street = requestEmployee.Street,
+                IsDefault = true
+            };
+            await _addressRepo.CreateNewAddress(newAddress);
+
+            DateOnly dob = new DateOnly(requestEmployee.Year, requestEmployee.Month, requestEmployee.Day);
+            if (!_userRepo.checkDOB(requestEmployee.Year))
+            {
+                throw new Exception("Dob is invalid");
+                return false;
+            }
+
+            if (!await _employeeRepo.CheckUsername(emp.Id, requestEmployee.Username))
+            {
+                return false;
+            }
+
+            _mapper.Map(requestEmployee, emp);
+
+            emp.Dob = dob;
+            await _employeeRepo.UpdateProfileStaff(emp);
+
+            return true;
         }
     }
 }

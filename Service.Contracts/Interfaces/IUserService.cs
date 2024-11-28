@@ -7,8 +7,8 @@ namespace Service.Contracts.Interfaces
 {
     public interface IUserService
     {
-        Task<Customer> CreateNewUser(Guid Id, RequestCustomer requestUser);
-        //Task CreateNewCustomer(User user);
+        Task<Customer> CreateNewUser(RequestCustomer requestUser);
+        
         Task<bool> UpdateInforUser(string id, RequestCustomer requestUser);
         Task<CustomerDTO> GetProfileUser(string userId);
 

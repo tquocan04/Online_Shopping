@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DTOs.DTOs;
+using DTOs.MongoDb;
 using DTOs.Request;
 using DTOs.Responses;
 using Entities.Entities;
@@ -24,12 +25,14 @@ namespace Services
             CreateMap<Payment, PaymentDTO>();
             CreateMap<PaymentDTO, Payment>();
             
+            CreateMap<ProductMetadata, ProductDTO>().ReverseMap();
             CreateMap<Product, ProductDTO>().ReverseMap();
             CreateMap<RequestProduct, ProductDTO>().ReverseMap();
             CreateMap<RequestProduct, Product>()
                 .ForMember(dest => dest.Image,
                             opt => opt.Ignore());
             
+            CreateMap<CustomerDTO, CustomerMetadata>().ReverseMap();
             CreateMap<Customer, CustomerDTO>().ReverseMap();
             CreateMap<RequestCustomer, CustomerDTO>().ReverseMap();
             CreateMap<RequestCustomer, Customer>()

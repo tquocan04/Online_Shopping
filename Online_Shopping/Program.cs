@@ -1,7 +1,9 @@
+using DTOs.MongoDb.Setting;
 using Microsoft.EntityFrameworkCore;
 using Online_Shopping.Context;
 using Online_Shopping.Extensions;
 using Services;
+using Services.MongoDB;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext< ApplicationContext> (options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection"),
     b => b.MigrationsAssembly("Online_Shopping")));
+
+// Mongo
+builder.Services.Configure<MongoDBSetting>(
+    builder.Configuration.GetSection("MongoDB"));
+builder.Services.AddSingleton<MongoDBClient>();
 
 builder.Services.ConfigureCloudinary(builder.Configuration);
 builder.Services.ConfigureRepository();

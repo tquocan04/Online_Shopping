@@ -20,6 +20,15 @@ namespace Repositories.Repositories
             await _applicationContext.SaveChangesAsync();
         }
 
+        public async Task<bool> CheckUsername(Guid id, string username)
+        {
+            if (await _applicationContext.Employees.AnyAsync(e => e.Username == username && e.Id != id))
+            {
+                return false;
+            }
+            return true;
+        }
+
         public async Task DeleteStaffAsync(Employee employee)
         {
             _applicationContext.Employees.Remove(employee);
@@ -30,6 +39,12 @@ namespace Repositories.Repositories
         {
             return await _applicationContext.Employees.AsNoTracking()
                 .FirstOrDefaultAsync(e => e.Id == id);
+        }
+
+        public async Task UpdateProfileStaff(Employee employee)
+        {
+            _applicationContext.Employees.Update(employee);
+            await _applicationContext.SaveChangesAsync();
         }
     }
 }

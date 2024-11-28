@@ -11,5 +11,6 @@ namespace Repository.Contracts.Interfaces
         Task<Product> GetProductByIdAsync(Guid id);
         Task UpdatestatusProduct(Product product);
         Task UpdateInforProduct(Product product);
+        Task DeleteProductAsync(Product product);
     }
 }

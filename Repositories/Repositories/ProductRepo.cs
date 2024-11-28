@@ -68,5 +68,11 @@ namespace Repositories.Repositories
             await _applicationContext.SaveChangesAsync();
             
         }
+
+        public async Task DeleteProductAsync(Product product)
+        {
+            _applicationContext.Products.Remove(product);
+            await _applicationContext.SaveChangesAsync();
+        }
     }
 }
