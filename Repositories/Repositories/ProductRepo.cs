@@ -74,5 +74,10 @@ namespace Repositories.Repositories
             _applicationContext.Products.Remove(product);
             await _applicationContext.SaveChangesAsync();
         }
+
+        public Task UpdateQuantityProduct(Product product)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

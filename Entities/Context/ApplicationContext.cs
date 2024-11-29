@@ -8,7 +8,7 @@ namespace Online_Shopping.Context
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
         public DbSet<Address> Addresses { get; set; }
-        public DbSet<Branch> Branchs { get; set; }
+        public DbSet<Branch> Branches { get; set; }
         public DbSet<Branch_Product> BranchProducts { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<City> Cities { get; set; }
@@ -56,36 +56,13 @@ namespace Online_Shopping.Context
             modelBuilder.Entity<Employee>(entity =>
             {
                 entity.HasIndex(c => c.Email).IsUnique();
-                entity.HasIndex(c => c.Name).IsUnique();
-
-                entity.HasData(
-                    new Employee
-                    {
-                        Id = Guid.Parse("d099d28c-2361-4fe2-8bdd-d659fd8dfe04"),
-                        Name = "Admin1",
-                        Email = "admin1@gmail.com",
-                        Username = "admin1",
-                        Password = "admin1",
-                        PhoneNumber = "0939771198",
-                        Gender = "Nam",
-                        Dob = new DateOnly(2004, 01, 20),
-                        RoleId = "Admin",
-                        BranchId = Guid.Parse("c8fa4f9a-d745-4d0e-849c-08dd0d7ef1d7")
-                    });
+                entity.HasIndex(c => c.Username).IsUnique();
             });
 
             modelBuilder.Entity<Address>(entity =>
             {
                 entity.HasKey(ca => new { ca.ObjectId, ca.DistrictId, ca.Street });
 
-                // Admin1's address
-                entity.HasData(
-                    new Address
-                    {
-                        ObjectId = Guid.Parse("d099d28c-2361-4fe2-8bdd-d659fd8dfe04"),
-                        DistrictId = Guid.Parse("b999d3eb-a753-49f4-897f-4c37002e1302"),
-                        Street = "111 Phan Đình Phùng"
-                    });
             });
 
 

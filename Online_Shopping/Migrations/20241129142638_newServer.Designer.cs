@@ -12,8 +12,8 @@ using Online_Shopping.Context;
 namespace Online_Shopping.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20241123162708_NewDatabase")]
-    partial class NewDatabase
+    [Migration("20241129142638_newServer")]
+    partial class newServer
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,7 +75,7 @@ namespace Online_Shopping.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Branchs");
+                    b.ToTable("Branches");
                 });
 
             modelBuilder.Entity("Entities.Entities.Branch_Product", b =>
@@ -203,18 +203,11 @@ namespace Online_Shopping.Migrations
                     b.Property<string>("Picture")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Username")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique()
                         .HasFilter("[Email] IS NOT NULL");
-
-                    b.HasIndex("Username")
-                        .IsUnique()
-                        .HasFilter("[Username] IS NOT NULL");
 
                     b.ToTable("Customers");
                 });
@@ -361,7 +354,7 @@ namespace Online_Shopping.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CustomerId")
+                    b.Property<Guid?>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsCart")
@@ -371,20 +364,18 @@ namespace Online_Shopping.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PaymentId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ShippingMethodId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("TotalPrice")
-                        .HasColumnType("float");
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid>("VoucherId")
+                    b.Property<Guid?>("VoucherId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -454,8 +445,8 @@ namespace Online_Shopping.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<double?>("Price")
-                        .HasColumnType("float");
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("Stock")
                         .HasColumnType("int");
@@ -572,11 +563,11 @@ namespace Online_Shopping.Migrations
                     b.Property<DateOnly?>("ExpiryDate")
                         .HasColumnType("date");
 
-                    b.Property<double?>("MaxDiscount")
-                        .HasColumnType("float");
+                    b.Property<decimal?>("MaxDiscount")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<double?>("MinOrderValue")
-                        .HasColumnType("float");
+                    b.Property<decimal?>("MinOrderValue")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("Percentage")
                         .HasColumnType("int");
@@ -707,26 +698,19 @@ namespace Online_Shopping.Migrations
                     b.HasOne("Entities.Entities.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Entities.Entities.Payment", "Payment")
                         .WithMany("Orders")
-                        .HasForeignKey("PaymentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PaymentId");
 
                     b.HasOne("Entities.Entities.ShippingMethod", "ShippingMethod")
                         .WithMany("Oders")
-                        .HasForeignKey("ShippingMethodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ShippingMethodId");
 
                     b.HasOne("Entities.Entities.Voucher", "Voucher")
                         .WithMany("Orders")
-                        .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("VoucherId");
 
                     b.Navigation("Customer");
 

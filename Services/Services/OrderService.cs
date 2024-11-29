@@ -45,6 +45,8 @@ namespace Services.Services
                 await _orderRepo.UpdateQuantityItemToCart(existingItem);
             }
             await _orderRepo.UpdateTotalPriceCart(cartId, cart.TotalPrice);
+            product.Stock--;
+            await _productRepo.UpdateInforProduct(product);
         }
 
         public async Task DeleteItemInCartAsync(string cusId, string prodId)
@@ -57,6 +59,9 @@ namespace Services.Services
 
             cart.TotalPrice -= (decimal)(product.Price * item.Quantity);
             await _orderRepo.UpdateTotalPriceCart(cart.Id, cart.TotalPrice);
+
+            product.Stock += item.Quantity;
+            await _productRepo.UpdateInforProduct(product);
         }
 
         public async Task<OrderCartDTO> GetOrderCartAsync(string cusId)

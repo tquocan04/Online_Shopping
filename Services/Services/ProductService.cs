@@ -68,7 +68,7 @@ namespace Services.Services
 
         private async Task UploadImageProduct(Product product, IFormFile file)
         {
-            var fileName = $"cusonlineshopping_{file.FileName}";
+            var fileName = $"prodonlineshopping_{file.FileName}";
             var filePath = Path.Combine(Path.GetTempPath(), fileName);
 
             // luu tam cua he thong C:\Users\[UserName]\AppData\Local\Temp

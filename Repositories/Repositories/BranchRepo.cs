@@ -18,31 +18,31 @@ namespace Repositories.Repositories
 
         public async Task<Branch> AddNewBranchAsync(Branch branch)
         {
-            _applicationContext.Branchs.Add(branch);
+            _applicationContext.Branches.Add(branch);
             await _applicationContext.SaveChangesAsync();
             return branch;
         }
 
         public async Task DeleteBranchAsync(Branch branch)
         {
-            _applicationContext.Branchs.Remove(branch);
+            _applicationContext.Branches.Remove(branch);
             await _applicationContext.SaveChangesAsync();
         }
 
         public async Task<Branch> GetBranchAsync(Guid id)
         {
-            return await _applicationContext.Branchs.AsNoTracking()
+            return await _applicationContext.Branches.AsNoTracking()
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
 
         public async Task<IEnumerable<Branch>> GetBranchListAsync()
         {
-            return await _applicationContext.Branchs.ToListAsync();
+            return await _applicationContext.Branches.ToListAsync();
         }
 
         public async Task UpdateBranchAsync(Branch branch)
         {
-            _applicationContext.Branchs.Update(branch);
+            _applicationContext.Branches.Update(branch);
             await _applicationContext.SaveChangesAsync();
         }
     }

@@ -51,9 +51,11 @@ namespace Services.Services
             };
 
             await _addressRepo.CreateNewAddress(address);
-            
 
-            return _mapper.Map<EmployeeDTO>(emp);
+            var empDTO = _mapper.Map<EmployeeDTO>(emp);
+            empDTO = await _addressService.SetAddress(empDTO, empDTO.Id);
+
+            return empDTO;
         }
 
         public async Task DeleteEmployee(string id)

@@ -8,13 +8,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Online_Shopping.Migrations
 {
     /// <inheritdoc />
-    public partial class NewDatabase : Migration
+    public partial class newServer : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Branchs",
+                name: "Branches",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -23,7 +23,7 @@ namespace Online_Shopping.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Branchs", x => x.Id);
+                    table.PrimaryKey("PK_Branches", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -46,7 +46,6 @@ namespace Online_Shopping.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Username = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Dob = table.Column<DateOnly>(type: "date", nullable: false),
@@ -113,9 +112,9 @@ namespace Online_Shopping.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Percentage = table.Column<int>(type: "int", nullable: true),
-                    MaxDiscount = table.Column<double>(type: "float", nullable: true),
+                    MaxDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     ExpiryDate = table.Column<DateOnly>(type: "date", nullable: true),
-                    MinOrderValue = table.Column<double>(type: "float", nullable: true),
+                    MinOrderValue = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -130,7 +129,7 @@ namespace Online_Shopping.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<double>(type: "float", nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Stock = table.Column<int>(type: "int", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsHidden = table.Column<bool>(type: "bit", nullable: false),
@@ -192,8 +191,8 @@ namespace Online_Shopping.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Username = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Dob = table.Column<DateOnly>(type: "date", nullable: false),
@@ -204,9 +203,9 @@ namespace Online_Shopping.Migrations
                 {
                     table.PrimaryKey("PK_Employees", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Employees_Branchs_BranchId",
+                        name: "FK_Employees_Branches_BranchId",
                         column: x => x.BranchId,
-                        principalTable: "Branchs",
+                        principalTable: "Branches",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -223,13 +222,13 @@ namespace Online_Shopping.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TotalPrice = table.Column<double>(type: "float", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsCart = table.Column<bool>(type: "bit", nullable: false),
-                    PaymentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    VoucherId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ShippingMethodId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    PaymentId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    VoucherId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ShippingMethodId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -244,20 +243,17 @@ namespace Online_Shopping.Migrations
                         name: "FK_Orders_Payments_PaymentId",
                         column: x => x.PaymentId,
                         principalTable: "Payments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Orders_ShippingMethods_ShippingMethodId",
                         column: x => x.ShippingMethodId,
                         principalTable: "ShippingMethods",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Orders_Vouchers_VoucherId",
                         column: x => x.VoucherId,
                         principalTable: "Vouchers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -272,9 +268,9 @@ namespace Online_Shopping.Migrations
                 {
                     table.PrimaryKey("PK_BranchProducts", x => new { x.ProductId, x.BranchId });
                     table.ForeignKey(
-                        name: "FK_BranchProducts_Branchs_BranchId",
+                        name: "FK_BranchProducts_Branches_BranchId",
                         column: x => x.BranchId,
-                        principalTable: "Branchs",
+                        principalTable: "Branches",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -345,9 +341,9 @@ namespace Online_Shopping.Migrations
                 {
                     table.PrimaryKey("PK_Addresses", x => new { x.ObjectId, x.DistrictId, x.Street });
                     table.ForeignKey(
-                        name: "FK_Addresses_Branchs_BranchId",
+                        name: "FK_Addresses_Branches_BranchId",
                         column: x => x.BranchId,
-                        principalTable: "Branchs",
+                        principalTable: "Branches",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Addresses_Customers_CustomerId",
@@ -487,13 +483,6 @@ namespace Online_Shopping.Migrations
                 filter: "[Email] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Customers_Username",
-                table: "Customers",
-                column: "Username",
-                unique: true,
-                filter: "[Username] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Districts_CityId",
                 table: "Districts",
                 column: "CityId");
@@ -604,7 +593,7 @@ namespace Online_Shopping.Migrations
                 name: "Cities");
 
             migrationBuilder.DropTable(
-                name: "Branchs");
+                name: "Branches");
 
             migrationBuilder.DropTable(
                 name: "Roles");

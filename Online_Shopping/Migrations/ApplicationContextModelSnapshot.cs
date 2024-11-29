@@ -56,15 +56,6 @@ namespace Online_Shopping.Migrations
                     b.HasIndex("EmployeeId");
 
                     b.ToTable("Addresses");
-
-                    b.HasData(
-                        new
-                        {
-                            ObjectId = new Guid("d099d28c-2361-4fe2-8bdd-d659fd8dfe04"),
-                            DistrictId = new Guid("b999d3eb-a753-49f4-897f-4c37002e1302"),
-                            Street = "111 Phan Đình Phùng",
-                            IsDefault = false
-                        });
                 });
 
             modelBuilder.Entity("Entities.Entities.Branch", b =>
@@ -81,7 +72,7 @@ namespace Online_Shopping.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Branchs");
+                    b.ToTable("Branches");
                 });
 
             modelBuilder.Entity("Entities.Entities.Branch_Product", b =>
@@ -304,7 +295,7 @@ namespace Online_Shopping.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
@@ -317,7 +308,7 @@ namespace Online_Shopping.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -327,28 +318,13 @@ namespace Online_Shopping.Migrations
                         .IsUnique()
                         .HasFilter("[Email] IS NOT NULL");
 
-                    b.HasIndex("Name")
-                        .IsUnique()
-                        .HasFilter("[Name] IS NOT NULL");
-
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Employees");
+                    b.HasIndex("Username")
+                        .IsUnique()
+                        .HasFilter("[Username] IS NOT NULL");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("d099d28c-2361-4fe2-8bdd-d659fd8dfe04"),
-                            BranchId = new Guid("c8fa4f9a-d745-4d0e-849c-08dd0d7ef1d7"),
-                            Dob = new DateOnly(2004, 1, 20),
-                            Email = "admin1@gmail.com",
-                            Gender = "Nam",
-                            Name = "Admin1",
-                            Password = "admin1",
-                            PhoneNumber = "0939771198",
-                            RoleId = "Admin",
-                            Username = "admin1"
-                        });
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("Entities.Entities.Item", b =>
