@@ -39,6 +39,7 @@ namespace Services.Services
 
         public async Task DeleteCategoryById(string Id)
         {
+            await _categoryNorthRepo.DeleteCategoryByIdAsync(Guid.Parse(Id));
             await _categoryRepo.DeleteCategoryByIdAsync(Guid.Parse(Id));
         }
 
@@ -64,6 +65,12 @@ namespace Services.Services
             }
             
             _mapper.Map(requestCategory, category); // dto -> category
+            CategoryNorth categoryNorth = new CategoryNorth
+            {
+                Id = category.Id,
+                Name = category.Name,
+            };
+            await _categoryNorthRepo.UpdateCategoryAsync(categoryNorth);
             await _categoryRepo.UpdateCategoryAsync(category);
             
         }
