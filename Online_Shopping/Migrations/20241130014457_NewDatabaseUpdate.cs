@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Online_Shopping.Migrations
 {
     /// <inheritdoc />
-    public partial class newServer : Migration
+    public partial class NewDatabaseUpdate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +18,7 @@ namespace Online_Shopping.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -445,6 +445,13 @@ namespace Online_Shopping.Migrations
                 name: "IX_Addresses_EmployeeId",
                 table: "Addresses",
                 column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Branches_Name",
+                table: "Branches",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BranchProducts_BranchId",

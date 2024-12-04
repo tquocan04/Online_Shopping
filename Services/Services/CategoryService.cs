@@ -2,8 +2,10 @@
 using DTOs.DTOs;
 using DTOs.Request;
 using Entities.Entities;
+using Entities.Entities.North;
 using Repository.Contracts;
 using Repository.Contracts.Interfaces;
+using Repository.Contracts.Interfaces.North;
 using Service.Contracts.Interfaces;
 
 namespace Services.Services
@@ -11,11 +13,14 @@ namespace Services.Services
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepo _categoryRepo;
+        private readonly ICategoryNorthRepo _categoryNorthRepo;
         private readonly IMapper _mapper;
 
-        public CategoryService(ICategoryRepo categoryRepo, IMapper mapper)
+        public CategoryService(ICategoryRepo categoryRepo, IMapper mapper,
+            ICategoryNorthRepo categoryNorthRepo)
         {
             _categoryRepo = categoryRepo;
+            _categoryNorthRepo = categoryNorthRepo;
             _mapper = mapper;
         }
 
@@ -25,6 +30,10 @@ namespace Services.Services
             Category category = new Category{ Id = Guid.NewGuid() };
             _mapper.Map(requestCategory, category);
             await _categoryRepo.CreateNewCategoryAsync(category);
+
+            var categoryNorth = _mapper.Map<CategoryNorth>(category);
+            await _categoryNorthRepo.CreateNewCategoryAsync(categoryNorth);
+
             return _mapper.Map<Category>(requestCategory);
         }
 

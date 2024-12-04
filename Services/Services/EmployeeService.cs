@@ -20,7 +20,7 @@ namespace Services.Services
 
         public EmployeeService(IEmployeeRepo employeeRepo, IMapper mapper, IAddressRepo addressRepo,
             IBranchRepo branchRepo, IAddressService<EmployeeDTO> addressService,
-            IUserRepo userRepo) 
+            IUserRepo userRepo)
         {
             _employeeRepo = employeeRepo;
             _mapper = mapper;
@@ -38,17 +38,17 @@ namespace Services.Services
                 Dob = new DateOnly(employee.Year, employee.Month, employee.Day)
             };
             _mapper.Map(employee, emp);
-            
+
             await _employeeRepo.AddNewStaff(emp);
 
 
             Address address = new Address
             {
-                ObjectId = emp.Id,
-                DistrictId = employee.DistrictId,
-                Street = employee.Street,
+                EmployeeId = emp.Id,
                 IsDefault = true
             };
+
+            _mapper.Map(employee, address);
 
             await _addressRepo.CreateNewAddress(address);
 
@@ -97,16 +97,16 @@ namespace Services.Services
 
             var existingAddress = await _addressRepo.GetAddressByObjectIdAsync(Guid.Parse(id));
 
-            await _addressRepo.DeleteAddress(existingAddress);
-
-            Address newAddress = new Address
+            if (existingAddress != null)
             {
-                ObjectId = Guid.Parse(id),
-                DistrictId = requestEmployee.DistrictId,
-                Street = requestEmployee.Street,
-                IsDefault = true
-            };
-            await _addressRepo.CreateNewAddress(newAddress);
+                if (existingAddress.DistrictId != requestEmployee.DistrictId || existingAddress.Street != requestEmployee.Street)
+                {
+                    _mapper.Map(requestEmployee, existingAddress);
+                    await _addressRepo.UpdateAddress(existingAddress);
+                }
+
+            }
+                
 
             DateOnly dob = new DateOnly(requestEmployee.Year, requestEmployee.Month, requestEmployee.Day);
             if (!_userRepo.checkDOB(requestEmployee.Year))

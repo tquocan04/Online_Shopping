@@ -21,7 +21,7 @@ namespace Online_Shopping.Controllers
             _categoryService = categoryService;
         }
 
-        [HttpPost("add-new-category")]
+        [HttpPost("new-category")]
         public async Task<IActionResult> AddNewCategory([FromBody] RequestCategory request)
         {
             var newCategory = await _categoryService.CreateNewCategory(request);
@@ -45,8 +45,8 @@ namespace Online_Shopping.Controllers
             return Ok(allCategories);
         }
 
-        [HttpGet("get-category")]
-        public async Task<IActionResult> GetCategoryById([FromQuery]string Id)
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> GetCategoryById(string Id)
         {
             var category = await _categoryService.GetCategoryById(Id);
             if (category == null)
@@ -54,7 +54,7 @@ namespace Online_Shopping.Controllers
             return Ok(category);
         }
 
-        [HttpDelete("delete/{Id}")]
+        [HttpDelete("{Id}")]
         public async Task<ActionResult> DeleteCategoryById(string Id)
         {
             var category = await _categoryService.GetCategoryById(Id);
@@ -65,7 +65,7 @@ namespace Online_Shopping.Controllers
             return NoContent();
         }
 
-        [HttpPatch("update/{Id}")]
+        [HttpPatch("{Id}")]
         public async Task<ActionResult> UpdateCategory(string Id, [FromBody] RequestCategory request)
         {
             var cateId = await _categoryService.GetCategoryById(Id);

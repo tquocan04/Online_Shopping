@@ -18,8 +18,9 @@ namespace Repositories.Repositories
 
         public async Task<Branch> AddNewBranchAsync(Branch branch)
         {
-            _applicationContext.Branches.Add(branch);
+            await _applicationContext.Branches.AddAsync(branch);
             await _applicationContext.SaveChangesAsync();
+            _applicationContext.Entry(branch).State = EntityState.Detached;
             return branch;
         }
 

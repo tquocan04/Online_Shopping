@@ -29,7 +29,7 @@ namespace Online_Shopping.Controllers
             _employeeService = employeeRepo;
         }
 
-        [HttpPost("add-new-staff")]
+        [HttpPost("new-staff")]
         public async Task<IActionResult> CreateNewStaff([FromBody] RequestEmployee requestEmployee)
         {
             if (!ModelState.IsValid)
@@ -50,14 +50,14 @@ namespace Online_Shopping.Controllers
             return CreatedAtAction("GetProile", new { id = empDTO.Id }, empDTO);
         }
 
-        [HttpDelete("delete-staff/{id}")]
+        [HttpDelete("profile/{id}")]
         public async Task<IActionResult> DeleteStaff(string id)
         {
             await _employeeService.DeleteEmployee(id);
             return NoContent();
         }
         
-        [HttpPut("update-profile/{id}")]
+        [HttpPut("profile/{id}")]
         public async Task<IActionResult> UpdateProfileStaff(string id, [FromBody] RequestEmployee requestEmployee)
         {
             var check = await _employeeService.UpdateProfile(id, requestEmployee);

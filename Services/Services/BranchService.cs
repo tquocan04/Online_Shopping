@@ -2,24 +2,33 @@
 using DTOs.DTOs;
 using DTOs.Request;
 using Entities.Entities;
+using Entities.Entities.North;
 using Repository.Contracts.Interfaces;
+using Repository.Contracts.Interfaces.North;
 using Service.Contracts.Interfaces;
+using System.Net;
 
 namespace Services.Services
 {
     public class BranchService : IBranchService
     {
         private readonly IBranchRepo _branchRepo;
+        private readonly IBranchNorthRepo _branchNorthRepo;
         private readonly IMapper _mapper;
         private readonly IAddressRepo _addressRepo;
+        private readonly IAddressNorthRepo _addressNorthRepo;
         private readonly IAddressService<BranchDTO> _addressService;
 
         public BranchService(IBranchRepo branchRepo, IMapper mapper, IAddressRepo addressRepo,
+            IBranchNorthRepo branchNorthRepo,
+            IAddressNorthRepo addressNorthRepo,
             IAddressService<BranchDTO> addressService) 
         {
             _branchRepo = branchRepo;
+            _branchNorthRepo = branchNorthRepo;
             _mapper = mapper;
             _addressRepo = addressRepo;
+            _addressNorthRepo = addressNorthRepo;
             _addressService = addressService;
         }
         private async Task<BranchDTO> SetAddress(BranchDTO branchDTO)
@@ -42,8 +51,29 @@ namespace Services.Services
             };
 
             _mapper.Map(requestBranch, branch);
+            
+            var branchDTO = _mapper.Map<BranchDTO>(await _branchRepo.AddNewBranchAsync(branch));
 
-            return _mapper.Map<BranchDTO>(await _branchRepo.AddNewBranchAsync(branch));
+            Address address = new Address
+            {
+                Id = new Guid(),
+                BranchId = branch.Id,
+                IsDefault = true,
+            };
+            _mapper.Map(requestBranch, address);
+            
+            await _addressRepo.CreateNewAddress(address);
+
+            if (requestBranch.RegionId == "Bac")
+            {
+                var branchNorth = _mapper.Map<BranchNorth>(branch);
+                await _branchNorthRepo.AddNewBranchAsync(branchNorth);
+
+                var addressNorth = _mapper.Map<AddressNorth>(address);
+                await _addressNorthRepo.CreateNewAddress(addressNorth);
+            }
+
+            return branchDTO;
         }
 
         public async Task<BranchDTO> GetBranch(string id)
@@ -75,15 +105,15 @@ namespace Services.Services
         {
             var branch = await _branchRepo.GetBranchAsync(Guid.Parse(id));
 
-            var branch_address = await _addressRepo.GetAddressByObjectIdAsync(Guid.Parse(id));
+            var address = await _addressRepo.GetAddressByObjectIdAsync(Guid.Parse(id));
+            
+            var addressNorth = _mapper.Map<AddressNorth>(address);
+            await _addressNorthRepo.DeleteAddressAsync(addressNorth);
 
-            Address address = new Address
-            {
-                ObjectId = branch.Id,
-                Street = branch_address.Street,
-                DistrictId = branch_address.DistrictId,
-            };
+            var branchNorth = _mapper.Map<BranchNorth>(branch);
+            await _branchNorthRepo.DeleteBranchAsync(branchNorth);
 
+            
             await _addressRepo.DeleteAddress(address);
             await _branchRepo.DeleteBranchAsync(branch);
         }
@@ -91,23 +121,32 @@ namespace Services.Services
         public async Task UpdateBranch(string id, RequestBranch requestBranch)
         {
             BranchDTO branchDTO = _mapper.Map<BranchDTO>(requestBranch);
+            Branch branch = _mapper.Map<Branch>(branchDTO);
+            branch.Id = Guid.Parse(id);
 
             var existingAddress = await _addressRepo.GetAddressByObjectIdAsync(Guid.Parse(id));
 
-            await _addressRepo.DeleteAddress(existingAddress);
-
-
-            Address address = new Address
+            string existingRegion = await _addressRepo.GetRegionIdByCityIdAsync(await _addressRepo.GetCityIdByDistrictIdAsync(existingAddress.DistrictId));
+            
+            if (existingAddress != null)
             {
-                ObjectId = Guid.Parse(id),
-                IsDefault = true
-            };
-            _mapper.Map(requestBranch, address);
-            await _addressRepo.CreateNewAddress(address);
+                if (existingAddress.DistrictId != requestBranch.DistrictId || existingAddress.Street != requestBranch.Street)
+                {
+                    _mapper.Map(requestBranch, existingAddress);
+                    if (existingRegion == "Bac" && requestBranch.RegionId == "Bac")
+                    {
+                        AddressNorth addressNorth = await _addressNorthRepo.GetAddressByObjectIdAsync(Guid.Parse(id));
+                        addressNorth.DistrictId = requestBranch.DistrictId;
+                        addressNorth.Street = requestBranch.Street;
+                        await _addressNorthRepo.UpdateAddress(addressNorth);
 
-
-            Branch branch = _mapper.Map<Branch>(branchDTO);
-            branch.Id = Guid.Parse(id);
+                        BranchNorth branchNorth = _mapper.Map<BranchNorth>(branch);
+                        await _branchNorthRepo.UpdateBranchAsync(branchNorth);
+                    }
+                    _mapper.Map(requestBranch, existingAddress);
+                    await _addressRepo.UpdateAddress(existingAddress);
+                }
+            }
 
             await _branchRepo.UpdateBranchAsync(branch);
         }

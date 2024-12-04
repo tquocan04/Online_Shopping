@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace Entities.Entities
@@ -7,7 +8,7 @@ namespace Entities.Entities
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }
-        [Range(9,11)]
+        [Range(9, 11)]
         public string? PhoneNumber { get; set; }
         [JsonIgnore]
         public ICollection<Branch_Product>? Branch_Products { get; set; }

@@ -4,6 +4,7 @@ using DTOs.MongoDb;
 using DTOs.Request;
 using DTOs.Responses;
 using Entities.Entities;
+using Entities.Entities.North;
 
 namespace Services
 {
@@ -62,9 +63,9 @@ namespace Services
             CreateMap<BranchDTO, Address>().ReverseMap();
 
             CreateMap<Employee, EmployeeDTO>().ReverseMap();
-            CreateMap<Address, EmployeeDTO>()
-                .ForMember(dest => dest.Id,
-                            opt => opt.MapFrom(src => src.ObjectId));
+            //CreateMap<Address, EmployeeDTO>()
+            //    .ForMember(dest => dest.Id,
+            //                opt => opt.MapFrom(src => src.ObjectId));
             CreateMap<RequestEmployee, EmployeeDTO>()
                 .ForMember(dest => dest.Name,
                             opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"));
@@ -73,6 +74,13 @@ namespace Services
                             opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
                 .ForMember(dest => dest.Dob,
                             opt => opt.Ignore());
+
+            CreateMap<RequestEmployee, Address>();
+
+            //North
+            CreateMap<BranchNorth, Branch>().ReverseMap();
+            CreateMap<Address, AddressNorth>();
+            CreateMap<Category, CategoryNorth>().ReverseMap();
         }
     }
 }

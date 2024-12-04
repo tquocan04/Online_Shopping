@@ -23,14 +23,14 @@ namespace Services.Services
         private readonly Cloudinary _cloudinary;
 
         public UserService
-            (IUserRepo userRepo, 
-            IMapper mapper, 
+            (IUserRepo userRepo,
+            IMapper mapper,
             IAddressRepo addressRepo,
             IOrderRepo orderRepo,
             IAddressService<CustomerDTO> addressService,
             IMetadataService metadataService,
             Cloudinary cloudinary
-            ) 
+            )
         {
             _userRepo = userRepo;
             _mapper = mapper;
@@ -71,7 +71,7 @@ namespace Services.Services
 
             Address address = new Address
             {
-                ObjectId = customer.Id,
+                CustomerId = customer.Id,
                 IsDefault = true,
             };
             _mapper.Map(requestCustomer, address);
@@ -86,16 +86,9 @@ namespace Services.Services
 
             await _orderRepo.CreateOrder(order);
 
-            
+
             await _metadataService.CreateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(customer));
             return customer;
-        }
-
-        private async Task UpdateAddress(string id)
-        {
-            var address = await _addressRepo.GetAddressByObjectIdAsync(Guid.Parse(id));
-            address.IsDefault = false;
-            await _addressRepo.UpdateAddress(address);
         }
 
         public async Task<bool> UpdateInforUser(string id, RequestCustomer requestCustomer)
@@ -124,42 +117,13 @@ namespace Services.Services
             }
 
             // truy van tim record:
-            var address = await _addressRepo.GetAddressByMultiPKAsync
-                (
-                Guid.Parse(id),
-                requestCustomer.DistrictId,
-                requestCustomer.Street
-                );
+            var address = await _addressRepo.GetAddressByObjectIdAsync(Guid.Parse(id));
 
-            // 1. neu ton tai -> khong cap nhat -> giu nguyen
-            // 2. neu chua ton tai -> cap nhat record cu = false -> tao moi
-            if (address == null)
+            if (address.DistrictId != requestCustomer.DistrictId || address.Street != requestCustomer.Street)
             {
-                // cap nhat record cu
-                await UpdateAddress(id);
-
-                // tao moi
-                Address newAddress = new Address
-                {
-                    ObjectId = Guid.Parse(id),
-                    DistrictId = requestCustomer.DistrictId,
-                    Street = requestCustomer.Street,
-                    IsDefault = true
-                };
-                await _addressRepo.CreateNewAddress(newAddress);
-            }
-
-            // 3.neu ton tai va false -> cap nhat lai = true
-            if (address != null && !address.IsDefault)
-            {
-                // cap nhat record hien tai = false
-                await UpdateAddress(id);
-
-                // cap nhat lai = true
-                address.IsDefault = true;
+                _mapper.Map(requestCustomer,address);
                 await _addressRepo.UpdateAddress(address);
             }
-
 
             _mapper.Map(requestCustomer, user);
 
@@ -183,9 +147,9 @@ namespace Services.Services
             CustomerDTO cusDTO = _mapper.Map<CustomerDTO>(cus);
 
             cusDTO = await _addressService.SetAddress(cusDTO, cusDTO.Id);
-            
+
             return cusDTO;
-            
+
         }
 
         public async Task UploadImage(Customer customer, IFormFile file)

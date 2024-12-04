@@ -9,11 +9,11 @@ namespace Repositories.Repositories
     {
         private readonly ApplicationContext _applicationContext;
 
-        public UserRepo(ApplicationContext applicationContext) 
+        public UserRepo(ApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
         }
-        
+
         public async Task<bool> checkEmailExist(string email)
         {
             if (await _applicationContext.Customers.AnyAsync(u => u.Email == email))
@@ -32,7 +32,7 @@ namespace Repositories.Repositories
         }
 
         public bool checkDOB(int year)
-        { 
+        {
             if (year < DateTime.Now.Year)
             {
                 return true;
@@ -59,8 +59,8 @@ namespace Repositories.Repositories
 
         public async Task<string?> GetStreetDefaultByCustomerIdAsync(Guid customerId)
         {
-            var address =  await _applicationContext.Addresses
-                .FirstOrDefaultAsync(ca => ca.ObjectId == customerId && ca.IsDefault);
+            var address = await _applicationContext.Addresses
+                .FirstOrDefaultAsync(ca => ca.CustomerId == customerId && ca.IsDefault);
 
             return address?.Street;
         }
@@ -69,7 +69,7 @@ namespace Repositories.Repositories
         {
             var address = await _applicationContext.Addresses
                 .AsNoTracking()
-                .FirstOrDefaultAsync(ca => ca.ObjectId == customerId && ca.IsDefault);
+                .FirstOrDefaultAsync(ca => ca.CustomerId == customerId && ca.IsDefault);
 
             return address.DistrictId;
         }
@@ -79,6 +79,5 @@ namespace Repositories.Repositories
             return await _applicationContext.Customers.FindAsync(id);
         }
 
-        
     }
 }

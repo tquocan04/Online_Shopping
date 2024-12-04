@@ -30,7 +30,7 @@ namespace Online_Shopping.Controllers
             return Ok(cart);
         }
 
-        [HttpPost("add-to-cart")]
+        [HttpPost("new-item")]
         //[Authorize]
         public async Task<IActionResult> AddToCart(string cusId, string prodId)
         {

@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Repositories;
 using Repositories.Repositories;
+using Repositories.Repositories.North;
 using Repository.Contracts;
 using Repository.Contracts.Interfaces;
+using Repository.Contracts.Interfaces.North;
 using Service.Contracts;
 using Service.Contracts.Interfaces;
 using Services;
@@ -49,6 +51,11 @@ namespace Online_Shopping.Extensions
             services.AddScoped<IShippingRepo, ShippingRepo>();
             services.AddScoped<IEmployeeRepo, EmployeeRepo>();
             services.AddScoped(typeof(IBaseRepo<>), typeof(BaseRepo<>));
+
+            //North
+            services.AddScoped<IBranchNorthRepo, BranchNorthRepo>();
+            services.AddScoped<IAddressNorthRepo, AddressNorthRepo>();
+            services.AddScoped<ICategoryNorthRepo, CategoryNorthRepo>();
 
             return services;
         }

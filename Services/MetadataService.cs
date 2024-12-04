@@ -27,7 +27,6 @@ namespace Services
             await _productMetadata.InsertOneAsync(metadata);
         }
 
-
         public async Task UpdateCustomerMetadataAsync(CustomerMetadata metadata)
         {
             var filter = Builders<CustomerMetadata>.Filter.Eq(c => c.Id, metadata.Id);

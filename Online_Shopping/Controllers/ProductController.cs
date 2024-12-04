@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper;
 using DTOs;
 using DTOs.DTOs;
 using DTOs.Request;
@@ -25,7 +24,7 @@ namespace Online_Shopping.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("add-new-product")]
+        [HttpPost("new-product")]
         public async Task<IActionResult> CreateNewProduct([FromForm] RequestProduct request)
         {
             var newProduct = await _productService.CreateNewProduct(request);

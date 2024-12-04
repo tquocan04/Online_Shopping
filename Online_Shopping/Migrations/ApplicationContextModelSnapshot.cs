@@ -24,19 +24,17 @@ namespace Online_Shopping.Migrations
 
             modelBuilder.Entity("Entities.Entities.Address", b =>
                 {
-                    b.Property<Guid>("ObjectId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("DistrictId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Street")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid?>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("DistrictId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("EmployeeId")
@@ -45,7 +43,11 @@ namespace Online_Shopping.Migrations
                     b.Property<bool>("IsDefault")
                         .HasColumnType("bit");
 
-                    b.HasKey("ObjectId", "DistrictId", "Street");
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("BranchId");
 
@@ -65,12 +67,16 @@ namespace Online_Shopping.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("Branches");
                 });
@@ -557,6 +563,9 @@ namespace Online_Shopping.Migrations
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateOnly?>("ExpiryDate")
                         .HasColumnType("date");
 
@@ -579,11 +588,11 @@ namespace Online_Shopping.Migrations
 
             modelBuilder.Entity("Entities.Entities.Address", b =>
                 {
-                    b.HasOne("Entities.Entities.Branch", null)
+                    b.HasOne("Entities.Entities.Branch", "Branch")
                         .WithMany("Addresses")
                         .HasForeignKey("BranchId");
 
-                    b.HasOne("Entities.Entities.Customer", null)
+                    b.HasOne("Entities.Entities.Customer", "Customer")
                         .WithMany("Addresses")
                         .HasForeignKey("CustomerId");
 
@@ -593,11 +602,17 @@ namespace Online_Shopping.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Entities.Entities.Employee", null)
+                    b.HasOne("Entities.Entities.Employee", "Employee")
                         .WithMany("Addresses")
                         .HasForeignKey("EmployeeId");
 
+                    b.Navigation("Branch");
+
+                    b.Navigation("Customer");
+
                     b.Navigation("District");
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("Entities.Entities.Branch_Product", b =>

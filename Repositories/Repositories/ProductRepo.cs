@@ -52,13 +52,14 @@ namespace Repositories.Repositories
             return await _applicationContext.Products.Where(p => !p.IsHidden).ToListAsync();
         }
 
-        public async Task UpdatestatusProduct(Product product)
+        public async Task UpdatestatusProduct(Guid id)
         {
+            var product = await _applicationContext.Products.FindAsync(id);
             if (product.IsHidden)
                 product.IsHidden = false;
             else
                 product.IsHidden = true;
-            _applicationContext.Products.Update(product);
+            //_applicationContext.Products.Update(product);
             await _applicationContext.SaveChangesAsync();
         }
 

@@ -1,4 +1,5 @@
 ﻿using DTOs.MongoDb.Setting;
+using Entities.Context;
 using Microsoft.EntityFrameworkCore;
 using Online_Shopping.Context;
 using Online_Shopping.Extensions;
@@ -14,8 +15,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext< ApplicationContext> (options =>
+builder.Services.AddDbContext<ApplicationContext> (options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection"),
+    b => b.MigrationsAssembly("Online_Shopping")));
+
+//North
+builder.Services.AddDbContext<ApplicationContextNorth> (options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection_North"),
     b => b.MigrationsAssembly("Online_Shopping")));
 
 // Mongo

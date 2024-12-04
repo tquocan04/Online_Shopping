@@ -53,7 +53,7 @@ namespace Online_Shopping.Controllers
             return CreatedAtAction("GetProfileUser", new { id = newCustomer.Id }, newCustomer);
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("profile/{id}")]
         public async Task<IActionResult> UpdateUser(string id, [FromForm] RequestCustomer requestCustomer)
         {
             var check = await _userService.UpdateInforUser(id, requestCustomer);

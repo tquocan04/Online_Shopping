@@ -1,5 +1,4 @@
-﻿using DTOs.DTOs;
-using Entities.Entities;
+﻿using Entities.Entities;
 
 namespace Repository.Contracts.Interfaces
 {

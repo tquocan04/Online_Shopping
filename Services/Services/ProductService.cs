@@ -22,7 +22,7 @@ namespace Services.Services
         private readonly Cloudinary _cloudinary;
 
         public ProductService(IProductRepo productRepo, IMapper mapper, ICategoryRepo categoryRepo,
-            IMetadataService metadataService, Cloudinary cloudinary) 
+            IMetadataService metadataService, Cloudinary cloudinary)
         {
             _productRepo = productRepo;
             _mapper = mapper;
@@ -103,9 +103,10 @@ namespace Services.Services
             }
             var product = new Product
             {
-                Id = new Guid(), IsHidden = false,
+                Id = new Guid(),
+                IsHidden = false,
             };
-            
+
             _mapper.Map(request, product);
             if (request.Image != null && request.Image.Length > 0)
             {
@@ -117,7 +118,7 @@ namespace Services.Services
 
             var prodMetadata = await ConvertProductToProductMetadata(product);
             await _metadataService.CreateProductMetadataAsync(prodMetadata);
-            
+
             return product;
         }
 
@@ -129,7 +130,7 @@ namespace Services.Services
         }
 
         public async Task<ProductDTO> GetProductById(string id)
-        { 
+        {
             return await ConvertToProductDTO(await _productRepo.GetProductByIdAsync(Guid.Parse(id)));
         }
 
@@ -171,9 +172,9 @@ namespace Services.Services
             {
                 throw new Exception("Service: Product cannot be found");
             }
-            
-            await _productRepo.UpdatestatusProduct(product);
-            
+
+            await _productRepo.UpdatestatusProduct(product.Id);
+
         }
 
         public async Task DeleteProduct(string id)

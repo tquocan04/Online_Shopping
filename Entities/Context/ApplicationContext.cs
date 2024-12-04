@@ -38,6 +38,12 @@ namespace Online_Shopping.Context
                 entity.HasIndex(c => c.Email).IsUnique();
             });
 
+            modelBuilder.Entity<Branch>(entity =>
+            {
+                entity.HasIndex(c => c.Name).IsUnique();
+
+            });
+
             modelBuilder.Entity<Product>(entity =>
             {
                 entity.HasIndex(p => p.Name).IsUnique();
@@ -58,13 +64,6 @@ namespace Online_Shopping.Context
                 entity.HasIndex(c => c.Email).IsUnique();
                 entity.HasIndex(c => c.Username).IsUnique();
             });
-
-            modelBuilder.Entity<Address>(entity =>
-            {
-                entity.HasKey(ca => new { ca.ObjectId, ca.DistrictId, ca.Street });
-
-            });
-
 
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Customer) // Thiết lập quan hệ 1-n

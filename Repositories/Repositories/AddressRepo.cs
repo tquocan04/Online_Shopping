@@ -10,15 +10,16 @@ namespace Repositories.Repositories
     {
         private readonly ApplicationContext _applicationContext;
 
-        public AddressRepo(ApplicationContext applicationContext) 
+        public AddressRepo(ApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
         }
 
         public async Task CreateNewAddress(Address address)
         {
-            await _applicationContext.Addresses.AddAsync(address);
+            _applicationContext.Addresses.Add(address);
             await _applicationContext.SaveChangesAsync();
+            _applicationContext.Entry(address).State = EntityState.Detached;
         }
 
         public async Task DeleteAddress(Address address)
@@ -27,19 +28,13 @@ namespace Repositories.Repositories
             await _applicationContext.SaveChangesAsync();
         }
 
-        public async Task<Address?> GetAddressByMultiPKAsync(Guid objectId, Guid districtId, string Street)
-        {
-            return await _applicationContext.Addresses.AsNoTracking()
-                .FirstOrDefaultAsync(ca => ca.ObjectId == objectId
-                                            && ca.DistrictId == districtId
-                                            && ca.Street == Street);
-        }
-
         public async Task<Address?> GetAddressByObjectIdAsync(Guid objectId)
         {
             return await _applicationContext.Addresses.AsNoTracking()
-                .FirstOrDefaultAsync(ca => ca.ObjectId == objectId
-                                        && ca.IsDefault);
+               .FirstOrDefaultAsync(ca => (ca.EmployeeId == objectId 
+                                       || ca.BranchId == objectId
+                                       || ca.CustomerId == objectId)
+                                       && ca.IsDefault);
         }
 
         public async Task UpdateAddress(Address address)
@@ -89,5 +84,6 @@ namespace Repositories.Repositories
                 .Select(d => d.Name)
                 .FirstOrDefaultAsync();
         }
+
     }
 }

@@ -1,11 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entities.Entities
 {
     public class Address
     {
-        public Guid ObjectId { get; set; }
-
+        public Guid Id { get; set; }
+        [ForeignKey(nameof(Customer))]
+        public Guid? CustomerId { get; set; } = null;
+        public Customer? Customer { get; set; }
+        [ForeignKey(nameof(Branch))]
+        public Guid? BranchId { get; set; } = null;
+        public Branch? Branch { get; set; }
+        [ForeignKey(nameof(Employee))]
+        public Guid? EmployeeId { get; set; } = null;
+        public Employee? Employee { get; set; }
         [ForeignKey(nameof(District))]
         public Guid DistrictId { get; set; }
         public District? District { get; set; }

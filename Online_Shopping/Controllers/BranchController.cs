@@ -28,18 +28,11 @@ namespace Online_Shopping.Controllers
             _addressRepo = addressRepo;
         }
 
-        [HttpPost("add-new-branch")]
+        [HttpPost("new-branch")]
         public async Task<IActionResult> AddNewBranch([FromBody] RequestBranch requestBranch)
         {
             BranchDTO branchDTO = await _branchService.AddNewBranch(requestBranch);
 
-            Address address = new Address
-            {
-                ObjectId = branchDTO.Id,
-                IsDefault = true,
-            };
-            _mapper.Map(requestBranch, address);
-            await _addressRepo.CreateNewAddress(address);
             return CreatedAtAction(nameof(GetAllBranches), new { id = branchDTO.Id }, requestBranch);
         }
 
@@ -61,14 +54,14 @@ namespace Online_Shopping.Controllers
             return Ok(branch);
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBranch(string id)
         {
             await _branchService.DeleteBranch(id);
             return NoContent();
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBranch(string id, [FromBody] RequestBranch requestBranch)
         {
             await _branchService.UpdateBranch(id, requestBranch);
