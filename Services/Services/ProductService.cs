@@ -18,16 +18,17 @@ namespace Services.Services
         private readonly IProductRepo _productRepo;
         private readonly IMapper _mapper;
         private readonly ICategoryRepo _categoryRepo;
-        private readonly IMetadataService _metadataService;
+        //private readonly IMetadataService _metadataService;
         private readonly Cloudinary _cloudinary;
 
         public ProductService(IProductRepo productRepo, IMapper mapper, ICategoryRepo categoryRepo,
-            IMetadataService metadataService, Cloudinary cloudinary)
+            //IMetadataService metadataService, 
+            Cloudinary cloudinary)
         {
             _productRepo = productRepo;
             _mapper = mapper;
             _categoryRepo = categoryRepo;
-            _metadataService = metadataService;
+            //_metadataService = metadataService;
             _cloudinary = cloudinary;
         }
 

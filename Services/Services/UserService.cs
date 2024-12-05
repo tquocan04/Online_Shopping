@@ -28,7 +28,7 @@ namespace Services.Services
             IAddressRepo addressRepo,
             IOrderRepo orderRepo,
             IAddressService<CustomerDTO> addressService,
-            IMetadataService metadataService,
+            //IMetadataService metadataService,
             Cloudinary cloudinary
             )
         {

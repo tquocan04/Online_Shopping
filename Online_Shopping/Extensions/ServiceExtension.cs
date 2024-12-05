@@ -28,7 +28,7 @@ namespace Online_Shopping.Extensions
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IShippingService, ShippingService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
-            services.AddScoped<IMetadataService, MetadataService>();
+            //services.AddScoped<IMetadataService, MetadataService>();
 
             services.AddScoped(typeof(IAddressService<>), typeof(AddressService<>));
 

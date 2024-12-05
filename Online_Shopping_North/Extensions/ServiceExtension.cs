@@ -9,7 +9,7 @@ namespace Online_Shopping_North.Extensions
     {
         public static IServiceCollection ConfigureService(this IServiceCollection services)
         {
-            //services.AddScoped<IBranchService, BranchService>();
+            services.AddScoped<IBranchService, BranchService>();
             services.AddScoped<ICategoryService, CategoryService>();
             //services.AddScoped<ICityService, CityService>();
             //services.AddScoped<IPaymentService, PaymentService>();
@@ -26,7 +26,7 @@ namespace Online_Shopping_North.Extensions
         public static IServiceCollection ConfigureRepository(this IServiceCollection services)
         {
             services.AddScoped<IAddressRepo, AddressRepo>();
-            //services.AddScoped<IBranchRepo, BranchRepo>();
+            services.AddScoped<IBranchRepo, BranchRepo>();
             services.AddScoped<ICategoryRepo, CategoryRepo>();
             //services.AddScoped<IRegionRepo, RegionRepo>();
             //services.AddScoped<ICityRepo, CityRepo>();

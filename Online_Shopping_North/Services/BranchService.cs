@@ -1,6 +1,8 @@
-﻿namespace Online_Shopping_North.Services
+﻿using Online_Shopping_North.Service.Contracts;
+
+namespace Online_Shopping_North.Services
 {
-    public class BranchService
+    public class BranchService : IBranchService
     {
     }
 }
