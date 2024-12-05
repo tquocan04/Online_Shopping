@@ -20,6 +20,12 @@ namespace Repositories.Repositories
             await _applicationContext.SaveChangesAsync();
         }
 
+        public async Task<Employee?> CheckExistingEmployeeByBranchId(Guid id)
+        {
+            return await _applicationContext.Employees.AsNoTracking()
+                .FirstOrDefaultAsync(e=>e.BranchId == id);
+        }
+
         public async Task<bool> CheckUsername(Guid id, string username)
         {
             if (await _applicationContext.Employees.AnyAsync(e => e.Username == username && e.Id != id))

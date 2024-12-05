@@ -9,5 +9,6 @@ namespace Repository.Contracts.Interfaces
         Task<Employee> GetStaffAsync(Guid id);
         Task UpdateProfileStaff(Employee employee);
         Task<bool> CheckUsername(Guid id, string username);
+        Task<Employee?> CheckExistingEmployeeByBranchId(Guid id);
     }
 }

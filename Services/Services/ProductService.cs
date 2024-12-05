@@ -103,7 +103,7 @@ namespace Services.Services
             }
             var product = new Product
             {
-                Id = new Guid(),
+                Id = Guid.NewGuid(),
                 IsHidden = false,
             };
 
@@ -115,9 +115,8 @@ namespace Services.Services
 
             await _productRepo.CreateNewProductAsync(product);
 
-
             var prodMetadata = await ConvertProductToProductMetadata(product);
-            await _metadataService.CreateProductMetadataAsync(prodMetadata);
+            //await _metadataService.CreateProductMetadataAsync(prodMetadata);
 
             return product;
         }
@@ -146,7 +145,7 @@ namespace Services.Services
             return await GetProducts(products);
         }
 
-        public async Task UpdateInforProduct(string id, RequestProduct requestProduct)
+        public async Task<Product> UpdateInforProduct(string id, RequestProduct requestProduct)
         {
             var product = await _productRepo.GetProductByIdAsync(Guid.Parse(id));
             if (product == null)
@@ -162,7 +161,9 @@ namespace Services.Services
 
             await _productRepo.UpdateInforProduct(product);
 
-            await _metadataService.UpdateProductMetadataAsync(await ConvertProductToProductMetadata(product));
+            //await _metadataService.UpdateProductMetadataAsync(await ConvertProductToProductMetadata(product));
+
+            return product;
         }
 
         public async Task UpdatestatusProduct(string id)
@@ -174,7 +175,6 @@ namespace Services.Services
             }
 
             await _productRepo.UpdatestatusProduct(product.Id);
-
         }
 
         public async Task DeleteProduct(string id)
@@ -182,7 +182,7 @@ namespace Services.Services
             var product = await _productRepo.GetProductByIdAsync(Guid.Parse(id));
             await _productRepo.DeleteProductAsync(product);
 
-            await _metadataService.DeleteProductMetadataAsync(await ConvertProductToProductMetadata(product));
+            //await _metadataService.DeleteProductMetadataAsync(await ConvertProductToProductMetadata(product));
         }
     }
 }

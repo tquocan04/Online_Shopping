@@ -9,7 +9,7 @@ namespace Online_Shopping.Context
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Branch> Branches { get; set; }
-        public DbSet<Branch_Product> BranchProducts { get; set; }
+        public DbSet<BranchProduct> BranchProducts { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Credential> Credentials { get; set; }
@@ -36,12 +36,23 @@ namespace Online_Shopping.Context
             modelBuilder.Entity<Customer>(entity =>
             {
                 entity.HasIndex(c => c.Email).IsUnique();
+
+                entity.HasMany(c => c.Addresses)
+                    .WithOne(a => a.Customer)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Branch>(entity =>
             {
                 entity.HasIndex(c => c.Name).IsUnique();
 
+                entity.HasMany(b => b.Employees)
+                    .WithOne(e => e.Branch)
+                    .OnDelete(DeleteBehavior.SetNull);
+
+                entity.HasMany(b => b.Addresses)
+                    .WithOne(a => a.Branch)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -54,7 +65,7 @@ namespace Online_Shopping.Context
                 entity.HasKey(i => new { i.ProductId, i.OrderId });
             });
             
-            modelBuilder.Entity<Branch_Product>(entity =>
+            modelBuilder.Entity<BranchProduct>(entity =>
             {
                 entity.HasKey(bp => new { bp.ProductId, bp.BranchId });
             });
@@ -63,6 +74,10 @@ namespace Online_Shopping.Context
             {
                 entity.HasIndex(c => c.Email).IsUnique();
                 entity.HasIndex(c => c.Username).IsUnique();
+
+                entity.HasMany(e => e.Addresses)
+                    .WithOne(a => a.Employee)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Order>()

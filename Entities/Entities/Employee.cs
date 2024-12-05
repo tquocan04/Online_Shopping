@@ -24,7 +24,7 @@ namespace Entities.Entities
         public string RoleId { get; set; } = null!;
         public Role? Role { get; set; }
         [ForeignKey(nameof(Branch))]
-        public Guid BranchId { get; set; }
+        public Guid? BranchId { get; set; }
         public Branch? Branch { get; set; }
 
     }

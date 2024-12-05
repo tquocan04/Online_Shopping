@@ -27,7 +27,7 @@ namespace Repositories.Repositories
             {
                 throw new Exception("Repo: This name is existed");
             }
-            await _applicationContext.Products.AddAsync(product);
+            _applicationContext.Products.Add(product);
             await _applicationContext.SaveChangesAsync();
         }
 

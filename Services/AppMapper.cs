@@ -4,7 +4,6 @@ using DTOs.MongoDb;
 using DTOs.Request;
 using DTOs.Responses;
 using Entities.Entities;
-using Entities.Entities.North;
 
 namespace Services
 {
@@ -75,12 +74,10 @@ namespace Services
                 .ForMember(dest => dest.Dob,
                             opt => opt.Ignore());
 
-            CreateMap<RequestEmployee, Address>();
+            CreateMap<RequestEmployee, Address>()
+                .ForMember(dest => dest.BranchId,
+                            opt => opt.Ignore()); ;
 
-            //North
-            CreateMap<BranchNorth, Branch>().ReverseMap();
-            CreateMap<Address, AddressNorth>();
-            CreateMap<Category, CategoryNorth>().ReverseMap();
         }
     }
 }

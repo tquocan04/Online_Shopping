@@ -11,7 +11,7 @@ namespace Entities.Entities
         [Range(9, 11)]
         public string? PhoneNumber { get; set; }
         [JsonIgnore]
-        public ICollection<Branch_Product>? Branch_Products { get; set; }
+        public ICollection<BranchProduct>? Branch_Products { get; set; }
         public ICollection<Employee>? Employees { get; set; }
         [JsonIgnore]
         public ICollection<Address>? Addresses { get; set; }

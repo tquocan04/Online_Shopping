@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts.Interfaces;
+using System.Net.Http;
 
 namespace Online_Shopping.Controllers
 {
@@ -15,16 +16,21 @@ namespace Online_Shopping.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+        private readonly HttpClient _httpClient;
+        //private readonly string api = "http://localhost:5285/api/categories/north";
 
-        public CategoryController(ICategoryService categoryService) 
+        public CategoryController(ICategoryService categoryService, HttpClient httpClient) 
         {
             _categoryService = categoryService;
+            _httpClient = httpClient;
         }
 
         [HttpPost("new-category")]
         public async Task<IActionResult> AddNewCategory([FromBody] RequestCategory request)
         {
             var newCategory = await _categoryService.CreateNewCategory(request);
+
+            //var north = await _httpClient.PostAsJsonAsync($"{api}/new-category", newCategory);
 
             return CreatedAtAction(
                 nameof(GetCategoryById),
@@ -62,6 +68,8 @@ namespace Online_Shopping.Controllers
                 return NotFound($"Cannot find category with Id: {Id}");
 
             await _categoryService.DeleteCategoryById(Id);
+
+            //await _httpClient.DeleteAsync($"{api}/{Id}");
             return NoContent();
         }
 
@@ -73,6 +81,8 @@ namespace Online_Shopping.Controllers
                 return NotFound($"Cannot find CategoryId: {Id} to update");
 
             await _categoryService.UpdateCategoryById(Id, request);
+
+            //await _httpClient.PatchAsJsonAsync($"{api}/{Id}", request);
             return Ok(new Response<RequestCategory>
             {
                 Message = "Category is updated successfully",

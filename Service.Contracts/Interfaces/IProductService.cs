@@ -12,7 +12,7 @@ namespace Service.Contracts.Interfaces
         Task<IEnumerable<ProductDTO>> GetProductsHidden();
         Task<ProductDTO> GetProductById(string id);
         Task UpdatestatusProduct(string id);
-        Task UpdateInforProduct(string id, RequestProduct requestProduct);
+        Task<Product> UpdateInforProduct(string id, RequestProduct requestProduct);
         Task DeleteProduct(string id);
 
     }

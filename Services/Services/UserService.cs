@@ -19,7 +19,7 @@ namespace Services.Services
         private readonly IAddressRepo _addressRepo;
         private readonly IOrderRepo _orderRepo;
         private readonly IAddressService<CustomerDTO> _addressService;
-        private readonly IMetadataService _metadataService;
+        //private readonly IMetadataService _metadataService;
         private readonly Cloudinary _cloudinary;
 
         public UserService
@@ -37,7 +37,7 @@ namespace Services.Services
             _addressRepo = addressRepo;
             _orderRepo = orderRepo;
             _addressService = addressService;
-            _metadataService = metadataService;
+            //_metadataService = metadataService;
             _cloudinary = cloudinary;
 
         }
@@ -56,7 +56,7 @@ namespace Services.Services
         {
             Customer customer = new Customer
             {
-                Id = new Guid(),
+                Id = Guid.NewGuid(),
                 Dob = new DateOnly(requestCustomer.Year, requestCustomer.Month, requestCustomer.Day)
             };
 
@@ -71,23 +71,24 @@ namespace Services.Services
 
             Address address = new Address
             {
+                Id = Guid.NewGuid(),
                 CustomerId = customer.Id,
                 IsDefault = true,
             };
             _mapper.Map(requestCustomer, address);
-            await _addressRepo.CreateNewAddress(address);
+            
 
             Order order = new Order
             {
-                Id = new Guid(),
+                Id = Guid.NewGuid(),
                 CustomerId = customer.Id,
                 TotalPrice = 0,
             };
-
+            
+            await _addressRepo.CreateNewAddress(address);
             await _orderRepo.CreateOrder(order);
 
-
-            await _metadataService.CreateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(customer));
+            //await _metadataService.CreateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(customer));
             return customer;
         }
 
@@ -135,7 +136,7 @@ namespace Services.Services
             user.Dob = dob;
             await _userRepo.UpdateInforCustomer(user);
 
-            await _metadataService.UpdateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(user));
+            //await _metadataService.UpdateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(user));
 
             return true;
         }

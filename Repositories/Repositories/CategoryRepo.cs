@@ -29,7 +29,7 @@ namespace Repositories.Repositories
                 throw new InvalidOperationException("Repo: Category name already exists.");
             }
 
-            await _applicationContext.Categories.AddAsync(category);
+            _applicationContext.Categories.Add(category);
             await _applicationContext.SaveChangesAsync();
         }
         public async Task<Category> GetCategoryByIdAsync(Guid Id)

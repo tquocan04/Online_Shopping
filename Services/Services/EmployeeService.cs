@@ -6,6 +6,7 @@ using Repository.Contracts.Interfaces;
 using Service.Contracts;
 using Service.Contracts.Interfaces;
 using System.Net;
+using System.Runtime.InteropServices;
 
 namespace Services.Services
 {
@@ -18,8 +19,10 @@ namespace Services.Services
         private readonly IAddressService<EmployeeDTO> _addressService;
         private readonly IUserRepo _userRepo;
 
-        public EmployeeService(IEmployeeRepo employeeRepo, IMapper mapper, IAddressRepo addressRepo,
-            IBranchRepo branchRepo, IAddressService<EmployeeDTO> addressService,
+        public EmployeeService(IEmployeeRepo employeeRepo, IMapper mapper, 
+            IAddressRepo addressRepo,
+            IBranchRepo branchRepo, 
+            IAddressService<EmployeeDTO> addressService,
             IUserRepo userRepo)
         {
             _employeeRepo = employeeRepo;
@@ -40,18 +43,17 @@ namespace Services.Services
             _mapper.Map(employee, emp);
 
             await _employeeRepo.AddNewStaff(emp);
-
+            
 
             Address address = new Address
             {
+                Id = new Guid(),
                 EmployeeId = emp.Id,
                 IsDefault = true
             };
-
             _mapper.Map(employee, address);
 
             await _addressRepo.CreateNewAddress(address);
-
             var empDTO = _mapper.Map<EmployeeDTO>(emp);
             empDTO = await _addressService.SetAddress(empDTO, empDTO.Id);
 
@@ -62,9 +64,9 @@ namespace Services.Services
         {
             var emp = await _employeeRepo.GetStaffAsync(Guid.Parse(id));
 
-            var address = await _addressRepo.GetAddressByObjectIdAsync(emp.Id);
+            //var address = await _addressRepo.GetAddressByObjectIdAsync(emp.Id);
 
-            await _addressRepo.DeleteAddress(address);
+            //await _addressRepo.DeleteAddress(address);
             await _employeeRepo.DeleteStaffAsync(emp);
         }
 
@@ -76,7 +78,10 @@ namespace Services.Services
             empDTO = await _addressService.SetAddress(empDTO, empDTO.Id);
 
             var branch = await _branchRepo.GetBranchAsync(empDTO.BranchId);
-            empDTO.BranchName = branch.Name;
+            if (branch != null)
+            {
+                empDTO.BranchName = branch.Name;
+            }
 
             return empDTO;
         }

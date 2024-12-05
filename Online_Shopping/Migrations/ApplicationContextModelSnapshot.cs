@@ -81,7 +81,7 @@ namespace Online_Shopping.Migrations
                     b.ToTable("Branches");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Branch_Product", b =>
+            modelBuilder.Entity("Entities.Entities.BranchProduct", b =>
                 {
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
@@ -288,7 +288,7 @@ namespace Online_Shopping.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BranchId")
+                    b.Property<Guid?>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateOnly>("Dob")
@@ -590,11 +590,13 @@ namespace Online_Shopping.Migrations
                 {
                     b.HasOne("Entities.Entities.Branch", "Branch")
                         .WithMany("Addresses")
-                        .HasForeignKey("BranchId");
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Entities.Entities.Customer", "Customer")
                         .WithMany("Addresses")
-                        .HasForeignKey("CustomerId");
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Entities.Entities.District", "District")
                         .WithMany("Addresses")
@@ -604,7 +606,8 @@ namespace Online_Shopping.Migrations
 
                     b.HasOne("Entities.Entities.Employee", "Employee")
                         .WithMany("Addresses")
-                        .HasForeignKey("EmployeeId");
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Branch");
 
@@ -615,7 +618,7 @@ namespace Online_Shopping.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Branch_Product", b =>
+            modelBuilder.Entity("Entities.Entities.BranchProduct", b =>
                 {
                     b.HasOne("Entities.Entities.Branch", "Branch")
                         .WithMany("Branch_Products")
@@ -672,8 +675,7 @@ namespace Online_Shopping.Migrations
                     b.HasOne("Entities.Entities.Branch", "Branch")
                         .WithMany("Employees")
                         .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Entities.Entities.Role", "Role")
                         .WithMany("Employees")

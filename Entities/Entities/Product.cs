@@ -16,7 +16,7 @@ namespace Entities.Entities
         public Guid CategoryId { get; set; }
         public Category? Category { get; set; }
         [JsonIgnore]
-        public ICollection<Branch_Product>? BranchProducts { get; set; }
+        public ICollection<BranchProduct>? BranchProducts { get; set; }
         [JsonIgnore]
         public ICollection<Item>? Items { get; set; }
     }
