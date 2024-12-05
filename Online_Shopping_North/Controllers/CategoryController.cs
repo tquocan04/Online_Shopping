@@ -31,7 +31,9 @@ namespace Online_Shopping_North.Controllers
         {
             var category = await _categoryService.GetCategoryById(Id);
             if (category == null)
+            {
                 return NotFound($"Cannot find category with Id: {Id}");
+            }
 
             await _categoryService.DeleteCategoryById(Id);
             return NoContent();
@@ -40,16 +42,8 @@ namespace Online_Shopping_North.Controllers
         [HttpPatch("{Id}")]
         public async Task<ActionResult> UpdateCategory(string Id, [FromBody] RequestCategory request)
         {
-            var cateId = await _categoryService.GetCategoryById(Id);
-            if (cateId == null)
-                return NotFound($"Cannot find CategoryId: {Id} to update");
-
             await _categoryService.UpdateCategoryById(Id, request);
-            return Ok(new Response<RequestCategory>
-            {
-                Message = "Category is updated successfully",
-                Data = request
-            });
+            return Ok();
         }
 
     }

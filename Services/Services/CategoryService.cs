@@ -49,17 +49,18 @@ namespace Services.Services
             return _mapper.Map<CategoryDTO>(category);
         }
 
-        public async Task UpdateCategoryById(string Id, RequestCategory requestCategory)
+        public async Task<bool> UpdateCategoryById(string Id, RequestCategory requestCategory)
         {
             var category = await _categoryRepo.GetCategoryByIdAsync(Guid.Parse(Id));
             if (category == null)
             {
-                throw new ArgumentException($"Cannot find CatergoryId: {Id}");
+                return false;
             }
             
             _mapper.Map(requestCategory, category); // dto -> category
-            await _categoryRepo.UpdateCategoryAsync(category);
-            
+
+            return await _categoryRepo.UpdateCategoryAsync(category); 
+
         }
     }
 }

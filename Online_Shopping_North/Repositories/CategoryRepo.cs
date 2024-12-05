@@ -13,21 +13,8 @@ namespace Online_Shopping_North.Repositories
             _applicationContext = applicationContext;
         }
 
-        private async Task<bool> checkNameExist(Category category)
-        {
-            if (await _applicationContext.Categories.AnyAsync(c => c.Name == category.Name))
-                return true;
-            return false;
-        }
-
         public async Task CreateNewCategoryAsync(Category category)
         {
-            // check category
-            if (await checkNameExist(category))
-            {
-                throw new InvalidOperationException("Repo: Category name already exists.");
-            }
-
             _applicationContext.Categories.Add(category);
             await _applicationContext.SaveChangesAsync();
         }
@@ -38,15 +25,10 @@ namespace Online_Shopping_North.Repositories
                 .FirstOrDefaultAsync(c => c.Id == Id);
         }
 
-        public async Task DeleteCategoryByIdAsync(Guid categoryId)
+        public async Task DeleteCategoryByIdAsync(Category cate)
         {
-            var cate = await _applicationContext.Categories.FindAsync(categoryId);
-
-            if (cate != null)
-            {
-                _applicationContext.Categories.Remove(cate);
-                await _applicationContext.SaveChangesAsync();
-            }
+            _applicationContext.Categories.Remove(cate);
+            await _applicationContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Category>> GetAllCategoryAsync()
@@ -56,16 +38,8 @@ namespace Online_Shopping_North.Repositories
 
         public async Task UpdateCategoryAsync(Category category)
         {
-            var cate = await _applicationContext.Categories.FindAsync(category.Id); //await => doi tuong dang bi DbContext Theo doi -> phai dung CurrentValues.SetValues()
-            if (cate != null)
-            {
-                if (!await checkNameExist(category))
-                {
-                    _applicationContext.Entry(cate).CurrentValues.SetValues(category);
-                    await _applicationContext.SaveChangesAsync();
-
-                }
-            }
+            _applicationContext.Categories.Update(category);
+            await _applicationContext.SaveChangesAsync();
         }
     }
 }

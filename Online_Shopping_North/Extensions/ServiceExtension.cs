@@ -19,7 +19,9 @@ namespace Online_Shopping_North.Extensions
             //services.AddScoped<ITokenService, TokenService>();
             //services.AddScoped<IOrderService, OrderService>();
             //services.AddScoped<IShippingService, ShippingService>();
-            //services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
+
+            services.AddScoped(typeof(IAddressService<>), typeof(AddressService<>));
 
             return services;
         }
@@ -36,7 +38,7 @@ namespace Online_Shopping_North.Extensions
             //services.AddScoped<ILoginRepo, LoginRepo>();
             //services.AddScoped<IOrderRepo, OrderRepo>();
             //services.AddScoped<IShippingRepo, ShippingRepo>();
-            //services.AddScoped<IEmployeeRepo, EmployeeRepo>();
+            services.AddScoped<IEmployeeRepo, EmployeeRepo>();
             //services.AddScoped(typeof(IBaseRepo<>), typeof(BaseRepo<>));
 
             return services;

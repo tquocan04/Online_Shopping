@@ -28,7 +28,7 @@ namespace Online_Shopping_North.Services
 
         public async Task DeleteCategoryById(string Id)
         {
-            await _categoryRepo.DeleteCategoryByIdAsync(Guid.Parse(Id));
+            await _categoryRepo.DeleteCategoryByIdAsync(await _categoryRepo.GetCategoryByIdAsync(Guid.Parse(Id)));
         }
 
         public async Task<IEnumerable<CategoryDTO>> GetAllCategory()
@@ -47,11 +47,7 @@ namespace Online_Shopping_North.Services
         public async Task UpdateCategoryById(string Id, RequestCategory requestCategory)
         {
             var category = await _categoryRepo.GetCategoryByIdAsync(Guid.Parse(Id));
-            if (category == null)
-            {
-                throw new ArgumentException($"Cannot find CatergoryId: {Id}");
-            }
-
+            
             _mapper.Map(requestCategory, category); // dto -> category
             await _categoryRepo.UpdateCategoryAsync(category);
 

@@ -7,7 +7,7 @@ namespace Online_Shopping_North.Repository.Contracts
         Task CreateNewCategoryAsync(Category category);
         Task<IEnumerable<Category>> GetAllCategoryAsync();
         Task<Category> GetCategoryByIdAsync(Guid Id);
-        Task DeleteCategoryByIdAsync(Guid categoryId);
+        Task DeleteCategoryByIdAsync(Category category);
         Task UpdateCategoryAsync(Category category);
     }
 }

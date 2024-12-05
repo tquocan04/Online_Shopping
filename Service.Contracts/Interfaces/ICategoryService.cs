@@ -11,7 +11,7 @@ namespace Service.Contracts.Interfaces
         Task<IEnumerable<CategoryDTO>> GetAllCategory();
         Task<CategoryDTO> GetCategoryById(string Id);
         Task DeleteCategoryById(string Id);
-        Task UpdateCategoryById(string Id, RequestCategory requestCategory);
+        Task<bool> UpdateCategoryById(string Id, RequestCategory requestCategory);
 
     }
 }

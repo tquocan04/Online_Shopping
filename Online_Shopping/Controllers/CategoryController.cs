@@ -17,7 +17,7 @@ namespace Online_Shopping.Controllers
     {
         private readonly ICategoryService _categoryService;
         private readonly HttpClient _httpClient;
-        //private readonly string api = "http://localhost:5285/api/categories/north";
+        private readonly string api = "http://localhost:5285/api/categories/north";
 
         public CategoryController(ICategoryService categoryService, HttpClient httpClient) 
         {
@@ -30,7 +30,7 @@ namespace Online_Shopping.Controllers
         {
             var newCategory = await _categoryService.CreateNewCategory(request);
 
-            //var north = await _httpClient.PostAsJsonAsync($"{api}/new-category", newCategory);
+            var north = await _httpClient.PostAsJsonAsync($"{api}/new-category", newCategory);
 
             return CreatedAtAction(
                 nameof(GetCategoryById),
@@ -47,7 +47,12 @@ namespace Online_Shopping.Controllers
         {
             var allCategories = await _categoryService.GetAllCategory();
             if (allCategories == null)
-                return NotFound();
+            {
+                return NotFound(new Response<string>
+                {
+                    Message = "Does not have any categories!"
+                });
+            }
             return Ok(allCategories);
         }
 
@@ -56,7 +61,12 @@ namespace Online_Shopping.Controllers
         {
             var category = await _categoryService.GetCategoryById(Id);
             if (category == null)
-                return NotFound();
+            {
+                return NotFound(new Response<string>
+                {
+                    Message = "This category does not exist!"
+                });
+            }
             return Ok(category);
         }
 
@@ -65,11 +75,13 @@ namespace Online_Shopping.Controllers
         {
             var category = await _categoryService.GetCategoryById(Id);
             if (category == null)
+            {
                 return NotFound($"Cannot find category with Id: {Id}");
+            }
 
             await _categoryService.DeleteCategoryById(Id);
 
-            //await _httpClient.DeleteAsync($"{api}/{Id}");
+            await _httpClient.DeleteAsync($"{api}/{Id}");
             return NoContent();
         }
 
@@ -78,11 +90,20 @@ namespace Online_Shopping.Controllers
         {
             var cateId = await _categoryService.GetCategoryById(Id);
             if (cateId == null)
+            {
                 return NotFound($"Cannot find CategoryId: {Id} to update");
+            }
 
-            await _categoryService.UpdateCategoryById(Id, request);
+            bool check = await _categoryService.UpdateCategoryById(Id, request);
+            if (!check)
+            {
+                return BadRequest(new Response<string>
+                {
+                    Message = "This name is existed!"
+                });
+            }
 
-            //await _httpClient.PatchAsJsonAsync($"{api}/{Id}", request);
+            await _httpClient.PatchAsJsonAsync($"{api}/{Id}", request);
             return Ok(new Response<RequestCategory>
             {
                 Message = "Category is updated successfully",

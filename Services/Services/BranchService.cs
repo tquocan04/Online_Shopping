@@ -13,28 +13,14 @@ namespace Services.Services
         private readonly IMapper _mapper;
         private readonly IAddressRepo _addressRepo;
         private readonly IAddressService<BranchDTO> _addressService;
-        private readonly IEmployeeRepo _employeeRepo;
 
         public BranchService(IBranchRepo branchRepo, IMapper mapper, IAddressRepo addressRepo,
-            IEmployeeRepo employeeRepo,
             IAddressService<BranchDTO> addressService) 
         {
             _branchRepo = branchRepo;
             _mapper = mapper;
             _addressRepo = addressRepo;
             _addressService = addressService;
-            _employeeRepo = employeeRepo;
-        }
-        private async Task<BranchDTO> SetAddress(BranchDTO branchDTO)
-        {
-            var address = await _addressRepo.GetAddressByObjectIdAsync(branchDTO.Id);
-
-            branchDTO.Street = address.Street;
-            branchDTO.DistrictId = address.DistrictId;
-            branchDTO.CityId = await _addressRepo.GetCityIdByDistrictIdAsync(branchDTO.DistrictId);
-            branchDTO.RegionId = await _addressRepo.GetRegionIdByCityIdAsync(branchDTO.CityId);
-
-            return branchDTO;
         }
 
         public async Task<BranchDTO> AddNewBranch(RequestBranch requestBranch)
@@ -45,8 +31,9 @@ namespace Services.Services
             };
 
             _mapper.Map(requestBranch, branch);
-            
-            var branchDTO = _mapper.Map<BranchDTO>(await _branchRepo.AddNewBranchAsync(branch));
+
+            BranchDTO branchDTO = new BranchDTO();
+            branchDTO = _mapper.Map(await _branchRepo.AddNewBranchAsync(branch), branchDTO);
 
             Address address = new Address
             {
@@ -64,7 +51,11 @@ namespace Services.Services
         public async Task<BranchDTO> GetBranch(string id)
         {
             var branch = await _branchRepo.GetBranchAsync(Guid.Parse(id));
-            
+
+            if (branch == null)
+            {
+                return null;
+            }
             var branchDTO = _mapper.Map<BranchDTO>(branch);
 
             branchDTO = await _addressService.SetAddress(branchDTO, branchDTO.Id);
@@ -89,10 +80,6 @@ namespace Services.Services
         public async Task DeleteBranch(string id)
         {
             var branch = await _branchRepo.GetBranchAsync(Guid.Parse(id));
-
-            //var address = await _addressRepo.GetAddressByObjectIdAsync(Guid.Parse(id));
-
-            //await _addressRepo.DeleteAddress(address);
             await _branchRepo.DeleteBranchAsync(branch);
         }
 
@@ -104,8 +91,6 @@ namespace Services.Services
 
             var existingAddress = await _addressRepo.GetAddressByObjectIdAsync(Guid.Parse(id));
 
-            //string existingRegion = await _addressRepo.GetRegionIdByCityIdAsync(await _addressRepo.GetCityIdByDistrictIdAsync(existingAddress.DistrictId));
-            
             if (existingAddress != null)
             {
                 if (existingAddress.DistrictId != requestBranch.DistrictId || existingAddress.Street != requestBranch.Street)

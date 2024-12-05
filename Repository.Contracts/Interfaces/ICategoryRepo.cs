@@ -8,6 +8,6 @@ namespace Repository.Contracts.Interfaces
         Task<IEnumerable<Category>> GetAllCategoryAsync();
         Task<Category> GetCategoryByIdAsync(Guid Id);
         Task DeleteCategoryByIdAsync(Guid categoryId);
-        Task UpdateCategoryAsync(Category category);
+        Task<bool> UpdateCategoryAsync(Category category);
     }
 }

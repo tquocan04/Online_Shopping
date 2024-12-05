@@ -19,7 +19,7 @@ namespace Services.Services
         private readonly IAddressRepo _addressRepo;
         private readonly IOrderRepo _orderRepo;
         private readonly IAddressService<CustomerDTO> _addressService;
-        //private readonly IMetadataService _metadataService;
+        private readonly IMetadataService _metadataService;
         private readonly Cloudinary _cloudinary;
 
         public UserService
@@ -28,7 +28,7 @@ namespace Services.Services
             IAddressRepo addressRepo,
             IOrderRepo orderRepo,
             IAddressService<CustomerDTO> addressService,
-            //IMetadataService metadataService,
+            IMetadataService metadataService,
             Cloudinary cloudinary
             )
         {
@@ -37,7 +37,7 @@ namespace Services.Services
             _addressRepo = addressRepo;
             _orderRepo = orderRepo;
             _addressService = addressService;
-            //_metadataService = metadataService;
+            _metadataService = metadataService;
             _cloudinary = cloudinary;
 
         }
@@ -88,7 +88,7 @@ namespace Services.Services
             await _addressRepo.CreateNewAddress(address);
             await _orderRepo.CreateOrder(order);
 
-            //await _metadataService.CreateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(customer));
+            await _metadataService.CreateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(customer));
             return customer;
         }
 
@@ -136,7 +136,7 @@ namespace Services.Services
             user.Dob = dob;
             await _userRepo.UpdateInforCustomer(user);
 
-            //await _metadataService.UpdateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(user));
+            await _metadataService.UpdateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(user));
 
             return true;
         }

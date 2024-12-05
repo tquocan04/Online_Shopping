@@ -16,7 +16,7 @@ namespace Repositories.Repositories
 
         private async Task<bool> checkNameExist(Category category)
         {
-            if (await _applicationContext.Categories.AnyAsync(c => c.Name == category.Name))
+            if (await _applicationContext.Categories.AnyAsync(c => c.Name.ToLower() == category.Name.ToLower()))
                 return true;
             return false;
         }
@@ -55,18 +55,15 @@ namespace Repositories.Repositories
             return await _applicationContext.Categories.AsNoTracking().ToListAsync();
         }
 
-        public async Task UpdateCategoryAsync(Category category)
+        public async Task<bool> UpdateCategoryAsync(Category category)
         {
-            var cate = await _applicationContext.Categories.FindAsync(category.Id); //await => doi tuong dang bi DbContext Theo doi -> phai dung CurrentValues.SetValues()
-            if (cate != null)
+            if (!await checkNameExist(category))
             {
-                if (!await checkNameExist(category))
-                {
-                    _applicationContext.Entry(cate).CurrentValues.SetValues(category);
-                    await _applicationContext.SaveChangesAsync();
-                
-                }   
+                _applicationContext.Categories.Update(category);
+                await _applicationContext.SaveChangesAsync();
+                return true;
             }
+            return false;
         }
         
     }
