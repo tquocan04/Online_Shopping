@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Online_Shopping.Context;
 using Repository.Contracts.Interfaces;
+using System.Security.Claims;
 
 namespace Repositories.Repositories
 {
@@ -18,7 +19,7 @@ namespace Repositories.Repositories
         {
             var customer = await _applicationContext.Customers
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(u => u.Email == login && u.Password == password);
+                    .FirstOrDefaultAsync(u => u.Email.ToLower() == login.ToLower() && u.Password == password);
             if (customer != null)
             {
                 return "Customer";
@@ -30,7 +31,7 @@ namespace Repositories.Repositories
         {
             var emp = await _applicationContext.Employees
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(e => e.Username == login && e.Password == password);
+                    .FirstOrDefaultAsync(e => e.Username.ToLower() == login.ToLower() && e.Password == password);
             if (emp != null)
             {
                 return emp.RoleId;
@@ -38,5 +39,17 @@ namespace Repositories.Repositories
             return null;
         }
 
+        public async Task<Guid> GetCustomerIdFromEmail(string account)
+        {
+            var id = await _applicationContext.Customers
+                    .AsNoTracking()
+                    .Where(u => u.Email.ToLower() == account.ToLower())
+                    .Select(u => u.Id)
+                    .FirstOrDefaultAsync();
+            
+            return id;
+        }
+
+        
     }
 }

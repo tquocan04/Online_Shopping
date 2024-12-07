@@ -19,6 +19,7 @@ namespace Online_Shopping.Controllers
         private readonly HttpClient _httpClient;
 
         private readonly string api = "http://localhost:5285/api/arc-shop/north";
+
         public ARCController(IUserRepo userRepo, 
             HttpClient httpClient,
             IEmployeeService employeeRepo)
@@ -102,7 +103,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpGet("profile/{id}")]
-        public async Task<IActionResult> GetProile(string id)
+        public async Task<IActionResult> GetProfile(string id)
         {
             var profile = await _employeeService.GetProfileEmployee(id);
             if (profile == null)

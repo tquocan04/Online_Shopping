@@ -7,16 +7,23 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using DTOs.Request;
+using Microsoft.AspNetCore.Http;
+using Repository.Contracts.Interfaces;
 
 namespace Services.Services
 {
     public class TokenService : ITokenService
     {
+        private readonly ILoginRepo _loginRepo;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public TokenService(IConfiguration configuration)
+        public TokenService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor,
+            ILoginRepo loginRepo)
         {
+            _loginRepo = loginRepo;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         private List<Claim> GetClaim(RequestLogin requestLogin, string role)
@@ -32,7 +39,7 @@ namespace Services.Services
 
         public string GenerateToken(RequestLogin requestLogin, string role)
         {
-            var expiryhour = int.Parse(_configuration["Jwt:TokenExpiredInHour"]);
+            var expirymonth = int.Parse(_configuration["Jwt:TokenExpiredInMonth"]);
 
             
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]));
@@ -42,11 +49,19 @@ namespace Services.Services
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: GetClaim(requestLogin, role),
-                expires: DateTime.Now.AddHours(expiryhour),
+                expires: DateTime.Now.AddMonths(expirymonth),
                 signingCredentials: signinCredentials
             );
             var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
             return tokenString;
+        }
+
+        public async Task<Guid> GetEmailCustomerByToken()
+        {
+            var userNameClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Name);
+            var email = userNameClaim?.Value;
+            Guid id = await _loginRepo.GetCustomerIdFromEmail(email);
+            return id;
         }
     }
 }

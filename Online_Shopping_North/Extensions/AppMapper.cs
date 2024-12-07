@@ -39,7 +39,12 @@ namespace Online_Shopping_North.Extensions
                 .ForMember(dest => dest.Picture,
                             opt => opt.Ignore())
                 .ReverseMap();
-            CreateMap<RequestCustomer, Address>();
+            CreateMap<DistributedCustomer, Address>()
+                .ForMember(dest => dest.Id,
+                            opt => opt.Ignore());
+            CreateMap<DistributedCustomer, Customer>()
+                .ForMember(dest => dest.Name,
+                            opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"));
 
             CreateMap<Order, OrderCartDTO>().ReverseMap();
             CreateMap<Item, ItemDTO>().ReverseMap();
@@ -70,6 +75,14 @@ namespace Online_Shopping_North.Extensions
             CreateMap<RequestEmployee, Address>()
                 .ForMember(dest => dest.BranchId,
                             opt => opt.Ignore());
+
+            CreateMap<RequestVoucher, Voucher>()
+                .ForMember(dest => dest.Id,
+                            opt => opt.Ignore())
+                .ForMember(dest => dest.Code,
+                            opt => opt.MapFrom(src => src.Code.ToUpper()));
+            CreateMap<VoucherDTO, Voucher>().ReverseMap();
+            CreateMap<VoucherDTO, RequestVoucher>().ReverseMap();
 
         }
     }

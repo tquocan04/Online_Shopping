@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using DTOs.DTOs;
-using Entities.Entities;
-using Online_Shopping.Context;
-using Repository.Contracts.Interfaces;
-using Service.Contracts.Interfaces;
+using Online_Shopping_North.DTOs;
+using Online_Shopping_North.Entities;
+using Online_Shopping_North.Repository.Contracts;
+using Online_Shopping_North.Service.Contracts;
 
-namespace Services.Services
+namespace Online_Shopping_North.Services
 {
     public class OrderService : IOrderService
     {
@@ -13,26 +12,26 @@ namespace Services.Services
         private readonly IOrderRepo _orderRepo;
         private readonly IProductRepo _productRepo;
 
-        public OrderService(IOrderRepo orderRepo, IMapper mapper, IProductRepo productRepo) 
+        public OrderService(IOrderRepo orderRepo, IMapper mapper, IProductRepo productRepo)
         {
             _mapper = mapper;
             _orderRepo = orderRepo;
             _productRepo = productRepo;
         }
 
-        public async Task AddToCart(string cusId, string prodId)
+        public async Task AddToCart(Guid cusId, Guid prodId)
         {
-            var cart = await _orderRepo.GetOrderIsCartByCusId(Guid.Parse(cusId));
+            var cart = await _orderRepo.GetOrderIsCartByCusId(cusId);
             var cartId = cart.Id;
-            var product = await _productRepo.GetProductByIdAsync(Guid.Parse(prodId));
-            var existingItem = await _orderRepo.GetItem(cartId, Guid.Parse(prodId));
+            var product = await _productRepo.GetProductByIdAsync(prodId);
+            var existingItem = await _orderRepo.GetItem(cartId, prodId);
 
             if (existingItem == null)
             {
                 Item item = new Item
                 {
                     OrderId = cartId,
-                    ProductId = Guid.Parse(prodId),
+                    ProductId = prodId,
                     Quantity = 1
                 };
                 cart.TotalPrice += (decimal)product.Price;
@@ -49,22 +48,22 @@ namespace Services.Services
             await _productRepo.UpdateInforProduct(product);
         }
 
-        public async Task<Order> CreateNewCart(Guid cusId)
+        public async Task CreateNewCart(Guid orderId, Guid cusId)
         {
             Order order = new Order
             {
-                Id = Guid.NewGuid(),
+                Id = orderId,
                 CustomerId = cusId,
                 TotalPrice = 0,
             };
+            
             await _orderRepo.CreateOrder(order);
-            return order;
         }
 
-        public async Task DeleteItemInCart(string cusId, string prodId)
+        public async Task DeleteItemInCart(Guid cusId, Guid prodId)
         {
-            var cart = await _orderRepo.GetOrderIsCartByCusId(Guid.Parse(cusId));
-            var product = await _productRepo.GetProductByIdAsync(Guid.Parse(prodId));
+            var cart = await _orderRepo.GetOrderIsCartByCusId(cusId);
+            var product = await _productRepo.GetProductByIdAsync(prodId);
 
             Item item = await _orderRepo.GetItem(cart.Id, product.Id);
             await _orderRepo.DeleteItemInCart(item);
@@ -76,10 +75,10 @@ namespace Services.Services
             await _productRepo.UpdateInforProduct(product);
         }
 
-        public async Task<OrderCartDTO> GetOrderCart(string cusId)
+        public async Task<OrderCartDTO> GetOrderCart(Guid cusId)
         {
 
-            var cart = await _orderRepo.GetOrderIsCartByCusId(Guid.Parse(cusId));
+            var cart = await _orderRepo.GetOrderIsCartByCusId(cusId);
             var cartDTO = _mapper.Map<OrderCartDTO>(cart);
 
             if (cartDTO.Items != null)
@@ -90,8 +89,9 @@ namespace Services.Services
                     _mapper.Map(product, item);
                 }
             }
-            
+
             return cartDTO;
         }
+
     }
 }

@@ -1,11 +1,13 @@
 ﻿using DTOs.DTOs;
+using Entities.Entities;
 
 namespace Service.Contracts.Interfaces
 {
     public interface IOrderService
     {
-        Task<OrderCartDTO> GetOrderCartAsync(string cusId);
-        Task AddToCartAsync(string cusId, string prodId);
-        Task DeleteItemInCartAsync(string cusId, string prodId);
+        Task<Order> CreateNewCart(Guid cusId);
+        Task<OrderCartDTO> GetOrderCart(string cusId);
+        Task AddToCart(string cusId, string prodId);
+        Task DeleteItemInCart(string cusId, string prodId);
     }
 }

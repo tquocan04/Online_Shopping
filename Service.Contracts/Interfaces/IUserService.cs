@@ -9,7 +9,7 @@ namespace Service.Contracts.Interfaces
     {
         Task<Customer> CreateNewUser(RequestCustomer requestUser);
         
-        Task<bool> UpdateInforUser(string id, RequestCustomer requestUser);
+        Task<Customer> UpdateInforUser(Customer customer, RequestCustomer requestUser);
         Task<CustomerDTO> GetProfileUser(string userId);
 
         Task UploadImage(Customer customer, IFormFile file);

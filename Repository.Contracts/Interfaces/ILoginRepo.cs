@@ -4,6 +4,7 @@
     {
         Task<string> checkLoginCustomerAsync(string login, string password);
         Task<string> checkLoginEmployeeAsync(string login, string password);
-        
+        Task<Guid> GetCustomerIdFromEmail(string account);
+        //Task<string> GetEmailFromToken(string token);
     }
 }

@@ -80,6 +80,15 @@ namespace Online_Shopping.Context
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
+            modelBuilder.Entity<Voucher>(entity =>
+            {
+                entity.HasIndex(v => v.Code).IsUnique();
+
+                entity.HasMany(v => v.Orders)
+                    .WithOne(o => o.Voucher)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Customer) // Thiết lập quan hệ 1-n
                 .WithMany(c => c.Orders) // Customer có nhiều Orders

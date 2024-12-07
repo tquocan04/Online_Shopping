@@ -12,7 +12,7 @@ namespace Online_Shopping_North.Entities
         public string? Email { get; set; }
         [MinLength(6)]
         public string? Password { get; set; }
-        [Range(9, 11)]
+        [MaxLength(11)]
         public string? PhoneNumber { get; set; }
         public DateOnly Dob { get; set; }
         public string? Picture { get; set; }

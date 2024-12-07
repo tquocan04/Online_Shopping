@@ -28,6 +28,7 @@ namespace Online_Shopping.Extensions
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IShippingService, ShippingService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IVoucherService, VoucherService>();
             services.AddScoped<IMetadataService, MetadataService>();
 
             services.AddScoped(typeof(IAddressService<>), typeof(AddressService<>));
@@ -48,6 +49,7 @@ namespace Online_Shopping.Extensions
             services.AddScoped<IOrderRepo,OrderRepo>();
             services.AddScoped<IShippingRepo, ShippingRepo>();
             services.AddScoped<IEmployeeRepo, EmployeeRepo>();
+            services.AddScoped<IVoucherRepo, VoucherRepo>();
             services.AddScoped(typeof(IBaseRepo<>), typeof(BaseRepo<>));
 
             return services;

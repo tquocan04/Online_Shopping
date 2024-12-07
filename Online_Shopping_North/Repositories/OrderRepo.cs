@@ -1,17 +1,16 @@
-﻿using DTOs.DTOs;
-using Entities.Entities;
-using Microsoft.EntityFrameworkCore;
-using Online_Shopping.Context;
-using Repository.Contracts.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Online_Shopping_North.DTOs;
+using Online_Shopping_North.Entities;
+using Online_Shopping_North.Repository.Contracts;
 using System;
 
-namespace Repositories.Repositories
+namespace Online_Shopping_North.Repositories
 {
     public class OrderRepo : IOrderRepo
     {
         private readonly ApplicationContext _applicationContext;
 
-        public OrderRepo(ApplicationContext applicationContext) 
+        public OrderRepo(ApplicationContext applicationContext)
         {
             _applicationContext = applicationContext;
         }
@@ -19,19 +18,29 @@ namespace Repositories.Repositories
         public async Task AddItemToCart(Item item)
         {
             await _applicationContext.Items.AddAsync(item);
-            
+
             await _applicationContext.SaveChangesAsync();
         }
 
         public async Task CreateOrder(Order order)
         {
-            await _applicationContext.Orders.AddAsync(order);
+            _applicationContext.Orders.Add(order);
             await _applicationContext.SaveChangesAsync();
         }
 
         public async Task DeleteItemInCart(Item item)
         {
             _applicationContext.Items.Remove(item);
+            await _applicationContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteOrderAsync(Guid id)
+        {
+            var order = await _applicationContext.Orders
+                .AsNoTracking()
+               .FirstOrDefaultAsync(o => o.Id == id);
+
+            _applicationContext.Orders.Remove(order);
             await _applicationContext.SaveChangesAsync();
         }
 
@@ -66,7 +75,7 @@ namespace Repositories.Repositories
                 .Select(i => new ItemDTO
                 {
                     ProductId = i.ProductId,
-                    Name = i.Product.Name,  
+                    Name = i.Product.Name,
                     Quantity = i.Quantity,
                     Price = i.Product.Price,
                 })
@@ -86,28 +95,6 @@ namespace Repositories.Repositories
             order.TotalPrice = totalPrice;
             _applicationContext.Orders.Update(order);
             await _applicationContext.SaveChangesAsync();
-        }
-
-        public async Task<List<Order>> GetListOrderByCusId(Guid cusId)
-        {
-            return await _applicationContext.Orders
-                .AsNoTracking()
-                .Where(o => o.CustomerId == cusId)
-                //.Select(o => o.Items)
-                //.Include(o => o.Items)
-                //    .ThenInclude(i => i.Product)
-                .ToListAsync();
-        }
-
-        public async Task<List<Item>> GetListItemByOrderId(Guid orderId)
-        {
-            return await _applicationContext.Items
-                .AsNoTracking()
-                .Where(o => o.OrderId == orderId)
-                //.Select(o => o.Items)
-                //.Include(o => o.Items)
-                //    .ThenInclude(i => i.Product)
-                .ToListAsync();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Repository.Contracts.Interfaces;
+﻿using Entities.Entities;
+using Repository.Contracts.Interfaces;
 using Service.Contracts.Interfaces;
 
 namespace Services.Services
@@ -33,6 +34,21 @@ namespace Services.Services
             SetProperty(obj, "RegionName", await _addressRepo.GetRegionNameByRegionIdAsync(await _addressRepo.GetRegionIdByCityIdAsync(await _addressRepo.GetCityIdByDistrictIdAsync(address.DistrictId))));
 
             return obj;
+        }
+
+        public async Task<string> GetRegionIdOfObject(Guid id)
+        {
+            Address? address = await _addressRepo.GetAddressByObjectIdAsync(id);
+
+            if (address == null)
+            {
+                return null;
+            }
+
+            var cityId = await _addressRepo.GetCityIdByDistrictIdAsync(address.DistrictId);
+            var regionId = await _addressRepo.GetRegionIdByCityIdAsync(cityId);
+
+            return regionId;
         }
     }
 }

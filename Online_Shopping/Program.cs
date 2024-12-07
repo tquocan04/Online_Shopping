@@ -24,6 +24,7 @@ builder.Services.Configure<MongoDBSetting>(
 builder.Services.AddSingleton<MongoDBClient>();
 
 builder.Services.ConfigureCloudinary(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
 builder.Services.ConfigureRepository();
 builder.Services.ConfigureService();
 builder.Services.AddAutoMapper(typeof(AppMapper));

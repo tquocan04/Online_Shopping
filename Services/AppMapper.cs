@@ -44,6 +44,9 @@ namespace Services
                             opt => opt.Ignore())
                 .ReverseMap();
             CreateMap<RequestCustomer, Address>();
+            CreateMap<RequestCustomer, DistributedCustomer>()
+                .ForMember(dest => dest.Picture,
+                            opt => opt.Ignore());
 
             CreateMap<Order, OrderCartDTO>().ReverseMap();
             CreateMap<Item, ItemDTO>().ReverseMap();
@@ -76,7 +79,15 @@ namespace Services
 
             CreateMap<RequestEmployee, Address>()
                 .ForMember(dest => dest.BranchId,
-                            opt => opt.Ignore()); ;
+                            opt => opt.Ignore());
+            
+            CreateMap<RequestVoucher, Voucher>()
+                .ForMember(dest => dest.Id,
+                            opt => opt.Ignore())
+                .ForMember(dest => dest.Code,
+                            opt => opt.MapFrom(src => src.Code.ToUpper()));
+            CreateMap<VoucherDTO, Voucher>().ReverseMap();
+            CreateMap<VoucherDTO, RequestVoucher>().ReverseMap();
 
         }
     }

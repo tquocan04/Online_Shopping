@@ -3,6 +3,7 @@ using DTOs.DTOs;
 using DTOs.Request;
 using DTOs.Responses;
 using Entities.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Repositories;
@@ -21,29 +22,35 @@ namespace Online_Shopping.Controllers
         private readonly IMapper _mapper;
         private readonly HttpClient _httpClient;
         private readonly IAddressRepo _addressRepo;
-
+        private readonly IAddressService<Branch> _addressService;
         private readonly string api = "http://localhost:5285/api/branches/north";
 
         public BranchController(IBranchService branchService, IMapper mapper,
-            HttpClient httpClient,
+            HttpClient httpClient, IAddressService<Branch> addressService,
             IAddressRepo addressRepo)
         {
             _branchService = branchService;
             _mapper = mapper;
             _httpClient = httpClient;
             _addressRepo = addressRepo;
+            _addressService = addressService;
         }
 
         [HttpPost("new-branch")]
         public async Task<IActionResult> AddNewBranch([FromBody] RequestBranch requestBranch)
         {
             BranchDTO branchDTO = await _branchService.AddNewBranch(requestBranch);
-            await _httpClient.PostAsJsonAsync($"{api}/new-branch/{branchDTO.Id}", requestBranch);
 
-            return CreatedAtAction(nameof(GetAllBranches), new { id = branchDTO.Id }, requestBranch);
+            if (requestBranch.RegionId == "Bac")
+            {
+                await _httpClient.PostAsJsonAsync($"{api}/new-branch/{branchDTO.Id}", requestBranch);
+            }
+
+            return CreatedAtAction(nameof(GetBranch), new { id = branchDTO.Id }, requestBranch);
         }
 
         [HttpGet]
+        //[Authorize]
         public async Task<IActionResult> GetAllBranches()
         {
             var list = await _branchService.GetBranchList();
@@ -76,7 +83,8 @@ namespace Online_Shopping.Controllers
                 var response = await _httpClient.GetAsync($"{api}/{id}");
                 if (response.IsSuccessStatusCode)
                 {
-                    return Ok(await response.Content.ReadFromJsonAsync<BranchDTO>());
+                    return Ok(
+                        await response.Content.ReadFromJsonAsync<BranchDTO>());
                 }
             }
 
@@ -94,14 +102,13 @@ namespace Online_Shopping.Controllers
                     Message = "This branch does not exist!"
                 });
             }
-            else
+
+            await _branchService.DeleteBranch(id);
+            if (branch.RegionId == "Bac")
             {
-                await _branchService.DeleteBranch(id);
-                if (branch.RegionId == "Bac")
-                {
-                    await _httpClient.DeleteAsync($"{api}/{id}");
-                }
+                await _httpClient.DeleteAsync($"{api}/{id}");
             }
+            
             
             return NoContent();
         }
@@ -116,12 +123,19 @@ namespace Online_Shopping.Controllers
                     Message = "This branch does not exist!"
                 });
             }
-
+            string currentRegionId = await _addressService.GetRegionIdOfObject(Guid.Parse(id));
             await _branchService.UpdateBranch(id, requestBranch);
 
-            if (requestBranch.RegionId == "Bac")
+            if (currentRegionId == "Bac")
             {
-                await _httpClient.PutAsJsonAsync($"{api}/{id}", requestBranch);
+                if (requestBranch.RegionId == "Bac")
+                {
+                    await _httpClient.PutAsJsonAsync($"{api}/{id}", requestBranch);
+                }
+                else
+                {
+                    await _httpClient.DeleteAsync($"{api}/{id}");
+                }
             }
 
             return NoContent();

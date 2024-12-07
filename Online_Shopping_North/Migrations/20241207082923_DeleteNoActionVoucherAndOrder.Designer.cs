@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Online_Shopping.Context;
+using Online_Shopping_North;
 
 #nullable disable
 
-namespace Online_Shopping.Migrations
+namespace Online_Shopping_North.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20241207082923_DeleteNoActionVoucherAndOrder")]
+    partial class DeleteNoActionVoucherAndOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace Online_Shopping.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Entities.Entities.Address", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Address", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,7 +63,7 @@ namespace Online_Shopping.Migrations
                     b.ToTable("Addresses");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Branch", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Branch", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -81,7 +84,7 @@ namespace Online_Shopping.Migrations
                     b.ToTable("Branches");
                 });
 
-            modelBuilder.Entity("Entities.Entities.BranchProduct", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.BranchProduct", b =>
                 {
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
@@ -99,7 +102,7 @@ namespace Online_Shopping.Migrations
                     b.ToTable("BranchProducts");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Category", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Category", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -117,7 +120,7 @@ namespace Online_Shopping.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Entities.Entities.City", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.City", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -161,7 +164,7 @@ namespace Online_Shopping.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Entities.Entities.Credential", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Credential", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -179,7 +182,7 @@ namespace Online_Shopping.Migrations
                     b.ToTable("Credentials");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Customer", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Customer", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -201,7 +204,8 @@ namespace Online_Shopping.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.Property<string>("Picture")
                         .HasColumnType("nvarchar(max)");
@@ -215,7 +219,7 @@ namespace Online_Shopping.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("Entities.Entities.District", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.District", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -282,7 +286,7 @@ namespace Online_Shopping.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Entities.Entities.Employee", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Employee", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -333,7 +337,7 @@ namespace Online_Shopping.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Item", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Item", b =>
                 {
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
@@ -351,7 +355,7 @@ namespace Online_Shopping.Migrations
                     b.ToTable("Items");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Order", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -394,7 +398,7 @@ namespace Online_Shopping.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Payment", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Payment", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -427,7 +431,7 @@ namespace Online_Shopping.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Entities.Entities.Product", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -465,19 +469,19 @@ namespace Online_Shopping.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Region", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Region", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("Regions");
 
@@ -499,7 +503,7 @@ namespace Online_Shopping.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Entities.Entities.Role", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Role", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -524,7 +528,7 @@ namespace Online_Shopping.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Entities.Entities.ShippingMethod", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.ShippingMethod", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -554,7 +558,7 @@ namespace Online_Shopping.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Entities.Entities.Voucher", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Voucher", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -590,25 +594,25 @@ namespace Online_Shopping.Migrations
                     b.ToTable("Vouchers");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Address", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Address", b =>
                 {
-                    b.HasOne("Entities.Entities.Branch", "Branch")
+                    b.HasOne("Online_Shopping_North.Entities.Branch", "Branch")
                         .WithMany("Addresses")
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Entities.Entities.Customer", "Customer")
+                    b.HasOne("Online_Shopping_North.Entities.Customer", "Customer")
                         .WithMany("Addresses")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Entities.Entities.District", "District")
+                    b.HasOne("Online_Shopping_North.Entities.District", "District")
                         .WithMany("Addresses")
                         .HasForeignKey("DistrictId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Entities.Entities.Employee", "Employee")
+                    b.HasOne("Online_Shopping_North.Entities.Employee", "Employee")
                         .WithMany("Addresses")
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -622,15 +626,15 @@ namespace Online_Shopping.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("Entities.Entities.BranchProduct", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.BranchProduct", b =>
                 {
-                    b.HasOne("Entities.Entities.Branch", "Branch")
+                    b.HasOne("Online_Shopping_North.Entities.Branch", "Branch")
                         .WithMany("Branch_Products")
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Entities.Entities.Product", "Product")
+                    b.HasOne("Online_Shopping_North.Entities.Product", "Product")
                         .WithMany("BranchProducts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -641,9 +645,9 @@ namespace Online_Shopping.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Entities.Entities.City", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.City", b =>
                 {
-                    b.HasOne("Entities.Entities.Region", "Region")
+                    b.HasOne("Online_Shopping_North.Entities.Region", "Region")
                         .WithMany("Cities")
                         .HasForeignKey("RegionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -652,9 +656,9 @@ namespace Online_Shopping.Migrations
                     b.Navigation("Region");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Credential", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Credential", b =>
                 {
-                    b.HasOne("Entities.Entities.Customer", "Customer")
+                    b.HasOne("Online_Shopping_North.Entities.Customer", "Customer")
                         .WithMany("Credentials")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -663,9 +667,9 @@ namespace Online_Shopping.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("Entities.Entities.District", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.District", b =>
                 {
-                    b.HasOne("Entities.Entities.City", "City")
+                    b.HasOne("Online_Shopping_North.Entities.City", "City")
                         .WithMany("Districts")
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -674,14 +678,14 @@ namespace Online_Shopping.Migrations
                     b.Navigation("City");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Employee", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Employee", b =>
                 {
-                    b.HasOne("Entities.Entities.Branch", "Branch")
+                    b.HasOne("Online_Shopping_North.Entities.Branch", "Branch")
                         .WithMany("Employees")
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("Entities.Entities.Role", "Role")
+                    b.HasOne("Online_Shopping_North.Entities.Role", "Role")
                         .WithMany("Employees")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -692,15 +696,15 @@ namespace Online_Shopping.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Item", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Item", b =>
                 {
-                    b.HasOne("Entities.Entities.Order", "Order")
+                    b.HasOne("Online_Shopping_North.Entities.Order", "Order")
                         .WithMany("Items")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Entities.Entities.Product", "Product")
+                    b.HasOne("Online_Shopping_North.Entities.Product", "Product")
                         .WithMany("Items")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -711,22 +715,22 @@ namespace Online_Shopping.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Order", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Order", b =>
                 {
-                    b.HasOne("Entities.Entities.Customer", "Customer")
+                    b.HasOne("Online_Shopping_North.Entities.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Entities.Entities.Payment", "Payment")
+                    b.HasOne("Online_Shopping_North.Entities.Payment", "Payment")
                         .WithMany("Orders")
                         .HasForeignKey("PaymentId");
 
-                    b.HasOne("Entities.Entities.ShippingMethod", "ShippingMethod")
+                    b.HasOne("Online_Shopping_North.Entities.ShippingMethod", "ShippingMethod")
                         .WithMany("Oders")
                         .HasForeignKey("ShippingMethodId");
 
-                    b.HasOne("Entities.Entities.Voucher", "Voucher")
+                    b.HasOne("Online_Shopping_North.Entities.Voucher", "Voucher")
                         .WithMany("Orders")
                         .HasForeignKey("VoucherId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -740,9 +744,9 @@ namespace Online_Shopping.Migrations
                     b.Navigation("Voucher");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Product", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Product", b =>
                 {
-                    b.HasOne("Entities.Entities.Category", "Category")
+                    b.HasOne("Online_Shopping_North.Entities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -751,7 +755,7 @@ namespace Online_Shopping.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Branch", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Branch", b =>
                 {
                     b.Navigation("Addresses");
 
@@ -760,17 +764,17 @@ namespace Online_Shopping.Migrations
                     b.Navigation("Employees");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Category", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Category", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("Entities.Entities.City", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.City", b =>
                 {
                     b.Navigation("Districts");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Customer", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Customer", b =>
                 {
                     b.Navigation("Addresses");
 
@@ -779,49 +783,49 @@ namespace Online_Shopping.Migrations
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("Entities.Entities.District", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.District", b =>
                 {
                     b.Navigation("Addresses");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Employee", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Employee", b =>
                 {
                     b.Navigation("Addresses");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Order", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Order", b =>
                 {
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Payment", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Payment", b =>
                 {
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Product", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Product", b =>
                 {
                     b.Navigation("BranchProducts");
 
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Region", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Region", b =>
                 {
                     b.Navigation("Cities");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Role", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Role", b =>
                 {
                     b.Navigation("Employees");
                 });
 
-            modelBuilder.Entity("Entities.Entities.ShippingMethod", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.ShippingMethod", b =>
                 {
                     b.Navigation("Oders");
                 });
 
-            modelBuilder.Entity("Entities.Entities.Voucher", b =>
+            modelBuilder.Entity("Online_Shopping_North.Entities.Voucher", b =>
                 {
                     b.Navigation("Orders");
                 });

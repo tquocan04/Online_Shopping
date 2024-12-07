@@ -76,49 +76,23 @@ namespace Services.Services
                 IsDefault = true,
             };
             _mapper.Map(requestCustomer, address);
-            
-
-            Order order = new Order
-            {
-                Id = Guid.NewGuid(),
-                CustomerId = customer.Id,
-                TotalPrice = 0,
-            };
-            
+                        
             await _addressRepo.CreateNewAddress(address);
-            await _orderRepo.CreateOrder(order);
-
+            
             await _metadataService.CreateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(customer));
             return customer;
         }
 
-        public async Task<bool> UpdateInforUser(string id, RequestCustomer requestCustomer)
+        public async Task<Customer> UpdateInforUser(Customer customer, RequestCustomer requestCustomer)
         {
-            var user = await _userRepo.GetCustomerByIdAsync(Guid.Parse(id));
-            if (user == null)
+            if (!_userRepo.checkDOB(requestCustomer.Year)
+                || !await _userRepo.checkEmailById(customer.Id, requestCustomer.Email))
             {
-                throw new ArgumentNullException("User cannot be found");
-            }
-            if (requestCustomer == null)
-            {
-                throw new ArgumentNullException("Information cannot be null");
-            }
-
-            DateOnly dob = new DateOnly(requestCustomer.Year, requestCustomer.Month, requestCustomer.Day);
-            if (!_userRepo.checkDOB(requestCustomer.Year))
-            {
-                throw new Exception("Dob is invalid");
-                return false;
-            }
-
-            if (!await _userRepo.checkEmailById(user.Id, requestCustomer.Email))
-            {
-                throw new Exception("Email is existed");
-                return false;
+                return null;
             }
 
             // truy van tim record:
-            var address = await _addressRepo.GetAddressByObjectIdAsync(Guid.Parse(id));
+            var address = await _addressRepo.GetAddressByObjectIdAsync(customer.Id);
 
             if (address.DistrictId != requestCustomer.DistrictId || address.Street != requestCustomer.Street)
             {
@@ -126,30 +100,37 @@ namespace Services.Services
                 await _addressRepo.UpdateAddress(address);
             }
 
-            _mapper.Map(requestCustomer, user);
+            _mapper.Map(requestCustomer, customer);
 
             if (requestCustomer.Picture != null && requestCustomer.Picture.Length > 0)
             {
-                await UploadImage(user, requestCustomer.Picture);
+                await UploadImage(customer, requestCustomer.Picture);
             }
 
-            user.Dob = dob;
-            await _userRepo.UpdateInforCustomer(user);
 
-            await _metadataService.UpdateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(user));
+            customer.Dob = new DateOnly(requestCustomer.Year, requestCustomer.Month, requestCustomer.Day);
 
-            return true;
+            await _userRepo.UpdateInforCustomer(customer);
+
+            await _metadataService.UpdateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(customer));
+
+            return customer;
         }
 
         public async Task<CustomerDTO> GetProfileUser(string cusId)
         {
             var cus = await _userRepo.GetCustomerByIdAsync(Guid.Parse(cusId));
 
-            CustomerDTO cusDTO = _mapper.Map<CustomerDTO>(cus);
+            if (cus != null)
+            {
 
-            cusDTO = await _addressService.SetAddress(cusDTO, cusDTO.Id);
+                CustomerDTO cusDTO = _mapper.Map<CustomerDTO>(cus);
 
-            return cusDTO;
+                cusDTO = await _addressService.SetAddress(cusDTO, cusDTO.Id);
+                return cusDTO;
+            }
+
+            return null;
 
         }
 

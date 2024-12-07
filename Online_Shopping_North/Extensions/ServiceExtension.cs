@@ -14,12 +14,13 @@ namespace Online_Shopping_North.Extensions
             //services.AddScoped<ICityService, CityService>();
             //services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IProductService, ProductService>();
-            //services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICustomerService, CustomerService>();
             //services.AddScoped<ILoginService, LoginService>();
             //services.AddScoped<ITokenService, TokenService>();
-            //services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IOrderService, OrderService>();
             //services.AddScoped<IShippingService, ShippingService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IVoucherService, VoucherService>();
 
             services.AddScoped(typeof(IAddressService<>), typeof(AddressService<>));
 
@@ -34,11 +35,12 @@ namespace Online_Shopping_North.Extensions
             //services.AddScoped<ICityRepo, CityRepo>();
             //services.AddScoped<IPaymentRepo, PaymentRepo>();
             services.AddScoped<IProductRepo, ProductRepo>();
-            //services.AddScoped<IUserRepo, UserRepo>();
+            services.AddScoped<ICustomerRepo, CustomerRepo>();
             //services.AddScoped<ILoginRepo, LoginRepo>();
-            //services.AddScoped<IOrderRepo, OrderRepo>();
+            services.AddScoped<IOrderRepo, OrderRepo>();
             //services.AddScoped<IShippingRepo, ShippingRepo>();
             services.AddScoped<IEmployeeRepo, EmployeeRepo>();
+            services.AddScoped<IVoucherRepo, VoucherRepo>();
             //services.AddScoped(typeof(IBaseRepo<>), typeof(BaseRepo<>));
 
             return services;

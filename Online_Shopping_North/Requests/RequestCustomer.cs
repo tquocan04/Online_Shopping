@@ -28,6 +28,5 @@ namespace Online_Shopping_North.Requests
         [Required]
         public string Street { get; set; } = null!;
 
-        public IFormFile? Picture { get; set; }
     }
 }
