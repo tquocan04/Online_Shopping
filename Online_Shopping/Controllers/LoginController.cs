@@ -28,14 +28,17 @@ namespace Online_Shopping.Controllers
             if(!ModelState.IsValid)
                 return BadRequest("Please fill in all login information");
 
-            var role = await _loginService.LoginAsync(requestLogin);
+            var result = await _loginService.LoginAsync(requestLogin);
+            string role = result.Item1;
+            string? picture = result.Item2;
             if (role == null)
                 return BadRequest("Account is wrong! Please try again");
             var token = _tokenService.GenerateToken(requestLogin, role);
             
             return Ok(new AuthResponse
             {
-                AccessToken = $"Bearer {token}"
+                AccessToken = $"Bearer {token}",
+                Picture = picture,
             });
         }
     }

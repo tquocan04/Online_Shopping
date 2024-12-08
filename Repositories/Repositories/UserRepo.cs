@@ -79,5 +79,14 @@ namespace Repositories.Repositories
             return await _applicationContext.Customers.FindAsync(id);
         }
 
+        public async Task<string?> GetPictureOfCustomer(string email)
+        {
+            return await _applicationContext.Customers
+                .AsNoTracking()
+                .Where(ca => ca.Email.ToLower() == email.ToLower())
+                .Select(ca => ca.Picture)
+                .FirstOrDefaultAsync();
+
+        }
     }
 }

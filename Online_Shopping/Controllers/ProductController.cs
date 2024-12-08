@@ -19,7 +19,7 @@ namespace Online_Shopping.Controllers
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
         private readonly HttpClient _httpClient;
-        private readonly string api = "http://localhost:5285/api/products/north";
+        //private readonly string api = "http://localhost:5285/api/products/north";
 
         public ProductController(IProductService productService, IMapper mapper,
             HttpClient httpClient) 
@@ -34,7 +34,7 @@ namespace Online_Shopping.Controllers
         {
             var newProduct = await _productService.CreateNewProduct(request);
 
-            var north = await _httpClient.PostAsJsonAsync($"{api}/new-product", newProduct);
+            //var north = await _httpClient.PostAsJsonAsync($"{api}/new-product", newProduct);
             return CreatedAtAction(nameof(GetProductById), new { id = newProduct.Id },
                 new Response<Product>
                 {
@@ -110,7 +110,7 @@ namespace Online_Shopping.Controllers
 
             await _productService.UpdatestatusProduct(id);
 
-            await _httpClient.PatchAsync($"{api}/{id}", null);
+            //await _httpClient.PatchAsync($"{api}/{id}", null);
             return Ok(new Response<string>
             {
                 Message = "The status is updated successfully"
@@ -128,7 +128,7 @@ namespace Online_Shopping.Controllers
 
             Product product = await _productService.UpdateInforProduct(id, requestProduct);
 
-            await _httpClient.PutAsJsonAsync($"{api}/update", product);
+            //await _httpClient.PutAsJsonAsync($"{api}/update", product);
 
 
             return Ok(new Response<string>
@@ -142,7 +142,7 @@ namespace Online_Shopping.Controllers
         {
             await _productService.DeleteProduct(id);
 
-            await _httpClient.DeleteAsync($"{api}/delete/{id}");
+            //await _httpClient.DeleteAsync($"{api}/delete/{id}");
             return NoContent();
         }
     }

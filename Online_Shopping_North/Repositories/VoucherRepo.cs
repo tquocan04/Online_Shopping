@@ -13,16 +13,17 @@ namespace Online_Shopping_North.Repositories
             _applicationContext = applicationContext;
         }
 
-        public async Task<bool> CheckCodeVoucher(string code)
-        {
-            return await _applicationContext.Vouchers
-                .AnyAsync(v => v.Code.ToUpper() == code.ToUpper());
-        }
-
         public async Task CreateNewVoucherAsync(Voucher voucher)
         {
             _applicationContext.Vouchers.Add(voucher);
             await _applicationContext.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Voucher>> GetVoucherListAsync()
+        {
+            return await _applicationContext.Vouchers
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }

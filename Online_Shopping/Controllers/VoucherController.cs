@@ -17,7 +17,7 @@ namespace Online_Shopping.Controllers
         private readonly HttpClient _httpClient;
 
 
-        private readonly string api = "http://localhost:5285/api/vouchers/north";
+        //private readonly string api = "http://localhost:5285/api/vouchers/north";
 
         public VoucherController(IVoucherService voucherService, HttpClient httpClient)
         {
@@ -47,7 +47,7 @@ namespace Online_Shopping.Controllers
                 });
             }
 
-            await _httpClient.PostAsJsonAsync($"{api}/new-voucher", voucher);
+            //await _httpClient.PostAsJsonAsync($"{api}/new-voucher", voucher);
 
             return CreatedAtAction(nameof(GetAllVouchers), new { id = voucher.Id }, voucher);
         }
@@ -57,8 +57,6 @@ namespace Online_Shopping.Controllers
         {
             var list = await _voucherService.GetAllVouchers();
             
-
-
             if (!list.Any())
             {
                 return NotFound(new Response<string>
@@ -67,11 +65,21 @@ namespace Online_Shopping.Controllers
                 });
             }
 
-            return Ok(new Response<IEnumerable<VoucherDTO>>
-            {
-                Message = "List vouchers in global",
-                Data = list
-            });
+            return Ok(list);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetDetailVoucher(Guid id)
+        {
+            VoucherDTO voucher = await _voucherService.GetDetailVoucher(id);
+
+            if (voucher == null)
+                return NotFound(new Response<string>
+                {
+                    Message = "This voucher does not exist!"
+                });
+
+            return Ok(voucher);
         }
     }
 }

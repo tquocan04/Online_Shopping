@@ -23,7 +23,17 @@ namespace Online_Shopping_North.Controllers
             await _voucherService.CreateNewVoucher(voucherDTO);
 
 
-            return CreatedAtAction(nameof(CreateNewVoucher), new { id = voucherDTO.Id });
+            return CreatedAtAction(nameof(GetAllVouchers), new { id = voucherDTO.Id });
         }
+
+        [HttpGet]
+        public async Task<IEnumerable<VoucherDTO>> GetAllVouchers()
+        {
+            var list = await _voucherService.GetAllVouchers();
+
+            return list;
+        }
+
+
     }
 }

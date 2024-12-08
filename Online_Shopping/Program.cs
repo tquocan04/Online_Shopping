@@ -1,4 +1,5 @@
-﻿using DTOs.MongoDb.Setting;
+﻿using DotNetEnv;
+using DTOs.MongoDb.Setting;
 using Microsoft.EntityFrameworkCore;
 using Online_Shopping.Context;
 using Online_Shopping.Extensions;
@@ -6,6 +7,10 @@ using Services;
 using Services.MongoDB;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Env.Load();
+builder.Configuration["ConnectionStrings:DbConnection"] = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+
 
 // Add services to the container.
 
@@ -17,6 +22,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationContext> (options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection"),
     b => b.MigrationsAssembly("Online_Shopping")));
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000") // Thay localhost:3000 bằng domain của frontend
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); // Nếu sử dụng cookie, bật tùy chọn này
+    });
+});
 
 // Mongo
 builder.Services.Configure<MongoDBSetting>(

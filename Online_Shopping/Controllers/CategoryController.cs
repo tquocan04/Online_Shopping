@@ -17,7 +17,7 @@ namespace Online_Shopping.Controllers
     {
         private readonly ICategoryService _categoryService;
         private readonly HttpClient _httpClient;
-        private readonly string api = "http://localhost:5285/api/categories/north";
+        //private readonly string api = "http://localhost:5285/api/categories/north";
 
         public CategoryController(ICategoryService categoryService, HttpClient httpClient) 
         {
@@ -30,7 +30,7 @@ namespace Online_Shopping.Controllers
         {
             var newCategory = await _categoryService.CreateNewCategory(request);
 
-            var north = await _httpClient.PostAsJsonAsync($"{api}/new-category", newCategory);
+            //var north = await _httpClient.PostAsJsonAsync($"{api}/new-category", newCategory);
 
             return CreatedAtAction(
                 nameof(GetCategoryById),
@@ -81,7 +81,7 @@ namespace Online_Shopping.Controllers
 
             await _categoryService.DeleteCategoryById(Id);
 
-            await _httpClient.DeleteAsync($"{api}/{Id}");
+            //await _httpClient.DeleteAsync($"{api}/{Id}");
             return NoContent();
         }
 
@@ -103,7 +103,7 @@ namespace Online_Shopping.Controllers
                 });
             }
 
-            await _httpClient.PatchAsJsonAsync($"{api}/{Id}", request);
+            //await _httpClient.PatchAsJsonAsync($"{api}/{Id}", request);
             return Ok(new Response<RequestCategory>
             {
                 Message = "Category is updated successfully",

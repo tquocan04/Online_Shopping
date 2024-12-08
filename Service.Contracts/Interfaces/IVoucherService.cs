@@ -7,5 +7,6 @@ namespace Service.Contracts.Interfaces
     {
         Task<VoucherDTO> CreateNewVoucher(RequestVoucher requestVoucher);
         Task<IEnumerable<VoucherDTO>> GetAllVouchers();
+        Task<VoucherDTO> GetDetailVoucher(Guid id);
     }
 }

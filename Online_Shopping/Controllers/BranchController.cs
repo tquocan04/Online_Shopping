@@ -23,7 +23,7 @@ namespace Online_Shopping.Controllers
         private readonly HttpClient _httpClient;
         private readonly IAddressRepo _addressRepo;
         private readonly IAddressService<Branch> _addressService;
-        private readonly string api = "http://localhost:5285/api/branches/north";
+        //private readonly string api = "http://localhost:5285/api/branches/north";
 
         public BranchController(IBranchService branchService, IMapper mapper,
             HttpClient httpClient, IAddressService<Branch> addressService,
@@ -41,10 +41,10 @@ namespace Online_Shopping.Controllers
         {
             BranchDTO branchDTO = await _branchService.AddNewBranch(requestBranch);
 
-            if (requestBranch.RegionId == "Bac")
-            {
-                await _httpClient.PostAsJsonAsync($"{api}/new-branch/{branchDTO.Id}", requestBranch);
-            }
+            //if (requestBranch.RegionId == "Bac")
+            //{
+            //    await _httpClient.PostAsJsonAsync($"{api}/new-branch/{branchDTO.Id}", requestBranch);
+            //}
 
             return CreatedAtAction(nameof(GetBranch), new { id = branchDTO.Id }, requestBranch);
         }
@@ -78,15 +78,15 @@ namespace Online_Shopping.Controllers
                 });
             }
 
-            if (branch.RegionId == "Bac")
-            {
-                var response = await _httpClient.GetAsync($"{api}/{id}");
-                if (response.IsSuccessStatusCode)
-                {
-                    return Ok(
-                        await response.Content.ReadFromJsonAsync<BranchDTO>());
-                }
-            }
+            //if (branch.RegionId == "Bac")
+            //{
+            //    var response = await _httpClient.GetAsync($"{api}/{id}");
+            //    if (response.IsSuccessStatusCode)
+            //    {
+            //        return Ok(
+            //            await response.Content.ReadFromJsonAsync<BranchDTO>());
+            //    }
+            //}
 
             return Ok(branch);
         }
@@ -104,10 +104,10 @@ namespace Online_Shopping.Controllers
             }
 
             await _branchService.DeleteBranch(id);
-            if (branch.RegionId == "Bac")
-            {
-                await _httpClient.DeleteAsync($"{api}/{id}");
-            }
+            //if (branch.RegionId == "Bac")
+            //{
+            //    await _httpClient.DeleteAsync($"{api}/{id}");
+            //}
             
             
             return NoContent();
@@ -126,17 +126,17 @@ namespace Online_Shopping.Controllers
             string currentRegionId = await _addressService.GetRegionIdOfObject(Guid.Parse(id));
             await _branchService.UpdateBranch(id, requestBranch);
 
-            if (currentRegionId == "Bac")
-            {
-                if (requestBranch.RegionId == "Bac")
-                {
-                    await _httpClient.PutAsJsonAsync($"{api}/{id}", requestBranch);
-                }
-                else
-                {
-                    await _httpClient.DeleteAsync($"{api}/{id}");
-                }
-            }
+            //if (currentRegionId == "Bac")
+            //{
+            //    if (requestBranch.RegionId == "Bac")
+            //    {
+            //        await _httpClient.PutAsJsonAsync($"{api}/{id}", requestBranch);
+            //    }
+            //    else
+            //    {
+            //        await _httpClient.DeleteAsync($"{api}/{id}");
+            //    }
+            //}
 
             return NoContent();
         }

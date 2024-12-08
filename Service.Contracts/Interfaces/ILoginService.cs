@@ -4,6 +4,7 @@ namespace Service.Contracts.Interfaces
 {
     public interface ILoginService
     {
-        Task<string> LoginAsync(RequestLogin requestLogin);
+        //<Role, Picture>
+        Task<Tuple<string, string?>> LoginAsync(RequestLogin requestLogin);
     }
 }

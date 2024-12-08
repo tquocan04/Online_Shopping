@@ -30,8 +30,8 @@ namespace Online_Shopping.Controllers
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly HttpClient _httpClient;
-        private readonly string api = "http://localhost:5285/api/authentication/north";
-        private readonly string apiOrder = "http://localhost:5285/api/orders/north";
+        //private readonly string api = "http://localhost:5285/api/authentication/north";
+        //private readonly string apiOrder = "http://localhost:5285/api/orders/north";
 
         public AuthenticationController(IUserRepo userRepo, IUserService userService,
             HttpClient httpClient, IOrderService orderService, IMapper mapper,
@@ -80,12 +80,12 @@ namespace Online_Shopping.Controllers
 
             distributedCustomer = _mapper.Map(requestCustomer, distributedCustomer);
 
-            if (requestCustomer.RegionId == "Bac")
-            {
-                await _httpClient.PostAsJsonAsync($"{api}/register", distributedCustomer);
+            //if (requestCustomer.RegionId == "Bac")
+            //{
+            //    await _httpClient.PostAsJsonAsync($"{api}/register", distributedCustomer);
                 
-                await _httpClient.PostAsJsonAsync($"{apiOrder}/{order.Id}/{order.CustomerId}", order);
-            }
+            //    await _httpClient.PostAsJsonAsync($"{apiOrder}/{order.Id}/{order.CustomerId}", order);
+            //}
 
             return CreatedAtAction("GetProfileUser", new { id = newCustomer.Id }, distributedCustomer);
         }
@@ -129,44 +129,44 @@ namespace Online_Shopping.Controllers
 
             distributedCustomer = _mapper.Map(requestCustomer, distributedCustomer);
             
-            if (currentRegionId == "Bac")
-            {
-                if (requestCustomer.RegionId == "Bac")
-                {
-                    await _httpClient.PutAsJsonAsync($"{api}/profile", distributedCustomer);
-                }
-                else
-                {
-                    await _httpClient.DeleteAsync($"{api}/profile/{customer.Id}");
+            //if (currentRegionId == "Bac")
+            //{
+            //    if (requestCustomer.RegionId == "Bac")
+            //    {
+            //        await _httpClient.PutAsJsonAsync($"{api}/profile", distributedCustomer);
+            //    }
+            //    else
+            //    {
+            //        await _httpClient.DeleteAsync($"{api}/profile/{customer.Id}");
 
-                }
-            }
-            else if (currentRegionId != "Bac")
-            {
-                if (requestCustomer.RegionId == "Bac")
-                {
-                    await _httpClient.PostAsJsonAsync($"{api}/register", distributedCustomer);
-                    var listOrder = await _orderRepo.GetListOrderByCusId(customer.Id);
-                    for (int i = 0; i < listOrder.Count(); i++)
-                    {
-                        await _httpClient.PostAsJsonAsync($"{apiOrder}", listOrder[i]);
-                        var listItem = await _orderRepo.GetListItemByOrderId(listOrder[i].Id);
-                        if (listItem.Count() != 0)
-                        {
-                            for (int j = 0; j < listItem.Count(); j++)
-                            {
-                                await _httpClient.PostAsJsonAsync($"{apiOrder}/item", listItem[j]);
-                            }
-                        }
+            //    }
+            //}
+            //else if (currentRegionId != "Bac")
+            //{
+            //    if (requestCustomer.RegionId == "Bac")
+            //    {
+            //        await _httpClient.PostAsJsonAsync($"{api}/register", distributedCustomer);
+            //        var listOrder = await _orderRepo.GetListOrderByCusId(customer.Id);
+            //        for (int i = 0; i < listOrder.Count(); i++)
+            //        {
+            //            await _httpClient.PostAsJsonAsync($"{apiOrder}", listOrder[i]);
+            //            var listItem = await _orderRepo.GetListItemByOrderId(listOrder[i].Id);
+            //            if (listItem.Count() != 0)
+            //            {
+            //                for (int j = 0; j < listItem.Count(); j++)
+            //                {
+            //                    await _httpClient.PostAsJsonAsync($"{apiOrder}/item", listItem[j]);
+            //                }
+            //            }
                         
-                    }
-                    return Ok(new Response<string>
-                    {
-                        Message = "Change orders of this customer successfully"
-                    });
-                }
+            //        }
+            //        return Ok(new Response<string>
+            //        {
+            //            Message = "Change orders of this customer successfully"
+            //        });
+            //    }
 
-            }
+            //}
 
             return Ok(new Response<Customer>
             {
@@ -181,26 +181,26 @@ namespace Online_Shopping.Controllers
         {
             Guid id = await _tokenService.GetEmailCustomerByToken();
 
-            string regionId = await _addressService.GetRegionIdOfObject(id);
-            if (regionId == "Bac")
-            {
-                var response = await _httpClient.GetAsync($"{api}/profile/{id}");
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<CustomerDTO>();
-                    if (result == null)
-                        return NotFound(new Response<string>
-                        {
-                            Message = "This customer does not exist in North region!"
-                        });
+            //string regionId = await _addressService.GetRegionIdOfObject(id);
+            //if (regionId == "Bac")
+            //{
+            //    var response = await _httpClient.GetAsync($"{api}/profile/{id}");
+            //    if (response.IsSuccessStatusCode)
+            //    {
+            //        var result = await response.Content.ReadFromJsonAsync<CustomerDTO>();
+            //        if (result == null)
+            //            return NotFound(new Response<string>
+            //            {
+            //                Message = "This customer does not exist in North region!"
+            //            });
 
-                    return Ok(new Response<CustomerDTO>
-                    {
-                        Message = "This customer is in North region!",
-                        Data = result
-                    });
-                }
-            }
+            //        return Ok(new Response<CustomerDTO>
+            //        {
+            //            Message = "This customer is in North region!",
+            //            Data = result
+            //        });
+            //    }
+            //}
 
             var user = await _userService.GetProfileUser(id.ToString());
             return Ok(user);

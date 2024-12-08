@@ -25,5 +25,13 @@ namespace Online_Shopping_North.Services
             await _voucherRepo.CreateNewVoucherAsync(voucher);
 
         }
+
+        public async Task<IEnumerable<VoucherDTO>> GetAllVouchers()
+        {
+            var list = await _voucherRepo.GetVoucherListAsync();
+
+            var result = _mapper.Map<IEnumerable<VoucherDTO>>(list);
+            return result;
+        }
     }
 }

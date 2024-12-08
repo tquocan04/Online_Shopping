@@ -6,5 +6,6 @@ namespace Online_Shopping_North.Service.Contracts
     public interface IVoucherService
     {
         Task CreateNewVoucher(VoucherDTO voucherDTO);
+        Task<IEnumerable<VoucherDTO>> GetAllVouchers();
     }
 }

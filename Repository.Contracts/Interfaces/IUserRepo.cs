@@ -13,5 +13,6 @@ namespace Repository.Contracts.Interfaces
         Task UpdateInforCustomer(Customer customer);
         Task<string?> GetStreetDefaultByCustomerIdAsync(Guid customerId);
         Task<Guid> GetDistrictDefaultByCustomerIdAsync(Guid customerId);
+        Task<string?> GetPictureOfCustomer(string email);
     }
 }

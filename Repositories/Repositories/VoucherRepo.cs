@@ -26,6 +26,12 @@ namespace Repositories.Repositories
             await _applicationContext.SaveChangesAsync();
         }
 
+        public async Task<Voucher> GetDetailVoucherByIdAsync(Guid id)
+        {
+            return await _applicationContext.Vouchers.AsNoTracking()
+                .FirstOrDefaultAsync(v => v.Id == id);
+        }
+
         public async Task<IEnumerable<Voucher>> GetVoucherListAsync()
         {
             return await _applicationContext.Vouchers

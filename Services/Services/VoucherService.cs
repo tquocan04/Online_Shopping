@@ -67,5 +67,11 @@ namespace Services.Services
             var result = _mapper.Map<IEnumerable<VoucherDTO>>(list);
             return result;
         }
+
+        public async Task<VoucherDTO> GetDetailVoucher(Guid id)
+        {
+            Voucher voucher = await _voucherRepo.GetDetailVoucherByIdAsync(id);
+            return _mapper.Map<VoucherDTO>(voucher);
+        }
     }
 }

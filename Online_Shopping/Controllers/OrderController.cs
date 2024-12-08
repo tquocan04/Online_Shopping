@@ -22,7 +22,7 @@ namespace Online_Shopping.Controllers
         private readonly ITokenService _tokenService;
         private readonly HttpClient _httpClient;
 
-        private readonly string apiOrder = "http://localhost:5285/api/orders/north";
+        //private readonly string apiOrder = "http://localhost:5285/api/orders/north";
 
         
 
@@ -40,18 +40,18 @@ namespace Online_Shopping.Controllers
         {
             Guid id = await _tokenService.GetEmailCustomerByToken();
             string currentRegion = await _addressService.GetRegionIdOfObject(id);
-            if (currentRegion == "Bac")
-            {
-                var response = await _httpClient.GetAsync($"{apiOrder}/cart/{id}");
-                if (response.IsSuccessStatusCode)
-                {
-                    return Ok(new Response<OrderCartDTO>{
-                        Message = "Cart from customer in North",
-                        Data = await response.Content.ReadFromJsonAsync<OrderCartDTO>()
-                    });
-                }
+            //if (currentRegion == "Bac")
+            //{
+            //    var response = await _httpClient.GetAsync($"{apiOrder}/cart/{id}");
+            //    if (response.IsSuccessStatusCode)
+            //    {
+            //        return Ok(new Response<OrderCartDTO>{
+            //            Message = "Cart from customer in North",
+            //            Data = await response.Content.ReadFromJsonAsync<OrderCartDTO>()
+            //        });
+            //    }
 
-            }
+            //}
             var cart = await _orderService.GetOrderCart(id.ToString());
             return Ok(cart);
         }
@@ -61,11 +61,11 @@ namespace Online_Shopping.Controllers
         {
             Guid id = await _tokenService.GetEmailCustomerByToken();
             string currentRegion = await _addressService.GetRegionIdOfObject(id);
-            if (currentRegion == "Bac")
-            {
-                await _httpClient.PostAsync($"{apiOrder}/new-item/{id}/{prodId}", null);
+            //if (currentRegion == "Bac")
+            //{
+            //    await _httpClient.PostAsync($"{apiOrder}/new-item/{id}/{prodId}", null);
 
-            }
+            //}
             await _orderService.AddToCart(id.ToString(), prodId);
             return NoContent();
         }
@@ -75,10 +75,10 @@ namespace Online_Shopping.Controllers
         {
             Guid id = await _tokenService.GetEmailCustomerByToken();
             string currentRegion = await _addressService.GetRegionIdOfObject(id);
-            if (currentRegion == "Bac")
-            {
-                await _httpClient.DeleteAsync($"{apiOrder}/delete-item/{id}/{prodId}");
-            }
+            //if (currentRegion == "Bac")
+            //{
+            //    await _httpClient.DeleteAsync($"{apiOrder}/delete-item/{id}/{prodId}");
+            //}
             
             await _orderService.DeleteItemInCart(id.ToString(), prodId);
             
