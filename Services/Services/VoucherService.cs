@@ -19,7 +19,7 @@ namespace Services.Services
             _mapper = mapper;
         }
 
-        private bool CheckExpireTime(int year, int month, int day)
+        public bool CheckExpireTime(int year, int month, int day)
         {
             if (year < DateTime.Now.Year)
             {
@@ -72,6 +72,24 @@ namespace Services.Services
         {
             Voucher voucher = await _voucherRepo.GetDetailVoucherByIdAsync(id);
             return _mapper.Map<VoucherDTO>(voucher);
+        }
+
+        public async Task<Voucher?> UpdateVoucher(Guid id, RequestVoucher requestVoucher)
+        {
+            if (!CheckExpireTime(requestVoucher.Year, requestVoucher.Month, requestVoucher.Day)
+                || await _voucherRepo.CheckCodeVoucherById(id, requestVoucher.Code))
+                return null;
+
+            Voucher voucher = new Voucher
+            {
+                Id = id,
+            };
+
+            _mapper.Map(requestVoucher, voucher);
+            voucher.ExpiryDate = new DateOnly(requestVoucher.Year, requestVoucher.Month, requestVoucher.Day);
+            await _voucherRepo.UpdateVoucherAsync(voucher);
+
+            return voucher;
         }
     }
 }

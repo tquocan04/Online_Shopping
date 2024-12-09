@@ -4,6 +4,7 @@ using DTOs.DTOs;
 using DTOs.Request;
 using DTOs.Responses;
 using Entities.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts.Interfaces;
@@ -30,6 +31,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpPost("new-product")]
+        [Authorize(Roles = "Admin, Staff")]
         public async Task<IActionResult> CreateNewProduct([FromForm] RequestProduct request)
         {
             var newProduct = await _productService.CreateNewProduct(request);
@@ -73,6 +75,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpGet("hidden")]
+        [Authorize(Roles = "Admin, Staff")]
         public async Task<IActionResult> GetProductsHidden()
         {
             var products = await _productService.GetProductsHidden();
@@ -99,6 +102,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpPatch("{id}")]
+        [Authorize(Roles = "Admin, Staff")]
         public async Task<IActionResult> UpdateStatusProductById(string id)
         {
             var prodduct = await _productService.GetProductById(id);
@@ -119,6 +123,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpPut("update/{id}")]
+        [Authorize(Roles = "Admin, Staff")]
         public async Task<IActionResult> UpdateInforProduct(string id, [FromForm] RequestProduct requestProduct)
         {
             var prodduct = await _productService.GetProductById(id);
@@ -138,6 +143,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpDelete("delete/{id}")]
+        [Authorize(Roles = "Admin, Staff")]
         public async Task<IActionResult> DeleteProduct(string id)
         {
             await _productService.DeleteProduct(id);

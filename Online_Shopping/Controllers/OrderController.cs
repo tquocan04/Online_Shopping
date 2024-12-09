@@ -1,4 +1,5 @@
-﻿using DTOs.DTOs;
+﻿using AutoMapper;
+using DTOs.DTOs;
 using DTOs.Responses;
 using Entities.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -19,26 +20,40 @@ namespace Online_Shopping.Controllers
     {
         private readonly IOrderService _orderService;
         private readonly IAddressService<Customer> _addressService;
+        private readonly IPaymentRepo _paymentRepo;
         private readonly ITokenService _tokenService;
+        private readonly IMapper _mapper;
         private readonly HttpClient _httpClient;
 
         //private readonly string apiOrder = "http://localhost:5285/api/orders/north";
 
         
 
-        public OrderController(IOrderService orderService, IAddressService<Customer> addressService,
+        public OrderController(IOrderService orderService,
+            IPaymentRepo paymentRepo,
+            IAddressService<Customer> addressService,
+            IMapper mapper,
             HttpClient httpClient, ITokenService tokenService) 
         {
             _orderService = orderService;
             _addressService = addressService;
+            _paymentRepo = paymentRepo;
             _tokenService = tokenService;
+            _mapper = mapper;
             _httpClient = httpClient;
         }
         
         [HttpGet("cart")]
+        //[Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetCart() 
         {
             Guid id = await _tokenService.GetEmailCustomerByToken();
+            if (id == Guid.Empty)
+                return BadRequest(new Response<string>
+                {
+                    Message = "Customer is invalid!"
+                });
+
             string currentRegion = await _addressService.GetRegionIdOfObject(id);
             //if (currentRegion == "Bac")
             //{
@@ -57,9 +72,17 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpPost("new-item")]
+        //[Authorize(Roles = "Customer")]
         public async Task<IActionResult> AddToCart(string prodId)
         {
             Guid id = await _tokenService.GetEmailCustomerByToken();
+
+            if (id == Guid.Empty)
+                return BadRequest(new Response<string>
+                {
+                    Message = "Customer is invalid!"
+                });
+
             string currentRegion = await _addressService.GetRegionIdOfObject(id);
             //if (currentRegion == "Bac")
             //{
@@ -83,6 +106,71 @@ namespace Online_Shopping.Controllers
             await _orderService.DeleteItemInCart(id.ToString(), prodId);
             
             return NoContent();
+        }
+
+        [HttpPut("pay/{paymentId}/{shippingId}")]
+        //[Authorize(Roles = "Customer")]
+        public async Task<IActionResult> PaytoBill(string paymentId, string shippingId, 
+            [FromQuery] string? voucherCode)
+        {
+            if (await _paymentRepo.GetPaymentIdAsync(paymentId) == null)
+                return BadRequest(new Response<string>
+                {
+                    Message = "Does not exist this payment!"
+                });
+            
+            if (await _paymentRepo.GetPaymentIdAsync(paymentId) == null)
+                return BadRequest(new Response<string>
+                {
+                    Message = "Does not exist this payment!"
+                });
+
+
+            Guid id = await _tokenService.GetEmailCustomerByToken();
+            if (id == Guid.Empty)
+                return BadRequest(new Response<string>
+                {
+                    Message = "Customer is invalid!"
+                });
+
+            var order = await _orderService.CartToBill(id, paymentId, shippingId, voucherCode);
+
+
+            if (order == null)
+                return BadRequest(new Response<string>
+                {
+                    Message = "Cannot create this bill!"
+                });
+            //if (currentRegion == "Bac")
+            //{
+            //    await _httpClient.DeleteAsync($"{apiOrder}/delete-item/{id}/{prodId}");
+            //}
+
+
+            return Ok(order);
+        }
+
+        [HttpGet("bills")]
+        //[Authorize(Roles = "Customer")]
+        public async Task<IActionResult> GetBills()
+        {
+            
+            Guid id = await _tokenService.GetEmailCustomerByToken();
+            if (id == Guid.Empty)
+                return BadRequest(new Response<string>
+                {
+                    Message = "Customer is invalid!"
+                });
+            
+            var listBills = await _orderService.GetOrderBill(id);
+
+            if (listBills.Count == 0)
+                return NotFound(new Response<string>
+                {
+                    Message = "Does not have any bills!"
+                });
+
+            return Ok(listBills);
         }
     }
 }

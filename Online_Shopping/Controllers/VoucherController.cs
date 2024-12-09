@@ -1,6 +1,8 @@
 ﻿using DTOs.DTOs;
 using DTOs.Request;
 using DTOs.Responses;
+using Entities.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts.Interfaces;
@@ -17,7 +19,7 @@ namespace Online_Shopping.Controllers
         private readonly HttpClient _httpClient;
 
 
-        //private readonly string api = "http://localhost:5285/api/vouchers/north";
+        private readonly string api = "http://localhost:5285/api/vouchers/north";
 
         public VoucherController(IVoucherService voucherService, HttpClient httpClient)
         {
@@ -27,6 +29,7 @@ namespace Online_Shopping.Controllers
 
 
         [HttpPost("new-voucher")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateNewVoucher([FromBody] RequestVoucher requestVoucher)
         {
             if (requestVoucher == null)
@@ -53,6 +56,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllVouchers()
         {
             var list = await _voucherService.GetAllVouchers();
@@ -69,6 +73,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetDetailVoucher(Guid id)
         {
             VoucherDTO voucher = await _voucherService.GetDetailVoucher(id);
@@ -80,6 +85,37 @@ namespace Online_Shopping.Controllers
                 });
 
             return Ok(voucher);
+        }
+
+        [HttpPut("{id}")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateVoucher(Guid id, [FromBody] RequestVoucher requestVoucher)
+        {
+            if (requestVoucher == null)
+                return NotFound(new Response<string>
+                {
+                    Message = "Invalid new information!"
+                });
+            
+
+            var existingvoucher = await _voucherService.GetDetailVoucher(id);
+            if (existingvoucher == null)
+                return NotFound(new Response<string>
+                {
+                    Message = "This voucher does not exist to update!"
+                });
+
+            Voucher? voucher = await _voucherService.UpdateVoucher(id, requestVoucher);
+            if (voucher == null)
+                return BadRequest(new Response<string>
+                {
+                    Message = "Expire time or Code voucher are invalid! Please check again!"
+                });
+
+            await _httpClient.PutAsJsonAsync($"{api}/{id}", voucher);
+
+
+            return Ok(requestVoucher);
         }
     }
 }

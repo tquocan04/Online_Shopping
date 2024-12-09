@@ -91,6 +91,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpPut("profile")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> UpdateUser([FromForm] RequestCustomer requestCustomer)
         {
             Guid id = await _tokenService.GetEmailCustomerByToken();

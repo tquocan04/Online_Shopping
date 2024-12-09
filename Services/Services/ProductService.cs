@@ -117,7 +117,7 @@ namespace Services.Services
             await _productRepo.CreateNewProductAsync(product);
 
             var prodMetadata = await ConvertProductToProductMetadata(product);
-            await _metadataService.CreateProductMetadataAsync(prodMetadata);
+            //await _metadataService.CreateProductMetadataAsync(prodMetadata);
 
             return product;
         }
@@ -162,7 +162,7 @@ namespace Services.Services
 
             await _productRepo.UpdateInforProduct(product);
 
-            await _metadataService.UpdateProductMetadataAsync(await ConvertProductToProductMetadata(product));
+            //await _metadataService.UpdateProductMetadataAsync(await ConvertProductToProductMetadata(product));
 
             return product;
         }
@@ -183,7 +183,7 @@ namespace Services.Services
             var product = await _productRepo.GetProductByIdAsync(Guid.Parse(id));
             await _productRepo.DeleteProductAsync(product);
 
-            await _metadataService.DeleteProductMetadataAsync(await ConvertProductToProductMetadata(product));
+            //await _metadataService.DeleteProductMetadataAsync(await ConvertProductToProductMetadata(product));
         }
     }
 }

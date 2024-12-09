@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Online_Shopping_North.DTOs;
+using Online_Shopping_North.Entities;
+using Online_Shopping_North.Repository.Contracts;
 using Online_Shopping_North.Responses;
 using Online_Shopping_North.Service.Contracts;
 
@@ -11,10 +13,12 @@ namespace Online_Shopping_North.Controllers
     public class VoucherController : ControllerBase
     {
         private readonly IVoucherService _voucherService;
+        private readonly IVoucherRepo _voucherRepo;
 
-        public VoucherController(IVoucherService voucherService)
+        public VoucherController(IVoucherService voucherService, IVoucherRepo voucherRepo)
         {
             _voucherService = voucherService;
+            _voucherRepo = voucherRepo;
         }
 
         [HttpPost("new-voucher")]
@@ -34,6 +38,12 @@ namespace Online_Shopping_North.Controllers
             return list;
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateVoucher(Guid id, [FromBody] Voucher voucher)
+        {
+            await _voucherRepo.UpdateVoucherAsync(voucher);
 
+            return Ok();
+        }
     }
 }

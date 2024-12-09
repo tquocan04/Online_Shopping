@@ -16,5 +16,7 @@ namespace Repository.Contracts.Interfaces
         Task UpdateQuantityItemToCart(Item item);
         Task DeleteItemInCart(Item item);
         Task<Item> GetItem(Guid orderId, Guid prodId);
+        Task CartToBillAsync(Order order);
+        Task<List<Order>> GetListBillAsync(Guid customerId);
     }
 }

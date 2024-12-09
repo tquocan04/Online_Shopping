@@ -18,14 +18,14 @@ namespace Repositories.Repositories
 
         public async Task AddItemToCart(Item item)
         {
-            await _applicationContext.Items.AddAsync(item);
+            _applicationContext.Items.Add(item);
             
             await _applicationContext.SaveChangesAsync();
         }
 
         public async Task CreateOrder(Order order)
         {
-            await _applicationContext.Orders.AddAsync(order);
+            _applicationContext.Orders.Add(order);
             await _applicationContext.SaveChangesAsync();
         }
 
@@ -107,6 +107,22 @@ namespace Repositories.Repositories
                 //.Select(o => o.Items)
                 //.Include(o => o.Items)
                 //    .ThenInclude(i => i.Product)
+                .ToListAsync();
+        }
+
+        public async Task CartToBillAsync(Order order)
+        {
+            _applicationContext.Orders.Update(order);
+            await _applicationContext.SaveChangesAsync();
+        }
+
+        public async Task<List<Order>> GetListBillAsync(Guid customerId)
+        {
+            return await _applicationContext.Orders
+                .AsNoTracking()
+                .Include(o => o.Items)
+                .Where(o => o.IsCart == false && o.CustomerId == customerId)
+                .OrderByDescending(o => o.OrderDate)
                 .ToListAsync();
         }
     }

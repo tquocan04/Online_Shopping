@@ -2,7 +2,6 @@
 using DTOs.DTOs;
 using DTOs.MongoDb;
 using DTOs.Request;
-using DTOs.Responses;
 using Entities.Entities;
 
 namespace Services
@@ -49,6 +48,7 @@ namespace Services
                             opt => opt.Ignore());
 
             CreateMap<Order, OrderCartDTO>().ReverseMap();
+            CreateMap<Order, OrderBillDTO>().ReverseMap();
             CreateMap<Item, ItemDTO>().ReverseMap();
 
             CreateMap<Product, ItemDTO>()

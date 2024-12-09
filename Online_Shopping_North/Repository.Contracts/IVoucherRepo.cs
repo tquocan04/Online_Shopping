@@ -6,5 +6,6 @@ namespace Online_Shopping_North.Repository.Contracts
     {
         Task CreateNewVoucherAsync(Voucher voucher);
         Task<IEnumerable<Voucher>> GetVoucherListAsync();
+        Task UpdateVoucherAsync(Voucher voucher);
     }
 }

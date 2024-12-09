@@ -25,5 +25,10 @@ namespace Online_Shopping_North.Repositories
                 .AsNoTracking()
                 .ToListAsync();
         }
+        public async Task UpdateVoucherAsync(Voucher voucher)
+        {
+            _applicationContext.Vouchers.Update(voucher);
+            await _applicationContext.SaveChangesAsync();
+        }
     }
 }
