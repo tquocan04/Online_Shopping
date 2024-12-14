@@ -6,8 +6,8 @@ namespace Service.Contracts.Interfaces
     public interface IEmployeeService
     {
         Task<EmployeeDTO> AddNewEmployee(RequestEmployee employee);
-        Task DeleteEmployee(string id);
-        Task<EmployeeDTO> GetProfileEmployee(string id);
-        Task<bool> UpdateProfile(string id, RequestEmployee requestEmployee);
+        Task DeleteEmployee(Guid id);
+        Task<EmployeeDTO> GetProfileEmployee(Guid id);
+        Task<bool> UpdateProfile(Guid id, RequestEmployee requestEmployee);
     }
 }

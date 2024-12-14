@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DTOs.DTOs;
+using DTOs.Request;
 using DTOs.Responses;
 using Entities.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +21,6 @@ namespace Online_Shopping.Controllers
     {
         private readonly IOrderService _orderService;
         private readonly IAddressService<Customer> _addressService;
-        private readonly IPaymentRepo _paymentRepo;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly HttpClient _httpClient;
@@ -28,16 +28,13 @@ namespace Online_Shopping.Controllers
         //private readonly string apiOrder = "http://localhost:5285/api/orders/north";
 
         
-
         public OrderController(IOrderService orderService,
-            IPaymentRepo paymentRepo,
             IAddressService<Customer> addressService,
             IMapper mapper,
             HttpClient httpClient, ITokenService tokenService) 
         {
             _orderService = orderService;
             _addressService = addressService;
-            _paymentRepo = paymentRepo;
             _tokenService = tokenService;
             _mapper = mapper;
             _httpClient = httpClient;
@@ -67,13 +64,13 @@ namespace Online_Shopping.Controllers
             //    }
 
             //}
-            var cart = await _orderService.GetOrderCart(id.ToString());
+            var cart = await _orderService.GetOrderCart(id);
             return Ok(cart);
         }
 
         [HttpPost("new-item")]
         //[Authorize(Roles = "Customer")]
-        public async Task<IActionResult> AddToCart(string prodId)
+        public async Task<IActionResult> AddToCart(Guid prodId)
         {
             Guid id = await _tokenService.GetEmailCustomerByToken();
 
@@ -89,12 +86,12 @@ namespace Online_Shopping.Controllers
             //    await _httpClient.PostAsync($"{apiOrder}/new-item/{id}/{prodId}", null);
 
             //}
-            await _orderService.AddToCart(id.ToString(), prodId);
+            await _orderService.AddToCart(id, prodId);
             return NoContent();
         }
 
         [HttpDelete("delete-item")]
-        public async Task<IActionResult> DeleteItemInCart(string prodId)
+        public async Task<IActionResult> DeleteItemInCart(Guid prodId)
         {
             Guid id = await _tokenService.GetEmailCustomerByToken();
             string currentRegion = await _addressService.GetRegionIdOfObject(id);
@@ -103,74 +100,9 @@ namespace Online_Shopping.Controllers
             //    await _httpClient.DeleteAsync($"{apiOrder}/delete-item/{id}/{prodId}");
             //}
             
-            await _orderService.DeleteItemInCart(id.ToString(), prodId);
+            await _orderService.DeleteItemInCart(id, prodId);
             
             return NoContent();
-        }
-
-        [HttpPut("pay/{paymentId}/{shippingId}")]
-        //[Authorize(Roles = "Customer")]
-        public async Task<IActionResult> PaytoBill(string paymentId, string shippingId, 
-            [FromQuery] string? voucherCode)
-        {
-            if (await _paymentRepo.GetPaymentIdAsync(paymentId) == null)
-                return BadRequest(new Response<string>
-                {
-                    Message = "Does not exist this payment!"
-                });
-            
-            if (await _paymentRepo.GetPaymentIdAsync(paymentId) == null)
-                return BadRequest(new Response<string>
-                {
-                    Message = "Does not exist this payment!"
-                });
-
-
-            Guid id = await _tokenService.GetEmailCustomerByToken();
-            if (id == Guid.Empty)
-                return BadRequest(new Response<string>
-                {
-                    Message = "Customer is invalid!"
-                });
-
-            var order = await _orderService.CartToBill(id, paymentId, shippingId, voucherCode);
-
-
-            if (order == null)
-                return BadRequest(new Response<string>
-                {
-                    Message = "Cannot create this bill!"
-                });
-            //if (currentRegion == "Bac")
-            //{
-            //    await _httpClient.DeleteAsync($"{apiOrder}/delete-item/{id}/{prodId}");
-            //}
-
-
-            return Ok(order);
-        }
-
-        [HttpGet("bills")]
-        //[Authorize(Roles = "Customer")]
-        public async Task<IActionResult> GetBills()
-        {
-            
-            Guid id = await _tokenService.GetEmailCustomerByToken();
-            if (id == Guid.Empty)
-                return BadRequest(new Response<string>
-                {
-                    Message = "Customer is invalid!"
-                });
-            
-            var listBills = await _orderService.GetOrderBill(id);
-
-            if (listBills.Count == 0)
-                return NotFound(new Response<string>
-                {
-                    Message = "Does not have any bills!"
-                });
-
-            return Ok(listBills);
         }
     }
 }

@@ -37,6 +37,15 @@ namespace Repositories.Repositories
                                        && ca.IsDefault);
         }
 
+        public async Task<List<Address>> GetListAddressOfCustomerAsync(Guid customerId)
+        {
+            return await _applicationContext.Addresses
+                .AsNoTracking()
+                .Where(a => !a.IsDefault &&
+                        a.CustomerId == customerId)
+                .ToListAsync();
+        }
+
         public async Task UpdateAddress(Address address)
         {
             _applicationContext.Addresses.Update(address);
@@ -85,5 +94,6 @@ namespace Repositories.Repositories
                 .FirstOrDefaultAsync();
         }
 
+        
     }
 }

@@ -18,5 +18,14 @@ namespace Repositories.Repositories
         {
             return await _applicationContext.ShippingMethods.ToListAsync();
         }
+
+        public async Task<string?> GetShippingMethodByIdAsync(string? id)
+        {
+            return await _applicationContext.ShippingMethods
+                .AsNoTracking()
+                .Where(x => x.Id == id)
+                .Select(x => x.Id)
+                .FirstOrDefaultAsync();
+        }
     }
 }

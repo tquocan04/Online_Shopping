@@ -6,6 +6,7 @@ namespace Repository.Contracts.Interfaces
     {
         Task CreateNewAddress(Address address);
         Task<Address?> GetAddressByObjectIdAsync(Guid objectId);
+        Task<List<Address>> GetListAddressOfCustomerAsync(Guid customerId);
         Task DeleteAddress(Address address);
         Task UpdateAddress(Address address);
         Task<Guid> GetCityIdByDistrictIdAsync(Guid districtId);

@@ -26,6 +26,7 @@ namespace Online_Shopping.Extensions
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IBillService, BillService>();
             services.AddScoped<IShippingService, ShippingService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IVoucherService, VoucherService>();
@@ -45,8 +46,9 @@ namespace Online_Shopping.Extensions
             services.AddScoped<IPaymentRepo, PaymentRepo>();
             services.AddScoped<IProductRepo, ProductRepo>();
             services.AddScoped<IUserRepo, UserRepo>();
-            services.AddScoped<ILoginRepo,LoginRepo>();
-            services.AddScoped<IOrderRepo,OrderRepo>();
+            services.AddScoped<ILoginRepo, LoginRepo>();
+            services.AddScoped<IOrderRepo, OrderRepo>();
+            services.AddScoped<IBillRepo, BillRepo>();
             services.AddScoped<IShippingRepo, ShippingRepo>();
             services.AddScoped<IEmployeeRepo, EmployeeRepo>();
             services.AddScoped<IVoucherRepo, VoucherRepo>();

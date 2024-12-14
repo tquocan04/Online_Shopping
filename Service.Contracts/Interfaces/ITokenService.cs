@@ -7,5 +7,6 @@ namespace Service.Contracts.Interfaces
     {
         string GenerateToken(RequestLogin requestLogin, string role);
         Task<Guid> GetEmailCustomerByToken();
+        Task<Guid> GetIdEmployeeByToken();
     }
 }

@@ -18,7 +18,7 @@ namespace Repositories.Repositories
             return await _applicationContext.Payments.ToListAsync();
         }
 
-        public async Task<string?> GetPaymentIdAsync(string id)
+        public async Task<string?> GetPaymentIdAsync(string? id)
         {
             return await _applicationContext.Payments
                 .AsNoTracking()

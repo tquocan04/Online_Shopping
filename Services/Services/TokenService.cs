@@ -63,5 +63,13 @@ namespace Services.Services
             Guid id = await _loginRepo.GetCustomerIdFromEmail(email);
             return id;
         }
+
+        public async Task<Guid> GetIdEmployeeByToken()
+        {
+            var userNameClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Name);
+            var username = userNameClaim?.Value;
+            Guid id = await _loginRepo.GetEmployeeIdFromUsername(username);
+            return id;
+        }
     }
 }

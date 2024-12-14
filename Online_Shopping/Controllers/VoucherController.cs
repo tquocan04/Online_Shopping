@@ -56,7 +56,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IActionResult> GetAllVouchers()
         {
             var list = await _voucherService.GetAllVouchers();

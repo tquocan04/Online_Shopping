@@ -109,21 +109,5 @@ namespace Repositories.Repositories
                 //    .ThenInclude(i => i.Product)
                 .ToListAsync();
         }
-
-        public async Task CartToBillAsync(Order order)
-        {
-            _applicationContext.Orders.Update(order);
-            await _applicationContext.SaveChangesAsync();
-        }
-
-        public async Task<List<Order>> GetListBillAsync(Guid customerId)
-        {
-            return await _applicationContext.Orders
-                .AsNoTracking()
-                .Include(o => o.Items)
-                .Where(o => o.IsCart == false && o.CustomerId == customerId)
-                .OrderByDescending(o => o.OrderDate)
-                .ToListAsync();
-        }
     }
 }

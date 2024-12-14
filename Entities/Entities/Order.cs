@@ -8,6 +8,7 @@ namespace Entities.Entities
         public Guid Id { get; set; }
         public string? Status { get; set; }
         public decimal TotalPrice { get; set; }
+        public string? Note { get; set; }
         public DateTime OrderDate { get; set; }
         public bool IsCart { get; set; } = true;
         [JsonIgnore]

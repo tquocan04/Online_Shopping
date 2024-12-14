@@ -50,6 +50,15 @@ namespace Repositories.Repositories
             return id;
         }
 
-        
+        public async Task<Guid> GetEmployeeIdFromUsername(string account)
+        {
+            var id = await _applicationContext.Employees
+                    .AsNoTracking()
+                    .Where(u => u.Username.ToLower() == account.ToLower())
+                    .Select(u => u.Id)
+                    .FirstOrDefaultAsync();
+
+            return id;
+        }
     }
 }

@@ -60,16 +60,16 @@ namespace Services.Services
             return empDTO;
         }
 
-        public async Task DeleteEmployee(string id)
+        public async Task DeleteEmployee(Guid id)
         {
-            var emp = await _employeeRepo.GetStaffAsync(Guid.Parse(id));
+            var emp = await _employeeRepo.GetStaffAsync(id);
 
             await _employeeRepo.DeleteStaffAsync(emp);
         }
 
-        public async Task<EmployeeDTO> GetProfileEmployee(string id)
+        public async Task<EmployeeDTO> GetProfileEmployee(Guid id)
         {
-            var emp = await _employeeRepo.GetStaffAsync(Guid.Parse(id));
+            var emp = await _employeeRepo.GetStaffAsync(id);
 
             if (emp == null)
             {
@@ -88,9 +88,9 @@ namespace Services.Services
             return empDTO;
         }
 
-        public async Task<bool> UpdateProfile(string id, RequestEmployee requestEmployee)
+        public async Task<bool> UpdateProfile(Guid id, RequestEmployee requestEmployee)
         {
-            var emp = await _employeeRepo.GetStaffAsync(Guid.Parse(id));
+            var emp = await _employeeRepo.GetStaffAsync(id);
             if (emp == null)
             {
                 throw new ArgumentNullException("User cannot be found");
@@ -102,7 +102,7 @@ namespace Services.Services
                 return false;
             }
 
-            var existingAddress = await _addressRepo.GetAddressByObjectIdAsync(Guid.Parse(id));
+            var existingAddress = await _addressRepo.GetAddressByObjectIdAsync(id);
 
             if (existingAddress != null)
             {

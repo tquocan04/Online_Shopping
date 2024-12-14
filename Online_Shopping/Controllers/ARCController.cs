@@ -2,30 +2,40 @@
 using DTOs.DTOs;
 using DTOs.Request;
 using DTOs.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Repositories.Repositories;
 using Repository.Contracts.Interfaces;
 using Service.Contracts.Interfaces;
+using Services.Services;
 using System.Net.Http;
 
 namespace Online_Shopping.Controllers
 {
     [Route("api/arc-shop")]
     [ApiController]
+    [Authorize(Roles = "Admin, Staff")]
     public class ARCController : ControllerBase
     {
         private readonly IUserRepo _userRepo;
+        private readonly ILoginRepo _loginRepo;
         private readonly IEmployeeService _employeeService;
+        private readonly ITokenService _tokenService;
         private readonly HttpClient _httpClient;
 
         //private readonly string api = "http://localhost:5285/api/arc-shop/north";
 
         public ARCController(IUserRepo userRepo, 
+            ILoginRepo loginRepo,
+            ITokenService tokenService,
             HttpClient httpClient,
             IEmployeeService employeeRepo)
         {
             _userRepo = userRepo;
+            _loginRepo = loginRepo;
             _employeeService = employeeRepo;
+            _tokenService = tokenService;
             _httpClient = httpClient;
         }
 
@@ -56,9 +66,10 @@ namespace Online_Shopping.Controllers
             return CreatedAtAction("GetProile", new { id = empDTO.Id }, empDTO);
         }
 
-        [HttpDelete("profile/{id}")]
-        public async Task<IActionResult> DeleteStaff(string id)
+        [HttpDelete("profile")]
+        public async Task<IActionResult> DeleteStaff()
         {
+            Guid id = await _tokenService.GetIdEmployeeByToken();
             var emp = await _employeeService.GetProfileEmployee(id);
             
             if (emp != null)
@@ -81,9 +92,10 @@ namespace Online_Shopping.Controllers
             return NoContent();
         }
         
-        [HttpPut("profile/{id}")]
-        public async Task<IActionResult> UpdateProfileStaff(string id, [FromBody] RequestEmployee requestEmployee)
+        [HttpPut("profile")]
+        public async Task<IActionResult> UpdateProfileStaff([FromBody] RequestEmployee requestEmployee)
         {
+            Guid id = await _tokenService.GetIdEmployeeByToken();
             var check = await _employeeService.UpdateProfile(id, requestEmployee);
             if (!check)
             {
@@ -102,9 +114,11 @@ namespace Online_Shopping.Controllers
             return NoContent();
         }
 
-        [HttpGet("profile/{id}")]
-        public async Task<IActionResult> GetProfile(string id)
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetProfile()
         {
+            Guid id = await _tokenService.GetIdEmployeeByToken();
+
             var profile = await _employeeService.GetProfileEmployee(id);
             if (profile == null)
             {
