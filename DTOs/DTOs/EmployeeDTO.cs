@@ -8,7 +8,9 @@ namespace DTOs.DTOs
     public class EmployeeDTO
     {
         public Guid Id { get; set; }
-        public string? Name { get; set; }
+        public string? FirstName { get; set; }
+        public string? MiddleName { get; set; }
+        public string? LastName { get; set; }
         public string? Username { get; set; }
         [EmailAddress(ErrorMessage = "Email is invalid")]
         public string? Email { get; set; }
@@ -17,7 +19,9 @@ namespace DTOs.DTOs
         [MaxLength(10)]
         public string? PhoneNumber { get; set; }
         public string? Gender { get; set; }
-        public DateOnly Dob { get; set; }
+        public int? Year { get; set; }
+        public int? Month { get; set; }
+        public int? Day { get; set; }
         public string RoleId { get; set; } = null!;
         public Guid BranchId { get; set; }
         public string? BranchName { get; set; }

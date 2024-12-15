@@ -68,12 +68,10 @@ namespace Services
             //CreateMap<Address, EmployeeDTO>()
             //    .ForMember(dest => dest.Id,
             //                opt => opt.MapFrom(src => src.ObjectId));
-            CreateMap<RequestEmployee, EmployeeDTO>()
-                .ForMember(dest => dest.Name,
-                            opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"));
+            CreateMap<RequestEmployee, EmployeeDTO>().ReverseMap();
             CreateMap<RequestEmployee, Employee>()
                 .ForMember(dest => dest.Name,
-                            opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
+                            opt => opt.MapFrom(src => $"{src.FirstName} {src.MiddleName} {src.LastName}"))
                 .ForMember(dest => dest.Dob,
                             opt => opt.Ignore());
 
