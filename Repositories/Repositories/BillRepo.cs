@@ -67,5 +67,37 @@ namespace Repositories.Repositories
                 .OrderBy(o => o.OrderDate)
                 .ToListAsync();
         }
+
+        public async Task<List<Order>> GetCompletedBillInYearMonthAsync(int year, int month)
+        {
+            return await _applicationContext.Orders
+                .AsNoTracking()
+                .Include(o => o.Items)
+                .Where(o => o.Status == "Completed" && o.OrderDate.Year == year && o.OrderDate.Month == month)
+                .ToListAsync();
+        }
+
+        public async Task<List<Order>> GetCompletedBillInYearAsync(int year)
+        {
+            return await _applicationContext.Orders
+                .AsNoTracking()
+                .Include(o => o.Items)
+                .Where(o => o.Status == "Completed" && o.OrderDate.Year == year)
+                .ToListAsync();
+        }
+
+        public async Task<List<Order>> GetCompletedBillByCategoryInYearMonthAsync(Guid categoryId, int year, int month)
+        {
+            return await _applicationContext.Orders
+                .AsNoTracking()
+                .Include(o => o.Items)
+                .Where(o => o.Status == "Completed" && o.OrderDate.Year == year && o.OrderDate.Month == month)
+                .ToListAsync();
+        }
+
+        public async Task<List<Order>> GetCompletedBillByCategoryInYearAsync(Guid categoryId, int year)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

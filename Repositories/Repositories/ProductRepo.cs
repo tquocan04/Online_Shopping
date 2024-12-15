@@ -80,5 +80,23 @@ namespace Repositories.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public async Task<Guid> GetCategoryIdByProductId(Guid id)
+        {
+            return await _applicationContext.Products
+                .AsNoTracking()
+                .Where(p => p.Id == id)
+                .Select(p => p.CategoryId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<string> GetProductNameByIdAsync(Guid id)
+        {
+            return await _applicationContext.Products
+                .AsNoTracking()
+                .Where(p => p.Id == id)
+                .Select(p => p.Name)
+                .FirstOrDefaultAsync();
+        }
     }
 }

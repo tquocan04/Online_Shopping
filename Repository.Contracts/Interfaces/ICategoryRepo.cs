@@ -9,5 +9,6 @@ namespace Repository.Contracts.Interfaces
         Task<Category> GetCategoryByIdAsync(Guid Id);
         Task DeleteCategoryByIdAsync(Guid categoryId);
         Task<bool> UpdateCategoryAsync(Category category);
+        Task<string> GetCategoryNameAsync(Guid categoryId);
     }
 }

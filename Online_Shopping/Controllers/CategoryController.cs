@@ -26,6 +26,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpPost("new-category")]
+        [Authorize(Roles = "Admin, Staff")]
         public async Task<IActionResult> AddNewCategory([FromBody] RequestCategory request)
         {
             var newCategory = await _categoryService.CreateNewCategory(request);
@@ -71,6 +72,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpDelete("{Id}")]
+        [Authorize(Roles = "Admin, Staff")]
         public async Task<ActionResult> DeleteCategoryById(string Id)
         {
             var category = await _categoryService.GetCategoryById(Id);
@@ -86,6 +88,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpPatch("{Id}")]
+        [Authorize(Roles = "Admin, Staff")]
         public async Task<ActionResult> UpdateCategory(string Id, [FromBody] RequestCategory request)
         {
             var cateId = await _categoryService.GetCategoryById(Id);

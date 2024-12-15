@@ -65,6 +65,14 @@ namespace Repositories.Repositories
             }
             return false;
         }
-        
+
+        public async Task<string> GetCategoryNameAsync(Guid categoryId)
+        {
+            return await _applicationContext.Categories
+                .AsNoTracking()
+                .Where(c => c.Id == categoryId)
+                .Select(c => c.Name)
+                .FirstOrDefaultAsync();
+        }
     }
 }
