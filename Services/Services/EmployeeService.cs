@@ -80,18 +80,6 @@ namespace Services.Services
             empDTO.Month = emp.Dob.Month;
             empDTO.Day = emp.Dob.Day;
 
-            var nameParts = emp.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-            if (nameParts.Length > 0)
-            {
-                empDTO.FirstName = nameParts[0]; // Từ đầu tiên
-                empDTO.LastName = nameParts[nameParts.Length - 1]; // Từ cuối cùng
-
-                if (nameParts.Length > 2)
-                {
-                    empDTO.MiddleName = string.Join(" ", nameParts.Skip(1).Take(nameParts.Length - 2));
-                }
-            }
             empDTO = await _addressService.SetAddress(empDTO, empDTO.Id);
 
             var branch = await _branchRepo.GetBranchAsync(empDTO.BranchId);

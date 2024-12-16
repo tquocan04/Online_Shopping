@@ -7,10 +7,7 @@ namespace DTOs.Request
     public class RequestCustomer
     {
         [Required]
-        public string? FirstName { get; set; }
-        public string? MiddleName { get; set; }
-        [Required]
-        public string? LastName { get; set; }
+        public string? Name { get; set; }
         [Required]
         [EmailAddress(ErrorMessage = "Email is invalid")]
         public string? Email { get; set; }

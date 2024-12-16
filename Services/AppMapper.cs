@@ -35,8 +35,6 @@ namespace Services
             CreateMap<Customer, CustomerDTO>().ReverseMap();
             CreateMap<RequestCustomer, CustomerDTO>().ReverseMap();
             CreateMap<RequestCustomer, Customer>()
-                .ForMember( dest => dest.Name,
-                            opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
                 .ForMember( dest => dest.Dob,
                             opt => opt.Ignore())
                 .ForMember( dest => dest.Picture,
@@ -70,8 +68,6 @@ namespace Services
             //                opt => opt.MapFrom(src => src.ObjectId));
             CreateMap<RequestEmployee, EmployeeDTO>().ReverseMap();
             CreateMap<RequestEmployee, Employee>()
-                .ForMember(dest => dest.Name,
-                            opt => opt.MapFrom(src => $"{src.FirstName} {src.MiddleName} {src.LastName}"))
                 .ForMember(dest => dest.Dob,
                             opt => opt.Ignore());
 
