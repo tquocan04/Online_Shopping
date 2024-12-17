@@ -99,5 +99,25 @@ namespace Repositories.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public async Task<List<Order>> CustomerGetListPendingBillAsync(Guid customerId)
+        {
+            return await _applicationContext.Orders
+                .AsNoTracking()
+                .Include(o => o.Items)
+                .Where(o => !o.IsCart && o.Status == "Pending" && o.CustomerId == customerId)
+                .OrderBy(o => o.OrderDate)
+                .ToListAsync();
+        }
+
+        public async Task<List<Order>> CustomerGetListCompletedBillAsync(Guid customerId)
+        {
+            return await _applicationContext.Orders
+                .AsNoTracking()
+                .Include(o => o.Items)
+                .Where(o => !o.IsCart && o.Status == "Completed" && o.CustomerId == customerId)
+                .OrderByDescending(o => o.OrderDate)
+                .ToListAsync();
+        }
     }
 }

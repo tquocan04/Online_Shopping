@@ -39,6 +39,21 @@ namespace Services.Services
                 _mapper.Map(product, item);
             }
         }
+
+        private async Task<List<OrderBillDTO>> MapOrderListToOrderBillList(List<Order> orders)
+        {
+            List<OrderBillDTO> list = new List<OrderBillDTO>();
+
+            for (int i = 0; i < orders.Count; i++)
+            {
+                list.Add(_mapper.Map<OrderBillDTO>(orders[i]));
+                if (list[i].Items != null)
+                    await MapProductToItemDTO(list[i]);
+            }
+
+            return list;
+        }
+
         public async Task<Order> CartToBill(Guid customerId, RequestBill requestBill)
         {
             Order order = await _orderRepo.GetOrderIsCartByCusId(customerId);
@@ -76,8 +91,6 @@ namespace Services.Services
                 }
             }
             var addressDefault = await _addressRepo.GetAddressByObjectIdAsync(customerId);
-            //var cityId = await _addressRepo.GetCityIdByDistrictIdAsync(addressDefault.DistrictId);
-            //var regionId = await _addressRepo.GetRegionIdByCityIdAsync(cityId);
 
             if (requestBill.DistrictId != addressDefault.DistrictId
                     || requestBill.Street != addressDefault.Street)
@@ -123,45 +136,36 @@ namespace Services.Services
 
             OrderBillDTO orderBillDTO = _mapper.Map<OrderBillDTO>(order);
 
+            //List<ItemDTO> items = orderBillDTO.Items.ToList();
+
             await MapProductToItemDTO(orderBillDTO);
+            //foreach(var item in order.Items)
+            //{
+            //    for (int i = 0; i < order.Items.Count; i++)
+            //    {
+            //        _mapper.Map(item, items[i]);
+            //    }
+            //}
 
             return orderBillDTO;
         }
 
-        public async Task<List<OrderBillDTO>> GetListCompletedBill()
+        public async Task<List<OrderBillDTO>> EmployeeGetCompletedBillList()
         {
             List<Order> listBill = await _billRepo.GetListCompletedBillAsync();
             if (listBill.Count == 0)
                 return null;
 
-            List<OrderBillDTO> list = new List<OrderBillDTO>();
-
-            for (int i = 0; i < listBill.Count; i++)
-            {
-                list.Add(_mapper.Map<OrderBillDTO>(listBill[i]));
-                if (list[i].Items != null)
-                    await MapProductToItemDTO(list[i]);
-            }
-
-            return list;
+            return await MapOrderListToOrderBillList(listBill);
         }
 
-        public async Task<List<OrderBillDTO>> GetListPendingBill()
+        public async Task<List<OrderBillDTO>> EmployeeGetPendingBillList()
         {
             List<Order> listBill = await _billRepo.GetListPendingBillAsync();
             if (listBill.Count == 0)
                 return null;
 
-            List<OrderBillDTO> list = new List<OrderBillDTO>();
-
-            for (int i = 0; i < listBill.Count; i++)
-            {
-                list.Add(_mapper.Map<OrderBillDTO>(listBill[i]));
-                if (list[i].Items != null)
-                    await MapProductToItemDTO(list[i]);
-            }
-
-            return list;
+            return await MapOrderListToOrderBillList(listBill);
         }
 
         public async Task<List<OrderBillDTO>> GetOrderBill(Guid id)
@@ -170,16 +174,25 @@ namespace Services.Services
             if (listBill.Count == 0)
                 return null;
 
-            List<OrderBillDTO> list = new List<OrderBillDTO>();
+            return await MapOrderListToOrderBillList(listBill);
+        }
 
-            for (int i = 0; i < listBill.Count; i++)
-            {
-                list.Add(_mapper.Map<OrderBillDTO>(listBill[i]));
-                if (list[i].Items != null)
-                    await MapProductToItemDTO(list[i]);
-            }
+        public async Task<List<OrderBillDTO>> CustomerGetPendingBillList(Guid customerId)
+        {
+            List<Order> orders = await _billRepo.CustomerGetListPendingBillAsync(customerId);
+            if (orders.Count == 0)
+                return null;
 
-            return list;
+            return await MapOrderListToOrderBillList(orders);
+        }
+
+        public async Task<List<OrderBillDTO>> CustomerGetCompletedBillList(Guid customerId)
+        {
+            List<Order> orders = await _billRepo.CustomerGetListCompletedBillAsync(customerId);
+            if (orders.Count == 0)
+                return null;
+
+            return await MapOrderListToOrderBillList(orders);
         }
     }
 }

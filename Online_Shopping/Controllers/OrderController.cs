@@ -44,7 +44,7 @@ namespace Online_Shopping.Controllers
         //[Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetCart() 
         {
-            Guid id = await _tokenService.GetEmailCustomerByToken();
+            Guid id = await _tokenService.GetIdCustomerByToken();
             if (id == Guid.Empty)
                 return BadRequest(new Response<string>
                 {
@@ -72,7 +72,7 @@ namespace Online_Shopping.Controllers
         //[Authorize(Roles = "Customer")]
         public async Task<IActionResult> AddToCart(Guid prodId)
         {
-            Guid id = await _tokenService.GetEmailCustomerByToken();
+            Guid id = await _tokenService.GetIdCustomerByToken();
 
             if (id == Guid.Empty)
                 return BadRequest(new Response<string>
@@ -90,10 +90,10 @@ namespace Online_Shopping.Controllers
             return NoContent();
         }
 
-        [HttpDelete("delete-item")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteItemInCart(Guid prodId)
         {
-            Guid id = await _tokenService.GetEmailCustomerByToken();
+            Guid id = await _tokenService.GetIdCustomerByToken();
             string currentRegion = await _addressService.GetRegionIdOfObject(id);
             //if (currentRegion == "Bac")
             //{

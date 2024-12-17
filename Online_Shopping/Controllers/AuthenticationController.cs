@@ -94,7 +94,7 @@ namespace Online_Shopping.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> UpdateUser([FromForm] RequestCustomer requestCustomer)
         {
-            Guid id = await _tokenService.GetEmailCustomerByToken();
+            Guid id = await _tokenService.GetIdCustomerByToken();
 
             Customer? customer = await _userRepo.GetCustomerByIdAsync(id);
 
@@ -180,7 +180,7 @@ namespace Online_Shopping.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetProfileUser()
         {
-            Guid id = await _tokenService.GetEmailCustomerByToken();
+            Guid id = await _tokenService.GetIdCustomerByToken();
 
             //string regionId = await _addressService.GetRegionIdOfObject(id);
             //if (regionId == "Bac")

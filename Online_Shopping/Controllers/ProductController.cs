@@ -122,7 +122,7 @@ namespace Online_Shopping.Controllers
             
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("{id}")]
         [Authorize(Roles = "Admin, Staff")]
         public async Task<IActionResult> UpdateInforProduct(string id, [FromForm] RequestProduct requestProduct)
         {
@@ -142,7 +142,7 @@ namespace Online_Shopping.Controllers
             });
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "Admin, Staff")]
         public async Task<IActionResult> DeleteProduct(string id)
         {

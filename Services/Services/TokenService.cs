@@ -56,7 +56,7 @@ namespace Services.Services
             return tokenString;
         }
 
-        public async Task<Guid> GetEmailCustomerByToken()
+        public async Task<Guid> GetIdCustomerByToken()
         {
             var userNameClaim = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Name);
             var email = userNameClaim?.Value;
@@ -70,6 +70,13 @@ namespace Services.Services
             var username = userNameClaim?.Value;
             Guid id = await _loginRepo.GetEmployeeIdFromUsername(username);
             return id;
+        }
+
+        public string GetRoleByToken()
+        {
+            var roleName = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role);
+            string role = roleName?.Value;
+            return role;
         }
     }
 }

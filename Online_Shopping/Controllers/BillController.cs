@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DTOs.DTOs;
 using DTOs.Request;
 using DTOs.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -59,7 +60,7 @@ namespace Online_Shopping.Controllers
                 });
 
 
-            Guid id = await _tokenService.GetEmailCustomerByToken();
+            Guid id = await _tokenService.GetIdCustomerByToken();
             if (id == Guid.Empty)
                 return BadRequest(new Response<string>
                 {
@@ -83,12 +84,12 @@ namespace Online_Shopping.Controllers
             return Ok(order);
         }
 
-        [HttpGet()]
+        [HttpGet]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetBills()
         {
 
-            Guid id = await _tokenService.GetEmailCustomerByToken();
+            Guid id = await _tokenService.GetIdCustomerByToken();
             if (id == Guid.Empty)
                 return BadRequest(new Response<string>
                 {
@@ -116,10 +117,18 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpGet("pending-bills")]
-        [Authorize(Roles = "Admin, Staff")]
+        [Authorize]
         public async Task<IActionResult> GetListPendingBills()
         {
-            var list = await _billService.GetListPendingBill();
+            string role = _tokenService.GetRoleByToken();
+            
+            List<OrderBillDTO> list = new List<OrderBillDTO>();
+
+            if (role == "Admin" || role == "Staff")
+                list = await _billService.EmployeeGetPendingBillList();
+            else
+                list = await _billService.CustomerGetPendingBillList(await _tokenService.GetIdCustomerByToken());
+
             if (list == null)
                 return NotFound(new Response<string>
                 {
@@ -130,10 +139,19 @@ namespace Online_Shopping.Controllers
         }
         
         [HttpGet("completed-bills")]
-        [Authorize(Roles = "Admin, Staff")]
+        [Authorize]
         public async Task<IActionResult> GetListCompletedBills()
         {
-            var list = await _billService.GetListCompletedBill();
+            string role = _tokenService.GetRoleByToken();
+
+            List<OrderBillDTO> list = new List<OrderBillDTO>();
+
+            if (role == "Admin" || role == "Staff")
+                list = await _billService.EmployeeGetCompletedBillList();
+            else
+                list = await _billService.CustomerGetCompletedBillList(await _tokenService.GetIdCustomerByToken());
+            
+
             if (list == null)
                 return NotFound(new Response<string>
                 {
@@ -143,8 +161,8 @@ namespace Online_Shopping.Controllers
             return Ok(list);
         }
         
-        [HttpGet("detail/{id}")]
-        [Authorize(Roles = "Admin, Staff")]
+        [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetDetailBills(Guid id)
         {
             var bill = await _billService.GetBillDetail(id);
