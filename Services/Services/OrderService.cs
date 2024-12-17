@@ -65,17 +65,26 @@ namespace Services.Services
 
         public async Task DeleteItemInCart(Guid cusId, Guid prodId)
         {
+            Console.WriteLine($"CUSTOMER: {cusId}");
+
             var cart = await _orderRepo.GetOrderIsCartByCusId(cusId);
             var product = await _productRepo.GetProductByIdAsync(prodId);
-
+            Console.WriteLine($"PRODUCTTTTT: {prodId}");
             Item item = await _orderRepo.GetItem(cart.Id, product.Id);
+            Console.WriteLine($"ITEMMMMMM: {prodId}");
+
             await _orderRepo.DeleteItemInCart(item);
+            Console.WriteLine($"DELETEEEEEEE: {prodId}");
+
 
             cart.TotalPrice -= (decimal)(product.Price * item.Quantity);
             await _orderRepo.UpdateTotalPriceCart(cart.Id, cart.TotalPrice);
+            Console.WriteLine($"UPDATEEEEEEE: {prodId}");
 
             product.Stock += item.Quantity;
             await _productRepo.UpdateInforProduct(product);
+            Console.WriteLine($"UPDATE2222222222222: {prodId}");
+
         }
 
 

@@ -203,7 +203,7 @@ namespace Online_Shopping.Controllers
             //    }
             //}
 
-            var user = await _userService.GetProfileUser(id.ToString());
+            var user = await _userService.GetProfileUser(id);
             return Ok(user);
         }
 

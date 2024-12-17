@@ -117,14 +117,16 @@ namespace Services.Services
             return customer;
         }
 
-        public async Task<CustomerDTO> GetProfileUser(string cusId)
+        public async Task<CustomerDTO> GetProfileUser(Guid cusId)
         {
-            var cus = await _userRepo.GetCustomerByIdAsync(Guid.Parse(cusId));
+            var cus = await _userRepo.GetCustomerByIdAsync(cusId);
 
             if (cus != null)
             {
-
                 CustomerDTO cusDTO = _mapper.Map<CustomerDTO>(cus);
+                cusDTO.Year = cus.Dob.Year;
+                cusDTO.Month = cus.Dob.Month;
+                cusDTO.Day = cus.Dob.Day;
 
                 cusDTO = await _addressService.SetAddress(cusDTO, cusDTO.Id);
                 return cusDTO;

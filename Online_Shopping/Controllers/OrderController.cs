@@ -70,7 +70,7 @@ namespace Online_Shopping.Controllers
 
         [HttpPost("new-item")]
         //[Authorize(Roles = "Customer")]
-        public async Task<IActionResult> AddToCart(Guid prodId)
+        public async Task<IActionResult> AddToCart([FromQuery] Guid prodId)
         {
             Guid id = await _tokenService.GetIdCustomerByToken();
 
@@ -91,8 +91,9 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteItemInCart(Guid prodId)
+        public async Task<IActionResult> DeleteItemInCart([FromQuery] Guid prodId)
         {
+            Console.WriteLine($"product controller: {prodId}");
             Guid id = await _tokenService.GetIdCustomerByToken();
             string currentRegion = await _addressService.GetRegionIdOfObject(id);
             //if (currentRegion == "Bac")

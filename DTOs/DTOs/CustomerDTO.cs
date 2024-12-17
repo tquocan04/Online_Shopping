@@ -14,14 +14,13 @@ namespace DTOs.DTOs
         [MaxLength(10)]
         public string? PhoneNumber { get; set; }
         public string? Gender { get; set; }
-        public DateOnly Dob { get; set; }
+        public int? Year { get; set; }
+        public int? Month { get; set; }
+        public int? Day { get; set; }
         public string? Picture { get; set; }
         public string RegionId { get; set; } = null!;
-        public string? RegionName { get; set; }
         public Guid CityId { get; set; }
-        public string? CityName { get; set; }
         public Guid DistrictId { get; set; }
-        public string? DistrictName { get; set; }
         public string Street { get; set; } = null!;
     }
 }
