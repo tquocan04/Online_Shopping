@@ -144,7 +144,7 @@ namespace Services.Services
 
             var newOrder = await _orderService.CreateNewCart(customerId);
             //Console.WriteLine($"orderrr: {order}");
-            await UpdateQuantityPurchase(order);
+            //await UpdateQuantityPurchase(order);
 
             return order;
         }

@@ -71,6 +71,21 @@ namespace Online_Shopping.Controllers
 
             return Ok(list);
         }
+        [HttpGet("public")]
+        public async Task<IActionResult> GetAllVouchersPublic()
+        {
+            var list = await _voucherService.GetAllVouchers();
+
+            if (!list.Any())
+            {
+                return NotFound(new Response<string>
+                {
+                    Message = "Does not have any vouchers!"
+                });
+            }
+
+            return Ok(list);
+        }
 
         [HttpGet("{id}")]
         [Authorize]
