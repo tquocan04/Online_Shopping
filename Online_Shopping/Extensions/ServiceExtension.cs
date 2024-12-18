@@ -1,4 +1,5 @@
 ﻿using CloudinaryDotNet;
+using DTOs.MongoDb;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Repositories;
@@ -31,6 +32,7 @@ namespace Online_Shopping.Extensions
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IVoucherService, VoucherService>();
             services.AddScoped<IStatisticService, StatisticService>();
+            services.AddScoped<IRecommendaterService, RecommendaterService>();
             services.AddScoped<IMetadataService, MetadataService>();
 
             services.AddScoped(typeof(IAddressService<>), typeof(AddressService<>));

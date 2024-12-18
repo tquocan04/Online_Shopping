@@ -49,7 +49,10 @@ namespace Repositories.Repositories
 
         public async Task<IEnumerable<Product>> GetProductsNotHiddenAsync()
         {
-            return await _applicationContext.Products.Where(p => !p.IsHidden).ToListAsync();
+            return await _applicationContext.Products
+                .Where(p => !p.IsHidden)
+                
+                .ToListAsync();
         }
 
         public async Task UpdatestatusProduct(Guid id)

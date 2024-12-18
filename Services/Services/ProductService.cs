@@ -19,16 +19,18 @@ namespace Services.Services
         private readonly IMapper _mapper;
         private readonly ICategoryRepo _categoryRepo;
         private readonly IMetadataService _metadataService;
+        private readonly IRecommendaterService _recommendaterService;
         private readonly Cloudinary _cloudinary;
 
         public ProductService(IProductRepo productRepo, IMapper mapper, ICategoryRepo categoryRepo,
-            IMetadataService metadataService,
+            IMetadataService metadataService, IRecommendaterService recommendaterService,
             Cloudinary cloudinary)
         {
             _productRepo = productRepo;
             _mapper = mapper;
             _categoryRepo = categoryRepo;
             _metadataService = metadataService;
+            _recommendaterService = recommendaterService;
             _cloudinary = cloudinary;
         }
 
@@ -119,6 +121,13 @@ namespace Services.Services
             var prodMetadata = await ConvertProductToProductMetadata(product);
             //await _metadataService.CreateProductMetadataAsync(prodMetadata);
 
+            //RecommendProduct recommendProduct = new RecommendProduct
+            //{
+            //    CategoryId = product.CategoryId.ToString(),
+            //    ProductId = product.Id.ToString(),
+            //};
+            //await _recommendaterService.CreateRecommendProductAsync(recommendProduct);
+            
             return product;
         }
 
@@ -131,7 +140,16 @@ namespace Services.Services
 
         public async Task<ProductDTO> GetProductById(string id)
         {
-            return await ConvertToProductDTO(await _productRepo.GetProductByIdAsync(Guid.Parse(id)));
+            Product product = await _productRepo.GetProductByIdAsync(Guid.Parse(id));
+
+            // khi click vao xem chi tiet san pham
+            RecommendProduct recommendProduct = await _recommendaterService.GetRecommendProductByProductIdAsync(id);
+                        
+            recommendProduct.Action += 1;
+
+            await _recommendaterService.UpdateRecommendProductAsync(recommendProduct);
+
+            return await ConvertToProductDTO(product);
         }
 
         public async Task<IEnumerable<ProductDTO>> GetProductsHidden()
@@ -163,6 +181,10 @@ namespace Services.Services
             await _productRepo.UpdateInforProduct(product);
 
             //await _metadataService.UpdateProductMetadataAsync(await ConvertProductToProductMetadata(product));
+            //RecommendProduct recommendProduct = await _recommendaterService.GetRecommendProductByProductIdAsync(id);
+
+            //recommendProduct.CategoryId = requestProduct.CategoryId.ToString();
+            //await _recommendaterService.UpdateRecommendProductAsync(recommendProduct);
 
             return product;
         }

@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using DTOs.DTOs;
+using DTOs.Request;
+using DTOs.Responses;
 using Entities.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Online_Shopping.Context;
 using Repository.Contracts.Interfaces;
 using Service.Contracts.Interfaces;
@@ -25,8 +28,8 @@ namespace Services.Services
         {
             var cart = await _orderRepo.GetOrderIsCartByCusId(cusId);
             var cartId = cart.Id;
-            var product = await _productRepo.GetProductByIdAsync(prodId);
-            var existingItem = await _orderRepo.GetItem(cartId, prodId);
+            Product product = await _productRepo.GetProductByIdAsync(prodId);
+            Item existingItem = await _orderRepo.GetItem(cartId, prodId);
 
             if (existingItem == null)
             {
@@ -65,32 +68,24 @@ namespace Services.Services
 
         public async Task DeleteItemInCart(Guid cusId, Guid prodId)
         {
-            Console.WriteLine($"CUSTOMER: {cusId}");
-
             var cart = await _orderRepo.GetOrderIsCartByCusId(cusId);
             var product = await _productRepo.GetProductByIdAsync(prodId);
-            Console.WriteLine($"PRODUCTTTTT: {prodId}");
+            
             Item item = await _orderRepo.GetItem(cart.Id, product.Id);
-            Console.WriteLine($"ITEMMMMMM: {prodId}");
-
+            
             await _orderRepo.DeleteItemInCart(item);
-            Console.WriteLine($"DELETEEEEEEE: {prodId}");
-
+            
 
             cart.TotalPrice -= (decimal)(product.Price * item.Quantity);
             await _orderRepo.UpdateTotalPriceCart(cart.Id, cart.TotalPrice);
-            Console.WriteLine($"UPDATEEEEEEE: {prodId}");
 
             product.Stock += item.Quantity;
             await _productRepo.UpdateInforProduct(product);
-            Console.WriteLine($"UPDATE2222222222222: {prodId}");
 
         }
 
-
         public async Task<OrderCartDTO> GetOrderCart(Guid cusId)
         {
-
             var cart = await _orderRepo.GetOrderIsCartByCusId(cusId);
             var cartDTO = _mapper.Map<OrderCartDTO>(cart);
 
@@ -103,6 +98,74 @@ namespace Services.Services
                 }
             }
             
+            return cartDTO;
+        }
+
+        public async Task<OrderCartDTO> MergeCartFromClient(Guid cusId, List<RequestItems> items)
+        {
+            Order order = await _orderRepo.GetOrderIsCartByCusId(cusId);
+            Guid cartId = order.Id;
+            OrderCartDTO cartDTO = _mapper.Map<OrderCartDTO>(order);
+
+            if (cartDTO.Items != null)
+            {
+                foreach (var item in cartDTO.Items)
+                {
+                    var product = await _productRepo.GetProductByIdAsync(item.ProductId);
+                    _mapper.Map(product, item);
+                }
+            }
+            bool check = true;
+            for (int i = 0; i < items.Count; i++)
+            {
+                Product product = await _productRepo.GetProductByIdAsync(items[i].ProductId);
+                if (product == null)
+                    return null;
+                foreach (var item in cartDTO.Items)
+                {
+                    if (items[i].ProductId == item.ProductId)
+                    {
+                        item.Quantity += items[i].Quantity;
+                        order.TotalPrice += (decimal)(items[i].Quantity * item.Price);
+                        
+                        Item existingItem = await _orderRepo.GetItem(cartId, items[i].ProductId);
+                        existingItem.Quantity = item.Quantity;
+                        await _orderRepo.UpdateQuantityItemToCart(existingItem);
+                        
+                        check = true;
+                        break;
+                    }
+                    else
+                    {
+                        check = false;
+                    }
+                    
+                }
+                if (!check)
+                {
+                    Item item = new Item
+                    {
+                        OrderId = cartId,
+                        ProductId = items[i].ProductId,
+                        Quantity = items[i].Quantity
+                    };
+                    order.TotalPrice += (decimal)(product.Price * items[i].Quantity);
+                    await _orderRepo.AddItemToCart(item);
+                    
+                }
+
+                product.Stock -= items[i].Quantity;
+                await _productRepo.UpdateInforProduct(product);
+            }
+            await _orderRepo.UpdateTotalPriceCart(cartId, order.TotalPrice);
+
+            Order neworder = await _orderRepo.GetOrderIsCartByCusId(cusId);
+            cartDTO = _mapper.Map<OrderCartDTO>(neworder);
+            foreach (var item in cartDTO.Items)
+            {
+                var product = await _productRepo.GetProductByIdAsync(item.ProductId);
+                _mapper.Map(product, item);
+            }
             return cartDTO;
         }
     }

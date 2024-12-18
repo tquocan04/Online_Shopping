@@ -105,5 +105,40 @@ namespace Online_Shopping.Controllers
             
             return NoContent();
         }
+
+        [HttpPost("all-items")]
+        public async Task<IActionResult> AddProducts([FromBody] List<RequestItems> products)
+        {
+            Guid id = await _tokenService.GetIdCustomerByToken();
+
+            if (id == Guid.Empty)
+                return BadRequest(new Response<string>
+                {
+                    Message = "Customer is invalid!"
+                });
+
+            if (products == null || !products.Any())
+            {
+                return BadRequest(new Response<string>
+                {
+                    Message = "Product list is empty."
+                });
+            }
+
+            OrderCartDTO cart = await _orderService.MergeCartFromClient(id, products);
+            if (cart == null)
+                return BadRequest(new Response<string>
+                {
+                    Message = "Exist one product do not have in database."
+                });
+
+
+            return Ok(new Response<OrderCartDTO>
+            {
+                Message = "Products is merged successfully.",
+                Data = cart
+            });
+
+        }
     }
 }

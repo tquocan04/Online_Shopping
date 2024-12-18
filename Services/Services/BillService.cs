@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using DTOs.DTOs;
+using DTOs.MongoDb;
 using DTOs.Request;
 using Entities.Entities;
 using Repository.Contracts.Interfaces;
+using Service.Contracts;
 using Service.Contracts.Interfaces;
 
 namespace Services.Services
@@ -15,12 +17,14 @@ namespace Services.Services
         private readonly IOrderService _orderService;
         private readonly IProductRepo _productRepo;
         private readonly IAddressRepo _addressRepo;
+        private readonly IRecommendaterService _recommendaterService;
         private readonly IMapper _mapper;
 
         public BillService(IBillRepo billRepo, IOrderRepo orderRepo,
             IVoucherRepo voucherRepo, IOrderService orderService,
             IProductRepo productRepo, IMapper mapper,
-            IAddressRepo addressRepo) 
+            IAddressRepo addressRepo,
+            IRecommendaterService recommendaterService) 
         {
             _billRepo = billRepo;
             _orderRepo = orderRepo;
@@ -28,6 +32,7 @@ namespace Services.Services
             _orderService = orderService;
             _productRepo = productRepo;
             _addressRepo = addressRepo;
+            _recommendaterService = recommendaterService;
             _mapper = mapper;
         }
 
@@ -37,6 +42,17 @@ namespace Services.Services
             {
                 var product = await _productRepo.GetProductByIdAsync(item.ProductId);
                 _mapper.Map(product, item);
+            }
+        }
+
+        private async Task UpdateQuantityPurchase(Order order)
+        {
+            foreach (var item in order.Items)
+            {
+                RecommendProduct recommendProduct = await _recommendaterService.GetRecommendProductByProductIdAsync
+                                                                                    (item.ProductId.ToString());
+                recommendProduct.Purchase += item.Quantity;
+                await _recommendaterService.UpdateRecommendProductAsync(recommendProduct);
             }
         }
 
@@ -57,7 +73,10 @@ namespace Services.Services
         public async Task<Order> CartToBill(Guid customerId, RequestBill requestBill)
         {
             Order order = await _orderRepo.GetOrderIsCartByCusId(customerId);
-
+            if (order.TotalPrice == 0)
+            {
+                return null;
+            }
             order.IsCart = false;
             order.PaymentId = requestBill.PaymentId;
             order.ShippingMethodId = requestBill.ShippingMethodId;
@@ -124,6 +143,8 @@ namespace Services.Services
             await _billRepo.CartToBillAsync(order);
 
             var newOrder = await _orderService.CreateNewCart(customerId);
+            //Console.WriteLine($"orderrr: {order}");
+            await UpdateQuantityPurchase(order);
 
             return order;
         }

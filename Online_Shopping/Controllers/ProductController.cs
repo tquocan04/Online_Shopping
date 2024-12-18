@@ -37,7 +37,7 @@ namespace Online_Shopping.Controllers
             var newProduct = await _productService.CreateNewProduct(request);
 
             //var north = await _httpClient.PostAsJsonAsync($"{api}/new-product", newProduct);
-            return CreatedAtAction(nameof(GetProductById), new { id = newProduct.Id },
+            return CreatedAtAction(nameof(GetDetailProduct), new { id = newProduct.Id },
                 new Response<Product>
                 {
                     Message = "New product created successfully",
@@ -90,7 +90,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductById(string id)
+        public async Task<IActionResult> GetDetailProduct(string id)
         {
             var product = await _productService.GetProductById(id);
             if (product == null)
