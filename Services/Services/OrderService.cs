@@ -75,6 +75,8 @@ namespace Services.Services
             await _orderRepo.DeleteItemInCart(item);
             
             cart.TotalPrice -= (decimal)(product.Price * item.Quantity);
+            if (cart.TotalPrice < 0)
+                cart.TotalPrice = 0;
             await _orderRepo.UpdateTotalPriceCart(cart.Id, cart.TotalPrice);
 
             product.Stock += item.Quantity;
@@ -118,13 +120,23 @@ namespace Services.Services
                 Product product = await _productRepo.GetProductByIdAsync(items[i].ProductId);
                 if (product == null)
                     return null;
+
+                int quantity = (items[i].Quantity > product.Stock ? product.Stock : items[i].Quantity);
+                
                 foreach (var item in cartDTO.Items)
                 {
                     if (items[i].ProductId == item.ProductId)
                     {
-                        item.Quantity += items[i].Quantity;
-                        order.IncreaseTotalPrice(items[i].Quantity, product.Price);
-                        //order.TotalPrice += (decimal)(items[i].Quantity * item.Price);
+                        order.TotalPrice -= item.Quantity * product.Price;
+                        if (order.TotalPrice < 0)
+                            order.TotalPrice = 0;
+
+                        if (item.Quantity + items[i].Quantity > product.Stock)
+                            item.Quantity = product.Stock;
+                        else
+                            item.Quantity += items[i].Quantity;
+
+                        order.IncreaseTotalPrice(item.Quantity, product.Price);
                         
                         Item existingItem = await _orderRepo.GetItem(cartId, items[i].ProductId);
                         existingItem.Quantity = item.Quantity;
@@ -145,14 +157,13 @@ namespace Services.Services
                     {
                         OrderId = cartId,
                         ProductId = items[i].ProductId,
-                        Quantity = items[i].Quantity
+                        Quantity = quantity
                     };
-                    order.TotalPrice += (decimal)(product.Price * items[i].Quantity);
+                    order.IncreaseTotalPrice(item.Quantity, product.Price);
                     await _orderRepo.AddItemToCart(item);
-                    
                 }
 
-                product.Stock -= items[i].Quantity;
+                product.Stock -= quantity;
                 await _productRepo.UpdateInforProduct(product);
             }
             await _orderRepo.UpdateTotalPriceCart(cartId, order.TotalPrice);
@@ -178,6 +189,8 @@ namespace Services.Services
                 return false;
 
             cart.TotalPrice -= (decimal)(existingItem.Quantity * product.Price);
+            if (cart.TotalPrice < 0)
+                cart.TotalPrice = 0;
             product.Stock += existingItem.Quantity;
 
             existingItem.Quantity = Quantity;

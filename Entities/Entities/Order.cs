@@ -28,7 +28,7 @@ namespace Entities.Entities
 
         public void IncreaseTotalPrice(int quantity, decimal price)
         {
-            this.TotalPrice = quantity * price;
+            this.TotalPrice += quantity * price;
         }
     }
 }
