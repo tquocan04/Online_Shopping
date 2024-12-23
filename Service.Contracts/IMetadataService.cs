@@ -13,5 +13,9 @@ namespace Service.Contracts
         Task CreateProductMetadataAsync(ProductMetadata metadata);
         Task UpdateProductMetadataAsync(ProductMetadata metadata);
         Task DeleteProductMetadataAsync(ProductMetadata metadata);
+        Task<ProductMetadata> GetProductByIdAsync(string id);
+        Task<List<string>> GetProductsByTotalActionsAsync();
+        Task UpdateProductActionAsync(string id);
+        Task UpdateProductPurchaseAsync(string id, long quantity);
     }
 }

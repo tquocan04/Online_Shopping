@@ -3,11 +3,9 @@ using DTOs.Request;
 using DTOs.Responses;
 using Entities.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts.Interfaces;
 using Services.Services;
-using System.Net.Http;
 
 namespace Online_Shopping.Controllers
 {
@@ -16,15 +14,11 @@ namespace Online_Shopping.Controllers
     public class VoucherController : ControllerBase
     {
         private readonly IVoucherService _voucherService;
-        private readonly HttpClient _httpClient;
 
 
-        private readonly string api = "http://localhost:5285/api/vouchers/north";
-
-        public VoucherController(IVoucherService voucherService, HttpClient httpClient)
+        public VoucherController(IVoucherService voucherService)
         {
             _voucherService = voucherService;
-            _httpClient = httpClient;
         }
 
 
@@ -49,8 +43,6 @@ namespace Online_Shopping.Controllers
                     Message = "Cannot create new voucher!!!"
                 });
             }
-
-            //await _httpClient.PostAsJsonAsync($"{api}/new-voucher", voucher);
 
             return CreatedAtAction(nameof(GetAllVouchers), new { id = voucher.Id }, voucher);
         }
@@ -126,9 +118,6 @@ namespace Online_Shopping.Controllers
                 {
                     Message = "Expire time or Code voucher are invalid! Please check again!"
                 });
-
-            await _httpClient.PutAsJsonAsync($"{api}/{id}", voucher);
-
 
             return Ok(requestVoucher);
         }

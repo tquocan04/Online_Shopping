@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DTOs.DTOs;
 using DTOs.Request;
-using DTOs.Responses;
 using Entities.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Online_Shopping.Context;
@@ -75,13 +74,11 @@ namespace Services.Services
             
             await _orderRepo.DeleteItemInCart(item);
             
-
             cart.TotalPrice -= (decimal)(product.Price * item.Quantity);
             await _orderRepo.UpdateTotalPriceCart(cart.Id, cart.TotalPrice);
 
             product.Stock += item.Quantity;
             await _productRepo.UpdateInforProduct(product);
-
         }
 
         public async Task<OrderCartDTO> GetOrderCart(Guid cusId)
@@ -126,7 +123,8 @@ namespace Services.Services
                     if (items[i].ProductId == item.ProductId)
                     {
                         item.Quantity += items[i].Quantity;
-                        order.TotalPrice += (decimal)(items[i].Quantity * item.Price);
+                        order.IncreaseTotalPrice(items[i].Quantity, product.Price);
+                        //order.TotalPrice += (decimal)(items[i].Quantity * item.Price);
                         
                         Item existingItem = await _orderRepo.GetItem(cartId, items[i].ProductId);
                         existingItem.Quantity = item.Quantity;
@@ -167,6 +165,32 @@ namespace Services.Services
                 _mapper.Map(product, item);
             }
             return cartDTO;
+        }
+
+        public async Task<bool> UpdateQuantityItem(Guid cusId, Guid prodId, int Quantity)
+        {
+            var cart = await _orderRepo.GetOrderIsCartByCusId(cusId);
+            var cartId = cart.Id;
+            Product product = await _productRepo.GetProductByIdAsync(prodId);
+            Item existingItem = await _orderRepo.GetItem(cartId, prodId);
+
+            if (Quantity > product.Stock)
+                return false;
+
+            cart.TotalPrice -= (decimal)(existingItem.Quantity * product.Price);
+            product.Stock += existingItem.Quantity;
+
+            existingItem.Quantity = Quantity;
+            await _orderRepo.UpdateQuantityItemToCart(existingItem);
+
+            //update total price
+            cart.IncreaseTotalPrice(existingItem.Quantity, product.Price);
+            await _orderRepo.UpdateTotalPriceCart(cartId, cart.TotalPrice);
+
+            //update product stock
+            product.Stock -= existingItem.Quantity;
+            await _productRepo.UpdateInforProduct(product);
+            return true;
         }
     }
 }

@@ -11,5 +11,6 @@ namespace Service.Contracts.Interfaces
         Task<OrderCartDTO> MergeCartFromClient(Guid cusId, List<RequestItems> items);
         Task AddToCart(Guid cusId, Guid prodId);
         Task DeleteItemInCart(Guid cusId, Guid prodId);
+        Task<bool> UpdateQuantityItem(Guid cusId, Guid prodId, int Quantity);
     }
 }

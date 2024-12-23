@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service.Contracts", "Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTOs", "DTOs\DTOs.csproj", "{FD376CF8-2153-4488-8238-86981F266A71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Online_Shopping_North", "Online_Shopping_North\Online_Shopping_North.csproj", "{BC468A3E-BB25-4330-8B72-88B9321D6630}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,10 +51,6 @@ Global
 		{FD376CF8-2153-4488-8238-86981F266A71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD376CF8-2153-4488-8238-86981F266A71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD376CF8-2153-4488-8238-86981F266A71}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC468A3E-BB25-4330-8B72-88B9321D6630}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC468A3E-BB25-4330-8B72-88B9321D6630}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC468A3E-BB25-4330-8B72-88B9321D6630}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC468A3E-BB25-4330-8B72-88B9321D6630}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,15 +1,12 @@
-﻿using AutoMapper;
-using DTOs.DTOs;
+﻿using DTOs.DTOs;
 using DTOs.Request;
 using DTOs.Responses;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Repositories;
 using Repository.Contracts.Interfaces;
 using Service.Contracts.Interfaces;
 using Services.Services;
-using System.Net.Http;
 
 namespace Online_Shopping.Controllers
 {
@@ -22,21 +19,16 @@ namespace Online_Shopping.Controllers
         private readonly ILoginRepo _loginRepo;
         private readonly IEmployeeService _employeeService;
         private readonly ITokenService _tokenService;
-        private readonly HttpClient _httpClient;
-
-        //private readonly string api = "http://localhost:5285/api/arc-shop/north";
 
         public ARCController(IUserRepo userRepo, 
             ILoginRepo loginRepo,
             ITokenService tokenService,
-            HttpClient httpClient,
             IEmployeeService employeeRepo)
         {
             _userRepo = userRepo;
             _loginRepo = loginRepo;
             _employeeService = employeeRepo;
             _tokenService = tokenService;
-            _httpClient = httpClient;
         }
 
         [HttpPost("new-staff")]
@@ -59,10 +51,6 @@ namespace Online_Shopping.Controllers
 
             EmployeeDTO empDTO = await _employeeService.AddNewEmployee(requestEmployee);
 
-            //if (requestEmployee.RegionId == "Bac")
-            //{
-            //    //await _httpClient.PostAsJsonAsync($"{api}/new-staff/{empDTO.Id}", requestEmployee);
-            //}
             return CreatedAtAction("GetProile", new { id = empDTO.Id }, empDTO);
         }
 
@@ -75,11 +63,6 @@ namespace Online_Shopping.Controllers
             if (emp != null)
             {
                 await _employeeService.DeleteEmployee(id);
-
-                //if (emp.RegionId == "Bac")
-                //{
-                //    //await _httpClient.DeleteAsync($"{api}/profile/{id}");
-                //}
             }
             else
             {
@@ -104,13 +87,6 @@ namespace Online_Shopping.Controllers
                     Message = "Invalid information!"
                 });
             }
-            //else
-            //{
-            //    if (requestEmployee.RegionId == "Bac")
-            //    {
-            //        await _httpClient.PutAsJsonAsync($"{api}/profile/{id}", requestEmployee);
-            //    }
-            //}
             return NoContent();
         }
 
@@ -127,17 +103,6 @@ namespace Online_Shopping.Controllers
                     Message = "This staff does not exist!"
                 });
             }
-            //else
-            //{
-            //    if (profile.RegionId == "Bac")
-            //    {
-            //        //var response = await _httpClient.GetAsync($"{api}/profile/{id}");
-            //        if (response.IsSuccessStatusCode)
-            //        {
-            //            return Ok(await response.Content.ReadFromJsonAsync<EmployeeDTO>());
-            //        }
-            //    }
-            //}
             return Ok(profile);
         }
     }

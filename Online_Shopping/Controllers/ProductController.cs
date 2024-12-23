@@ -5,11 +5,10 @@ using DTOs.Request;
 using DTOs.Responses;
 using Entities.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Repository.Contracts.Interfaces;
 using Service.Contracts.Interfaces;
 using Services.Services;
-using System.Net.Http;
 
 namespace Online_Shopping.Controllers
 {
@@ -18,16 +17,15 @@ namespace Online_Shopping.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IProductRepo _productRepo;
         private readonly IMapper _mapper;
-        private readonly HttpClient _httpClient;
-        //private readonly string api = "http://localhost:5285/api/products/north";
 
         public ProductController(IProductService productService, IMapper mapper,
-            HttpClient httpClient) 
+            IProductRepo productRepo) 
         {
             _productService = productService;
+            _productRepo = productRepo;
             _mapper = mapper;
-            _httpClient = httpClient;
         }
 
         [HttpPost("new-product")]
@@ -36,7 +34,6 @@ namespace Online_Shopping.Controllers
         {
             var newProduct = await _productService.CreateNewProduct(request);
 
-            //var north = await _httpClient.PostAsJsonAsync($"{api}/new-product", newProduct);
             return CreatedAtAction(nameof(GetDetailProduct), new { id = newProduct.Id },
                 new Response<Product>
                 {
@@ -90,7 +87,7 @@ namespace Online_Shopping.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetDetailProduct(string id)
+        public async Task<IActionResult> GetDetailProduct(Guid id)
         {
             var product = await _productService.GetProductById(id);
             if (product == null)
@@ -103,10 +100,9 @@ namespace Online_Shopping.Controllers
 
         [HttpPatch("{id}")]
         [Authorize(Roles = "Admin, Staff")]
-        public async Task<IActionResult> UpdateStatusProductById(string id)
+        public async Task<IActionResult> UpdateStatusProductById(Guid id)
         {
-            var prodduct = await _productService.GetProductById(id);
-            if (prodduct == null)
+            if (!await _productRepo.CheckExistingProduct(id))
                 return NotFound(new Response<string>
                 {
                     Message = "This product does not exist!",
@@ -114,7 +110,6 @@ namespace Online_Shopping.Controllers
 
             await _productService.UpdatestatusProduct(id);
 
-            //await _httpClient.PatchAsync($"{api}/{id}", null);
             return Ok(new Response<string>
             {
                 Message = "The status is updated successfully"
@@ -124,17 +119,15 @@ namespace Online_Shopping.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin, Staff")]
-        public async Task<IActionResult> UpdateInforProduct(string id, [FromForm] RequestProduct requestProduct)
+        public async Task<IActionResult> UpdateInforProduct(Guid id, [FromForm] RequestProduct requestProduct)
         {
-            var prodduct = await _productService.GetProductById(id);
-            if (prodduct == null)
-                return NotFound();
-
+            if (!await _productRepo.CheckExistingProduct(id))
+                return NotFound(new Response<string>
+                {
+                    Message = "This product does not exist!",
+                });
 
             Product product = await _productService.UpdateInforProduct(id, requestProduct);
-
-            //await _httpClient.PutAsJsonAsync($"{api}/update", product);
-
 
             return Ok(new Response<string>
             {
@@ -144,11 +137,10 @@ namespace Online_Shopping.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin, Staff")]
-        public async Task<IActionResult> DeleteProduct(string id)
+        public async Task<IActionResult> DeleteProduct(Guid id)
         {
             await _productService.DeleteProduct(id);
 
-            //await _httpClient.DeleteAsync($"{api}/delete/{id}");
             return NoContent();
         }
     }

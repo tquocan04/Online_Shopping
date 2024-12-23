@@ -17,14 +17,14 @@ namespace Services.Services
         private readonly IOrderService _orderService;
         private readonly IProductRepo _productRepo;
         private readonly IAddressRepo _addressRepo;
-        private readonly IRecommendaterService _recommendaterService;
+        private readonly IMetadataService _metadataService;
         private readonly IMapper _mapper;
 
         public BillService(IBillRepo billRepo, IOrderRepo orderRepo,
             IVoucherRepo voucherRepo, IOrderService orderService,
             IProductRepo productRepo, IMapper mapper,
-            IAddressRepo addressRepo,
-            IRecommendaterService recommendaterService) 
+            IAddressRepo addressRepo, IMetadataService metadataService
+            ) 
         {
             _billRepo = billRepo;
             _orderRepo = orderRepo;
@@ -32,7 +32,7 @@ namespace Services.Services
             _orderService = orderService;
             _productRepo = productRepo;
             _addressRepo = addressRepo;
-            _recommendaterService = recommendaterService;
+            _metadataService = metadataService;
             _mapper = mapper;
         }
 
@@ -49,10 +49,7 @@ namespace Services.Services
         {
             foreach (var item in order.Items)
             {
-                RecommendProduct recommendProduct = await _recommendaterService.GetRecommendProductByProductIdAsync
-                                                                                    (item.ProductId.ToString());
-                recommendProduct.Purchase += item.Quantity;
-                await _recommendaterService.UpdateRecommendProductAsync(recommendProduct);
+                await _metadataService.UpdateProductPurchaseAsync(item.ProductId.ToString(), item.Quantity);
             }
         }
 
@@ -143,7 +140,7 @@ namespace Services.Services
             await _billRepo.CartToBillAsync(order);
 
             var newOrder = await _orderService.CreateNewCart(customerId);
-            //Console.WriteLine($"orderrr: {order}");
+            
             //await UpdateQuantityPurchase(order);
 
             return order;
@@ -157,17 +154,8 @@ namespace Services.Services
 
             OrderBillDTO orderBillDTO = _mapper.Map<OrderBillDTO>(order);
 
-            //List<ItemDTO> items = orderBillDTO.Items.ToList();
-
             await MapProductToItemDTO(orderBillDTO);
-            //foreach(var item in order.Items)
-            //{
-            //    for (int i = 0; i < order.Items.Count; i++)
-            //    {
-            //        _mapper.Map(item, items[i]);
-            //    }
-            //}
-
+            
             return orderBillDTO;
         }
 

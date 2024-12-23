@@ -10,10 +10,10 @@ namespace Service.Contracts.Interfaces
         Task<IEnumerable<ProductDTO>> GetAllProducts();
         Task<IEnumerable<ProductDTO>> GetProductsNotHidden();
         Task<IEnumerable<ProductDTO>> GetProductsHidden();
-        Task<ProductDTO> GetProductById(string id);
-        Task UpdatestatusProduct(string id);
-        Task<Product> UpdateInforProduct(string id, RequestProduct requestProduct);
-        Task DeleteProduct(string id);
+        Task<ProductDTO> GetProductById(Guid id);
+        Task UpdatestatusProduct(Guid id);
+        Task<Product> UpdateInforProduct(Guid id, RequestProduct requestProduct);
+        Task DeleteProduct(Guid id);
 
     }
 }

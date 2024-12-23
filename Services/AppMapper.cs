@@ -24,7 +24,12 @@ namespace Services
             CreateMap<Payment, PaymentDTO>();
             CreateMap<PaymentDTO, Payment>();
             
-            CreateMap<ProductMetadata, ProductDTO>().ReverseMap();
+            CreateMap<ProductMetadata, ProductDTO>();
+            CreateMap<ProductDTO, ProductMetadata>()
+                .ForMember(dest => dest.Action,
+                            opt => opt.Ignore())
+                .ForMember(dest => dest.Purchase,
+                            opt => opt.Ignore());
             CreateMap<Product, ProductDTO>().ReverseMap();
             CreateMap<RequestProduct, ProductDTO>().ReverseMap();
             CreateMap<RequestProduct, Product>()

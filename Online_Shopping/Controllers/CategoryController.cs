@@ -1,13 +1,8 @@
-﻿using DTOs;
-using DTOs.DTOs;
-using DTOs.Request;
+﻿using DTOs.Request;
 using DTOs.Responses;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts.Interfaces;
-using System.Net.Http;
 
 namespace Online_Shopping.Controllers
 {
@@ -16,13 +11,10 @@ namespace Online_Shopping.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
-        private readonly HttpClient _httpClient;
-        //private readonly string api = "http://localhost:5285/api/categories/north";
 
-        public CategoryController(ICategoryService categoryService, HttpClient httpClient) 
+        public CategoryController(ICategoryService categoryService) 
         {
             _categoryService = categoryService;
-            _httpClient = httpClient;
         }
 
         [HttpPost("new-category")]
@@ -30,8 +22,6 @@ namespace Online_Shopping.Controllers
         public async Task<IActionResult> AddNewCategory([FromBody] RequestCategory request)
         {
             var newCategory = await _categoryService.CreateNewCategory(request);
-
-            //var north = await _httpClient.PostAsJsonAsync($"{api}/new-category", newCategory);
 
             return CreatedAtAction(
                 nameof(GetCategoryById),
@@ -83,7 +73,6 @@ namespace Online_Shopping.Controllers
 
             await _categoryService.DeleteCategoryById(Id);
 
-            //await _httpClient.DeleteAsync($"{api}/{Id}");
             return NoContent();
         }
 
@@ -106,7 +95,6 @@ namespace Online_Shopping.Controllers
                 });
             }
 
-            //await _httpClient.PatchAsJsonAsync($"{api}/{Id}", request);
             return Ok(new Response<RequestCategory>
             {
                 Message = "Category is updated successfully",

@@ -47,22 +47,27 @@ namespace Repositories.Repositories
             return await _applicationContext.Products.Where(p => p.IsHidden).ToListAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetProductsNotHiddenAsync()
+        public async Task<IEnumerable<Product>> GetProductsNotHiddenAsync(List<string> mongoIds)
         {
-            return await _applicationContext.Products
-                .Where(p => !p.IsHidden)
-                
+            var products = await _applicationContext.Products
+                .Where(p => !p.IsHidden
+                            && mongoIds.Contains(p.Id.ToString())   // So sánh Id trong SQL Server
+                            ) 
                 .ToListAsync();
+
+            var result = products
+                            .OrderBy(p => mongoIds.IndexOf(p.Id.ToString())) // Sắp xếp theo thứ tự trong MongoDB
+                            .ToList();
+
+            return result;
         }
 
         public async Task UpdatestatusProduct(Guid id)
         {
             var product = await _applicationContext.Products.FindAsync(id);
-            if (product.IsHidden)
-                product.IsHidden = false;
-            else
-                product.IsHidden = true;
-            //_applicationContext.Products.Update(product);
+
+            product.ChangeStatus();
+            
             await _applicationContext.SaveChangesAsync();
         }
 
@@ -77,11 +82,6 @@ namespace Repositories.Repositories
         {
             _applicationContext.Products.Remove(product);
             await _applicationContext.SaveChangesAsync();
-        }
-
-        public Task UpdateQuantityProduct(Product product)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<Guid> GetCategoryIdByProductId(Guid id)
@@ -100,6 +100,21 @@ namespace Repositories.Repositories
                 .Where(p => p.Id == id)
                 .Select(p => p.Name)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> CheckExistingProduct(Guid id)
+        {
+            Product? product = await _applicationContext.Products.AsNoTracking().FirstOrDefaultAsync();
+            if (product == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<IEnumerable<Product>> GetProductsNotHiddenAsync()
+        {
+            return await _applicationContext.Products.Where(p => !p.IsHidden).ToListAsync();
         }
     }
 }

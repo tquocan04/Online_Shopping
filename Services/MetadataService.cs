@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using Service.Contracts;
 using Services.MongoDB;
+using System.Reflection.Metadata;
 
 namespace Services
 {
@@ -20,11 +21,6 @@ namespace Services
         public async Task CreateCustomerMetadataAsync(CustomerMetadata metadata)
         {
             await _customerCollection.InsertOneAsync(metadata);
-        }
-
-        public async Task CreateProductMetadataAsync(ProductMetadata metadata)
-        {
-            await _productMetadata.InsertOneAsync(metadata);
         }
 
         public async Task UpdateCustomerMetadataAsync(CustomerMetadata metadata)
@@ -47,6 +43,17 @@ namespace Services
             await _customerCollection.UpdateOneAsync(filter, update);
         }
 
+        //-------------------------------------PRODUCT-----------------------------------------------------
+        public async Task CreateProductMetadataAsync(ProductMetadata metadata)
+        {
+            await _productMetadata.InsertOneAsync(metadata);
+        }
+
+        public async Task<ProductMetadata> GetProductByIdAsync(string id)
+        {
+            return await _productMetadata.Find(p => p.Id == id).FirstOrDefaultAsync();
+        }
+
         public async Task UpdateProductMetadataAsync(ProductMetadata metadata)
         {
             var filter = Builders<ProductMetadata>.Filter.Eq(p => p.Id, metadata.Id);
@@ -61,10 +68,46 @@ namespace Services
             await _productMetadata.UpdateOneAsync(filter, update);
         }
 
+        public async Task UpdateProductActionAsync(string id)
+        {
+            ProductMetadata product = await _productMetadata.Find(p => p.Id == id).FirstOrDefaultAsync();
+            if (product == null)
+            {
+                return;
+            }
+            
+            product.IncreaseAction(1);
+            product.IncreaseTotal(1);
+            await _productMetadata.ReplaceOneAsync(p => p.Id == id, product);
+        }
+
+        public async Task UpdateProductPurchaseAsync(string id, long quantity)
+        {
+            ProductMetadata product = await _productMetadata.Find(p => p.Id == id).FirstOrDefaultAsync();
+            if (product == null)
+            {
+                return;
+            }
+            product.IncreasePurchase(quantity);
+            product.IncreaseTotal(quantity);
+            await _productMetadata.ReplaceOneAsync(p => p.Id == id, product);
+        }
+
         public async Task DeleteProductMetadataAsync(ProductMetadata metadata)
         {
             var filter = Builders<ProductMetadata>.Filter.Eq(p => p.Id, metadata.Id);
             await _productMetadata.DeleteOneAsync(filter);
+        }
+
+        public async Task<List<string>> GetProductsByTotalActionsAsync()
+        {
+            var sortDefinition = Builders<ProductMetadata>.Sort.Descending(p => p.Total);
+            var products = await _productMetadata
+                .Find(FilterDefinition<ProductMetadata>.Empty)
+                .Sort(sortDefinition)
+                .ToListAsync();
+
+            return products.Select(p => p.Id).ToList();
         }
     }
 }

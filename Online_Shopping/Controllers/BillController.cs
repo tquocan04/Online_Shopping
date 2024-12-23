@@ -21,17 +21,13 @@ namespace Online_Shopping.Controllers
         private readonly IShippingRepo _shippingRepo;
         private readonly IBillRepo _billRepo;
         private readonly IMapper _mapper;
-        //private readonly HttpClient _httpClient;
-
-        ////private readonly string apiOrder = "http://localhost:5285/api/orders/north";
-
 
         public BillController(IOrderService orderService,
             IPaymentRepo paymentRepo,
             IMapper mapper, IBillService billService,
             IShippingRepo shippingRepo,
             IBillRepo billRepo,
-            HttpClient httpClient, ITokenService tokenService)
+            ITokenService tokenService)
         {
             _orderService = orderService;
             _paymentRepo = paymentRepo;
@@ -40,7 +36,6 @@ namespace Online_Shopping.Controllers
             _shippingRepo = shippingRepo;
             _billRepo = billRepo;
             _mapper = mapper;
-            //_httpClient = httpClient;
         }
         
         [HttpPut("payment")]
@@ -75,11 +70,6 @@ namespace Online_Shopping.Controllers
                 {
                     Message = "Cannot create this bill!"
                 });
-            //if (currentRegion == "Bac")
-            //{
-            //    await _httpClient.DeleteAsync($"{apiOrder}/delete-item/{id}/{prodId}");
-            //}
-
 
             return Ok(order);
         }

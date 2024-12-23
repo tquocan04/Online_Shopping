@@ -25,5 +25,10 @@ namespace Entities.Entities
         [ForeignKey(nameof(ShippingMethod))]
         public string? ShippingMethodId { get; set; }
         public ShippingMethod? ShippingMethod { get; set; }
+
+        public void IncreaseTotalPrice(int quantity, decimal price)
+        {
+            this.TotalPrice = quantity * price;
+        }
     }
 }

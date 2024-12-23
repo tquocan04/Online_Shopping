@@ -19,18 +19,16 @@ namespace Services.Services
         private readonly IMapper _mapper;
         private readonly ICategoryRepo _categoryRepo;
         private readonly IMetadataService _metadataService;
-        private readonly IRecommendaterService _recommendaterService;
         private readonly Cloudinary _cloudinary;
 
         public ProductService(IProductRepo productRepo, IMapper mapper, ICategoryRepo categoryRepo,
-            IMetadataService metadataService, IRecommendaterService recommendaterService,
+            IMetadataService metadataService,
             Cloudinary cloudinary)
         {
             _productRepo = productRepo;
             _mapper = mapper;
             _categoryRepo = categoryRepo;
             _metadataService = metadataService;
-            _recommendaterService = recommendaterService;
             _cloudinary = cloudinary;
         }
 
@@ -71,7 +69,7 @@ namespace Services.Services
 
         private async Task UploadImageProduct(Product product, IFormFile file)
         {
-            var fileName = $"prodonlineshopping_{file.FileName}";
+            var fileName = $"productarc_{file.FileName}";
             var filePath = Path.Combine(Path.GetTempPath(), fileName);
 
             // luu tam cua he thong C:\Users\[UserName]\AppData\Local\Temp
@@ -84,7 +82,7 @@ namespace Services.Services
             var uploadParams = new ImageUploadParams()
             {
                 File = new FileDescription(fileName, filePath),
-                PublicId = $"prod_{Guid.NewGuid()}"
+                PublicId = $"product_{Guid.NewGuid()}"
             };
 
             var uploadResult = _cloudinary.Upload(uploadParams);
@@ -96,7 +94,6 @@ namespace Services.Services
             // xoa file tam sau khi upload
             System.IO.File.Delete(filePath);
         }
-
 
         public async Task<Product> CreateNewProduct(RequestProduct request)
         {
@@ -118,16 +115,9 @@ namespace Services.Services
 
             await _productRepo.CreateNewProductAsync(product);
 
-            var prodMetadata = await ConvertProductToProductMetadata(product);
+            //var prodMetadata = await ConvertProductToProductMetadata(product);
             //await _metadataService.CreateProductMetadataAsync(prodMetadata);
 
-            //RecommendProduct recommendProduct = new RecommendProduct
-            //{
-            //    CategoryId = product.CategoryId.ToString(),
-            //    ProductId = product.Id.ToString(),
-            //};
-            //await _recommendaterService.CreateRecommendProductAsync(recommendProduct);
-            
             return product;
         }
 
@@ -138,16 +128,14 @@ namespace Services.Services
             return await GetProducts(products);
         }
 
-        public async Task<ProductDTO> GetProductById(string id)
+        public async Task<ProductDTO> GetProductById(Guid id)
         {
-            Product product = await _productRepo.GetProductByIdAsync(Guid.Parse(id));
+            Product product = await _productRepo.GetProductByIdAsync(id);
+            if (product == null)
+                return null;
 
             // khi click vao xem chi tiet san pham
-            RecommendProduct recommendProduct = await _recommendaterService.GetRecommendProductByProductIdAsync(id);
-                        
-            recommendProduct.Action += 1;
-
-            await _recommendaterService.UpdateRecommendProductAsync(recommendProduct);
+            //await _metadataService.UpdateProductActionAsync(id.ToString());
 
             return await ConvertToProductDTO(product);
         }
@@ -160,13 +148,14 @@ namespace Services.Services
 
         public async Task<IEnumerable<ProductDTO>> GetProductsNotHidden()
         {
+            //var listIds = await _metadataService.GetProductsByTotalActionsAsync();
             var products = await _productRepo.GetProductsNotHiddenAsync();
             return await GetProducts(products);
         }
 
-        public async Task<Product> UpdateInforProduct(string id, RequestProduct requestProduct)
+        public async Task<Product> UpdateInforProduct(Guid id, RequestProduct requestProduct)
         {
-            var product = await _productRepo.GetProductByIdAsync(Guid.Parse(id));
+            var product = await _productRepo.GetProductByIdAsync(id);
             if (product == null)
             {
                 throw new ArgumentException("Service: Product cannot be found");
@@ -181,31 +170,19 @@ namespace Services.Services
             await _productRepo.UpdateInforProduct(product);
 
             //await _metadataService.UpdateProductMetadataAsync(await ConvertProductToProductMetadata(product));
-            //RecommendProduct recommendProduct = await _recommendaterService.GetRecommendProductByProductIdAsync(id);
-
-            //recommendProduct.CategoryId = requestProduct.CategoryId.ToString();
-            //await _recommendaterService.UpdateRecommendProductAsync(recommendProduct);
 
             return product;
         }
 
-        public async Task UpdatestatusProduct(string id)
+        public async Task UpdatestatusProduct(Guid id)
         {
-            var product = await _productRepo.GetProductByIdAsync(Guid.Parse(id));
-            if (product == null)
-            {
-                throw new Exception("Service: Product cannot be found");
-            }
-
-            await _productRepo.UpdatestatusProduct(product.Id);
+            await _productRepo.UpdatestatusProduct(id);
         }
 
-        public async Task DeleteProduct(string id)
+        public async Task DeleteProduct(Guid id)
         {
-            var product = await _productRepo.GetProductByIdAsync(Guid.Parse(id));
+            var product = await _productRepo.GetProductByIdAsync(id);
             await _productRepo.DeleteProductAsync(product);
-
-            //await _metadataService.DeleteProductMetadataAsync(await ConvertProductToProductMetadata(product));
         }
     }
 }
