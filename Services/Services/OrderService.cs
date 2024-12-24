@@ -106,7 +106,7 @@ namespace Services.Services
             Guid cartId = order.Id;
             OrderCartDTO cartDTO = _mapper.Map<OrderCartDTO>(order);
 
-            if (cartDTO.Items != null)
+            if (cartDTO.Items.Count != 0)
             {
                 foreach (var item in cartDTO.Items)
                 {
@@ -115,6 +115,7 @@ namespace Services.Services
                 }
             }
             bool check = true;
+
             for (int i = 0; i < items.Count; i++)
             {
                 Product product = await _productRepo.GetProductByIdAsync(items[i].ProductId);
@@ -122,36 +123,49 @@ namespace Services.Services
                     return null;
 
                 int quantity = (items[i].Quantity > product.Stock ? product.Stock : items[i].Quantity);
-                
-                foreach (var item in cartDTO.Items)
+                if (cartDTO.Items.Count != 0)
                 {
-                    if (items[i].ProductId == item.ProductId)
+                    foreach (var item in cartDTO.Items)
                     {
-                        order.TotalPrice -= item.Quantity * product.Price;
-                        if (order.TotalPrice < 0)
-                            order.TotalPrice = 0;
+                        if (items[i].ProductId == item.ProductId)
+                        {
+                            order.TotalPrice -= item.Quantity * product.Price;
+                            if (order.TotalPrice < 0)
+                                order.TotalPrice = 0;
 
-                        if (item.Quantity + items[i].Quantity > product.Stock)
-                            item.Quantity = product.Stock;
+                            if (item.Quantity + items[i].Quantity > product.Stock)
+                                item.Quantity = product.Stock;
+                            else
+                                item.Quantity += items[i].Quantity;
+
+                            order.IncreaseTotalPrice(item.Quantity, product.Price);
+
+                            Item existingItem = await _orderRepo.GetItem(cartId, items[i].ProductId);
+                            existingItem.Quantity = item.Quantity;
+                            await _orderRepo.UpdateQuantityItemToCart(existingItem);
+
+                            check = true;
+                            break;
+                        }
                         else
-                            item.Quantity += items[i].Quantity;
+                        {
+                            check = false;
+                        }
 
-                        order.IncreaseTotalPrice(item.Quantity, product.Price);
-                        
-                        Item existingItem = await _orderRepo.GetItem(cartId, items[i].ProductId);
-                        existingItem.Quantity = item.Quantity;
-                        await _orderRepo.UpdateQuantityItemToCart(existingItem);
-                        
-                        check = true;
-                        break;
                     }
-                    else
+                    if (!check)
                     {
-                        check = false;
+                        Item item = new Item
+                        {
+                            OrderId = cartId,
+                            ProductId = items[i].ProductId,
+                            Quantity = quantity
+                        };
+                        order.IncreaseTotalPrice(item.Quantity, product.Price);
+                        await _orderRepo.AddItemToCart(item);
                     }
-                    
-                }
-                if (!check)
+                }                 
+                else
                 {
                     Item item = new Item
                     {
@@ -162,7 +176,6 @@ namespace Services.Services
                     order.IncreaseTotalPrice(item.Quantity, product.Price);
                     await _orderRepo.AddItemToCart(item);
                 }
-
                 product.Stock -= quantity;
                 await _productRepo.UpdateInforProduct(product);
             }
