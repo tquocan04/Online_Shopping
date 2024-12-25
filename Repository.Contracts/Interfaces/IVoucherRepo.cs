@@ -10,6 +10,7 @@ namespace Repository.Contracts.Interfaces
         Task<bool> IsValidVoucherById(Guid? id, DateOnly dateOnly, decimal? minOrderValue, int? quantity);
         Task<IEnumerable<Voucher>> GetVoucherListAsync();
         Task<Voucher> GetDetailVoucherByIdAsync(Guid? id);
+        Task<Voucher?> GetDetailVoucherByCode(string code);
         Task UpdateVoucherAsync(Voucher voucher);
         Task UpdateVoucherQuantityAsync(Guid id, int? quantity);
         Task<Guid?> GetVoucherIdByCode(string code);

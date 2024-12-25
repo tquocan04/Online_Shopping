@@ -48,10 +48,19 @@ namespace Repositories.Repositories
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<Voucher?> GetDetailVoucherByCode(string code)
+        {
+            return await _applicationContext.Vouchers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(v => v.Code.ToLower() == code.ToLower());
+        }
+
         public async Task<IEnumerable<Voucher>> GetVoucherListAsync()
         {
             return await _applicationContext.Vouchers
                 .AsNoTracking()
+                .Where(v => v.ExpiryDate >= DateOnly.FromDateTime(DateTime.Now)
+                        && v.Quantity > 0)
                 .ToListAsync();
         }
 

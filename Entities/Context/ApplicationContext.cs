@@ -238,6 +238,37 @@ namespace Online_Shopping.Context
                         Name = "SHOPEE FOOD",
                     });
             });
+            modelBuilder.Entity<Employee>(entity =>
+            {
+                entity.HasData(
+                    new Employee
+                    {
+                        Id = Guid.Parse("32aecf7c-3670-42ba-bd24-c4173b2452df"),
+                        Name = "Admin",
+                        Gender = "Nam",
+                        Username = "adminn",
+                        Email = "adminn@gmail.com",
+                        Password = "admin123",
+                        PhoneNumber = "0939771198",
+                        Dob = new DateOnly(2004, 1, 20),
+                        RoleId = "Admin",
+                        BranchId = null,
+                    });
+            });
+
+            modelBuilder.Entity<Address>(entity =>
+            {
+                entity.HasData(
+                    new Address
+                    {
+                        Id = Guid.Parse("fd781de2-93a7-421c-a0dc-8f7a6279c04e"),
+                        EmployeeId = Guid.Parse("32aecf7c-3670-42ba-bd24-c4173b2452df"),
+                        DistrictId = Guid.Parse("bfb4be74-f5ed-4e67-94ba-7ee067a2098d"),
+                        Street = "2012004",
+                        IsDefault = true,
+                    }
+                    );
+            });
         }
 
     }

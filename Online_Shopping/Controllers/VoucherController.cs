@@ -1,11 +1,12 @@
-﻿using DTOs.DTOs;
+﻿using AutoMapper;
+using DTOs.DTOs;
 using DTOs.Request;
 using DTOs.Responses;
 using Entities.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Repository.Contracts.Interfaces;
 using Service.Contracts.Interfaces;
-using Services.Services;
 
 namespace Online_Shopping.Controllers
 {
@@ -14,11 +15,15 @@ namespace Online_Shopping.Controllers
     public class VoucherController : ControllerBase
     {
         private readonly IVoucherService _voucherService;
+        private readonly IVoucherRepo _voucherRepo;
+        private readonly IMapper _mapper;
 
-
-        public VoucherController(IVoucherService voucherService)
+        public VoucherController(IVoucherService voucherService, IVoucherRepo voucherRepo,
+            IMapper mapper)
         {
             _voucherService = voucherService;
+            _voucherRepo = voucherRepo;
+            _mapper = mapper;
         }
 
 
@@ -79,11 +84,11 @@ namespace Online_Shopping.Controllers
             return Ok(list);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("detail")]
         [Authorize]
-        public async Task<IActionResult> GetDetailVoucher(Guid id)
+        public async Task<IActionResult> GetDetailVoucher([FromQuery] string code)
         {
-            VoucherDTO voucher = await _voucherService.GetDetailVoucher(id);
+            Voucher? voucher = await _voucherRepo.GetDetailVoucherByCode(code);
 
             if (voucher == null)
                 return NotFound(new Response<string>
@@ -91,7 +96,19 @@ namespace Online_Shopping.Controllers
                     Message = "This voucher does not exist!"
                 });
 
-            return Ok(voucher);
+            else if (!voucher.checkExpireDate())
+                return BadRequest(new Response<string>
+                {
+                    Message = "This voucher has expired!"
+                });
+
+            else if (voucher.Quantity <= 0)
+                return BadRequest(new Response<string>
+                {
+                    Message = "This voucher is out of stock!"
+                });
+
+            return Ok(_mapper.Map<VoucherDTO>(voucher));
         }
 
         [HttpPut("{id}")]

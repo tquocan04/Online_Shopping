@@ -14,5 +14,11 @@ namespace Entities.Entities
         public int? Quantity { get; set; }
         [JsonIgnore]
         public ICollection<Order>? Orders { get; set; }
+
+
+        public bool checkExpireDate()
+        {
+            return this.ExpiryDate >= DateOnly.FromDateTime(DateTime.Now);
+        }
     }
 }
