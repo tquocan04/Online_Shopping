@@ -9,11 +9,12 @@ namespace Repository.Contracts.Interfaces
         public bool checkDOB(int year);
         Task CreateNewCustomer(Customer customer);
         Task<Customer?> GetCustomerByIdAsync(Guid id);
-        Task<Customer?> GetProfileByCustomerIdIdAsync(Guid id);
+        Task<string> GetEmailByCustomerIdAsync(Guid id);
         Task UpdateInforCustomer(Customer customer);
         Task<string?> GetStreetDefaultByCustomerIdAsync(Guid customerId);
         Task<Guid> GetDistrictDefaultByCustomerIdAsync(Guid customerId);
         Task<string?> GetPictureOfCustomer(string email);
         Task UpdateNewPassword(string email, string password);
+        Task<Guid> GetCustomerIdByEmailAsync(string email);
     }
 }

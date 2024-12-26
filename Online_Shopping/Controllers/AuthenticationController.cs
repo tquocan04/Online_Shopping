@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
 using CloudinaryDotNet.Actions;
-using DTOs;
-using DTOs.DTOs;
 using DTOs.Request;
 using DTOs.Responses;
 using Entities.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.Repositories;
 using Repository.Contracts.Interfaces;
 using Service.Contracts.Interfaces;
-using Services.Services;
 
 namespace Online_Shopping.Controllers
 {
@@ -183,21 +179,22 @@ namespace Online_Shopping.Controllers
         [HttpPatch("new-password")]
         public async Task<IActionResult> UpdateNewPassword([FromBody] RequestLogin login)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             if (!await _userRepo.checkEmailExist(login.Login))
                 return BadRequest(new Response<string>
                 {
                     Message = "Invalid email!"
                 });
-
-            await _userRepo.UpdateNewPassword(login.Login, login.Password);
-            return Ok(new Response<string>
+            if (login.Password != null)
             {
-                Message = "Updated password successfully!"
+                await _userRepo.UpdateNewPassword(login.Login, login.Password);
+                return Ok(new Response<string>
+                {
+                    Message = "Updated password successfully!"
+                });
+            }
+            return BadRequest(new Response<string>
+            {
+                Message = "New password is null!"
             });
         }
     }

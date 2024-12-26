@@ -18,7 +18,7 @@ namespace Services.Services
 
         public async Task<Tuple<string, string?>> LoginAsync(RequestLogin requestLogin)
         {
-            if (requestLogin.Login.Contains("@"))
+            if (requestLogin.Login.Contains('@'))
             {
                 string role = await _loginRepo.checkLoginCustomerAsync(requestLogin.Login, requestLogin.Password); 
                 string? picture = await _userRepo.GetPictureOfCustomer(requestLogin.Login);

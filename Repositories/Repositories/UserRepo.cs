@@ -74,9 +74,13 @@ namespace Repositories.Repositories
             return address.DistrictId;
         }
 
-        public async Task<Customer> GetProfileByCustomerIdIdAsync(Guid id)
+        public async Task<string> GetEmailByCustomerIdAsync(Guid id)
         {
-            return await _applicationContext.Customers.FindAsync(id);
+            return await _applicationContext.Customers
+                .AsNoTracking()
+                .Where(c => c.Id == id)
+                .Select(c => c.Email)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<string?> GetPictureOfCustomer(string email)
@@ -96,6 +100,15 @@ namespace Repositories.Repositories
 
             customer.Password = password;
             await _applicationContext.SaveChangesAsync();
+        }
+
+        public async Task<Guid> GetCustomerIdByEmailAsync(string email)
+        {
+            return await _applicationContext.Customers
+                .AsNoTracking()
+                .Where(ca => ca.Email.ToLower() == email.ToLower())
+                .Select(ca => ca.Id)
+                .FirstOrDefaultAsync();
         }
     }
 }
