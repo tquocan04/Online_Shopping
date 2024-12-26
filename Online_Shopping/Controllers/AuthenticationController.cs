@@ -121,5 +121,40 @@ namespace Online_Shopping.Controllers
             return Ok(await _userService.GetProfileUser(id));
         }
 
+        [HttpGet("email")]
+        public async Task<IActionResult> CheckEmailExist([FromQuery] string email)
+        {
+            if (await _userRepo.checkEmailExist(email))
+                return Ok(new Response<string>
+                {
+                    Message = "Valid email."
+                });
+
+            return BadRequest(new Response<string>
+            {
+                Message = "Invalid email!"
+            });
+        }
+
+        [HttpPatch("new-password")]
+        public async Task<IActionResult> UpdateNewPassword([FromBody] RequestLogin login)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!await _userRepo.checkEmailExist(login.Login))
+                return BadRequest(new Response<string>
+                {
+                    Message = "Invalid email!"
+                });
+
+            await _userRepo.UpdateNewPassword(login.Login, login.Password);
+            return Ok(new Response<string>
+            {
+                Message = "Updated password successfully!"
+            });
+        }
     }
 }

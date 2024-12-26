@@ -14,5 +14,6 @@ namespace Repository.Contracts.Interfaces
         Task<string?> GetStreetDefaultByCustomerIdAsync(Guid customerId);
         Task<Guid> GetDistrictDefaultByCustomerIdAsync(Guid customerId);
         Task<string?> GetPictureOfCustomer(string email);
+        Task UpdateNewPassword(string email, string password);
     }
 }

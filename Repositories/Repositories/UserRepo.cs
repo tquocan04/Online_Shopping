@@ -88,5 +88,14 @@ namespace Repositories.Repositories
                 .FirstOrDefaultAsync();
 
         }
+
+        public async Task UpdateNewPassword(string email, string password)
+        {
+            var customer = await _applicationContext.Customers
+                .FirstOrDefaultAsync(c => c.Email == email);
+
+            customer.Password = password;
+            await _applicationContext.SaveChangesAsync();
+        }
     }
 }

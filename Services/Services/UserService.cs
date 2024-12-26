@@ -54,7 +54,7 @@ namespace Services.Services
 
         public async Task<Customer> CreateNewUser(RequestCustomer requestCustomer)
         {
-            Customer customer = new Customer
+            Customer customer = new ()
             {
                 Id = Guid.NewGuid(),
                 Dob = new DateOnly(requestCustomer.Year, requestCustomer.Month, requestCustomer.Day)
@@ -69,7 +69,7 @@ namespace Services.Services
             _mapper.Map(requestCustomer, customer);
             await _userRepo.CreateNewCustomer(customer);
 
-            Address address = new Address
+            Address address = new ()
             {
                 Id = Guid.NewGuid(),
                 CustomerId = customer.Id,
