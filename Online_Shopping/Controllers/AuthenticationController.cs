@@ -25,12 +25,14 @@ namespace Online_Shopping.Controllers
         private readonly IAddressService<Customer> _addressService;
         private readonly ILoginRepo _loginRepo;
         private readonly ITokenService _tokenService;
+        private readonly ICredentialRepo _credentialRepo;
         private readonly IMapper _mapper;
 
         public AuthenticationController(IUserRepo userRepo, IUserService userService,
             IOrderService orderService, IMapper mapper,
             IAddressService<Customer> addressService, IOrderRepo orderRepo,
-            ILoginRepo loginRepo, ITokenService tokenService
+            ILoginRepo loginRepo, ITokenService tokenService,
+            ICredentialRepo credentialRepo
             ) 
         {
             _userRepo = userRepo;
@@ -40,7 +42,49 @@ namespace Online_Shopping.Controllers
             _addressService = addressService;
             _loginRepo = loginRepo;
             _tokenService = tokenService;
+            _credentialRepo = credentialRepo;
             _mapper = mapper;
+        }
+        [HttpPost("signup-google")]
+        public async Task<IActionResult> SignUpGG([FromForm] RequestCustomer requestCustomer, 
+            [FromQuery] string idGG)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (await _userRepo.checkEmailExist(requestCustomer.Email))
+            {
+                return BadRequest("Email is existed");
+            }
+
+            if (!_userRepo.checkDOB(requestCustomer.Year))
+            {
+                return BadRequest("DoB is invalid");
+            }
+
+            var newCustomer = await _userService.CreateNewUser(requestCustomer);
+            Order order = await _orderService.CreateNewCart(newCustomer.Id);
+
+            Credential credential = new()
+            {
+                Id = idGG,
+                Provider = "Google",
+                CustomerId = newCustomer.Id,
+            };
+            await _credentialRepo.CreateCredentialAsync(credential);
+
+            DistributedCustomer distributedCustomer = new()
+            {
+                Id = newCustomer.Id,
+                Picture = newCustomer.Picture,
+                OrderId = order.Id,
+            };
+
+            distributedCustomer = _mapper.Map(requestCustomer, distributedCustomer);
+
+            return CreatedAtAction("GetProfileUser", new { id = newCustomer.Id }, distributedCustomer);
         }
 
         [HttpPost("register")]
@@ -63,8 +107,8 @@ namespace Online_Shopping.Controllers
 
             var newCustomer = await _userService.CreateNewUser(requestCustomer);
             Order order = await _orderService.CreateNewCart(newCustomer.Id);
-            
-            DistributedCustomer distributedCustomer = new DistributedCustomer
+                
+            DistributedCustomer distributedCustomer = new()
             {
                 Id = newCustomer.Id,
                 Picture = newCustomer.Picture,

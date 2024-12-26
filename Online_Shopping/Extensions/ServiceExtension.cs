@@ -54,6 +54,7 @@ namespace Online_Shopping.Extensions
             services.AddScoped<IShippingRepo, ShippingRepo>();
             services.AddScoped<IEmployeeRepo, EmployeeRepo>();
             services.AddScoped<IVoucherRepo, VoucherRepo>();
+            services.AddScoped<ICredentialRepo, CredentialRepo>();
             services.AddScoped(typeof(IBaseRepo<>), typeof(BaseRepo<>));
 
             return services;

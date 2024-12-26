@@ -11,8 +11,6 @@ namespace DTOs.Request
         [Required]
         [EmailAddress(ErrorMessage = "Email is invalid")]
         public string? Email { get; set; }
-        [Required]
-        [MinLength(6)]
         public string? Password { get; set; }
         [MaxLength(10)]
         [RegularExpression(@"^\d+$", ErrorMessage = "Phone number must contain only digits.")]
