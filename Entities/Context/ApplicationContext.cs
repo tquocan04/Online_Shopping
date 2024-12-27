@@ -108,6 +108,7 @@ namespace Online_Shopping.Context
             {
                 entity.HasIndex(c => c.Name).IsUnique();
                 entity.HasData(
+                    //miền bắc
                     new City 
                     { 
                         Id = Guid.Parse("1b84594b-aa7f-4a69-b54a-96cbf9b17c6e"), 
@@ -116,14 +117,84 @@ namespace Online_Shopping.Context
                     },
                     new City 
                     { 
+                        Id = Guid.Parse("0bdea930-da3d-40c6-97cd-b3969f8014c7"), 
+                        Name = "Hải Phòng",
+                        RegionId = "Bac"
+                    },
+                    new City 
+                    { 
+                        Id = Guid.Parse("4a486645-052b-4a56-bb36-75c7e876ae2d"), 
+                        Name = "Hải Dương",
+                        RegionId = "Bac"
+                    },
+                    new City 
+                    { 
+                        Id = Guid.Parse("2df88e32-3919-494d-b489-dbf4258fc245"), 
+                        Name = "Phú Thọ",
+                        RegionId = "Bac"
+                    },
+                    new City 
+                    { 
+                        Id = Guid.Parse("14b0bd4d-27af-496e-aa9c-3e1d532f5038"), 
+                        Name = "Quảng Ninh",
+                        RegionId = "Bac"
+                    },
+
+                    //miền trung
+                    new City 
+                    { 
                         Id = Guid.Parse("fc446281-359c-46ec-a2b9-bf9f26014f88"), 
                         Name = "Đà Nẵng",
                         RegionId = "Trung"
                     },
                     new City 
                     { 
+                        Id = Guid.Parse("3321ed88-441b-4121-9ead-e154544185e1"), 
+                        Name = "Thừa-Thiên Huế",
+                        RegionId = "Trung"
+                    },
+                    new City 
+                    { 
+                        Id = Guid.Parse("aec5e588-017c-4da1-91e8-b8bc1888056e"), 
+                        Name = "Quảng Nam",
+                        RegionId = "Trung"
+                    },
+                    new City 
+                    { 
+                        Id = Guid.Parse("a41ba56a-b53b-42f6-8c56-04dcbbde7905"), 
+                        Name = "Quảng Trị",
+                        RegionId = "Trung"
+                    },
+
+                    //miền nam
+                    new City 
+                    { 
+                        Id = Guid.Parse("b40f6c23-15f7-460c-8f94-fdcbe33cda68"), 
+                        Name = "Bình Dương",
+                        RegionId = "Nam"
+                    },
+                    new City 
+                    { 
+                        Id = Guid.Parse("bbf96ba4-7836-4c53-af1a-e3e572f31ebf"), 
+                        Name = "Bà Rịa Vũng Tàu",
+                        RegionId = "Nam"
+                    },
+                    new City 
+                    { 
+                        Id = Guid.Parse("acd51ba8-d6e3-4110-831e-5147f8fe2c96"), 
+                        Name = "Đồng Nai",
+                        RegionId = "Nam"
+                    },
+                    new City 
+                    { 
                         Id = Guid.Parse("6f624665-053e-45d2-8dd6-42baa124b481"), 
                         Name = "Hồ Chí Minh",
+                        RegionId = "Nam"
+                    },
+                    new City
+                    {
+                        Id = Guid.Parse("ad453439-a309-42a3-917c-d6aaa67ac9ca"),
+                        Name = "Long An",
                         RegionId = "Nam"
                     }
                 );
@@ -133,7 +204,28 @@ namespace Online_Shopping.Context
             {
                 entity.HasIndex(d => d.Name).IsUnique();
                 entity.HasData(
-                    //HN
+                    //Phú Thọ
+
+                    //Hải Phòng
+                    new District
+                    {
+                        Id = Guid.Parse("9744402f-34c1-4555-baff-9450ab73303a"),
+                        CityId = Guid.Parse("0bdea930-da3d-40c6-97cd-b3969f8014c7"),
+                        Name = "Hồng Bàng"
+                    },
+                    new District
+                    {
+                        Id = Guid.Parse("033fbf94-3a48-4bec-a1d1-13f0dcca7ff2"),
+                        CityId = Guid.Parse("0bdea930-da3d-40c6-97cd-b3969f8014c7"),
+                        Name = "Lê Chân"
+                    },
+                    new District
+                    {
+                        Id = Guid.Parse("aabecff8-16d3-4298-839b-c5ec84ae49a3"),
+                        CityId = Guid.Parse("0bdea930-da3d-40c6-97cd-b3969f8014c7"),
+                        Name = "Kiến An"
+                    },
+                    //Hà Nội
                     new District 
                     { 
                         Id = Guid.Parse("bfb4be74-f5ed-4e67-94ba-7ee067a2098d"), 
@@ -145,6 +237,18 @@ namespace Online_Shopping.Context
                         Id = Guid.Parse("b999d3eb-a753-49f4-897f-4c37002e1302"),
                         CityId = Guid.Parse("1b84594b-aa7f-4a69-b54a-96cbf9b17c6e"),
                         Name = "Cầu Giấy"
+                    },
+                    new District
+                    {
+                        Id = Guid.Parse("b051a4a6-66ba-4220-95e4-59abd37d4e0b"),
+                        CityId = Guid.Parse("1b84594b-aa7f-4a69-b54a-96cbf9b17c6e"),
+                        Name = "Đống Đa"
+                    },
+                    new District
+                    {
+                        Id = Guid.Parse("83ba4e24-9a0f-4c6a-b822-29a1eb5f4d3f"),
+                        CityId = Guid.Parse("1b84594b-aa7f-4a69-b54a-96cbf9b17c6e"),
+                        Name = "Hoàn Kiếm"
                     },
                     //DN
                     new District 

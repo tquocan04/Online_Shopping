@@ -17,6 +17,7 @@ namespace Services.Services
         private readonly IOrderService _orderService;
         private readonly IProductRepo _productRepo;
         private readonly IAddressRepo _addressRepo;
+        private readonly IUserRepo _userRepo;
         private readonly IMetadataService _metadataService;
         private readonly IMapper _mapper;
 
@@ -24,6 +25,7 @@ namespace Services.Services
             IVoucherRepo voucherRepo, IOrderService orderService,
             IProductRepo productRepo, IMapper mapper,
             IAddressRepo addressRepo, IMetadataService metadataService
+            ,IUserRepo userRepo
             ) 
         {
             _billRepo = billRepo;
@@ -32,6 +34,7 @@ namespace Services.Services
             _orderService = orderService;
             _productRepo = productRepo;
             _addressRepo = addressRepo;
+            _userRepo = userRepo;
             _metadataService = metadataService;
             _mapper = mapper;
         }
@@ -60,6 +63,7 @@ namespace Services.Services
             for (int i = 0; i < orders.Count; i++)
             {
                 list.Add(_mapper.Map<OrderBillDTO>(orders[i]));
+                list[i].CustomerName = await _userRepo.GetCustomerNameByIdAsync((Guid)list[i].CustomerId);
                 if (list[i].Items != null)
                     await MapProductToItemDTO(list[i]);
             }

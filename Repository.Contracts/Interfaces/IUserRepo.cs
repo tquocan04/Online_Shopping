@@ -16,5 +16,6 @@ namespace Repository.Contracts.Interfaces
         Task<string?> GetPictureOfCustomer(string email);
         Task UpdateNewPassword(string email, string password);
         Task<Guid> GetCustomerIdByEmailAsync(string email);
+        Task<string> GetCustomerNameByIdAsync(Guid id);
     }
 }

@@ -3,11 +3,8 @@ using DTOs.Request;
 using DTOs.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.Repositories;
 using Repository.Contracts.Interfaces;
 using Service.Contracts.Interfaces;
-using Services.Services;
-using System.Net.Http;
 
 namespace Online_Shopping.Controllers
 {

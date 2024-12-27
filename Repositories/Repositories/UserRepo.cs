@@ -110,5 +110,14 @@ namespace Repositories.Repositories
                 .Select(ca => ca.Id)
                 .FirstOrDefaultAsync();
         }
+        
+        public async Task<string> GetCustomerNameByIdAsync(Guid id)
+        {
+            return await _applicationContext.Customers
+                .AsNoTracking()
+                .Where(ca => ca.Id == id)
+                .Select(ca => ca.Name)
+                .FirstOrDefaultAsync();
+        }
     }
 }
