@@ -7,26 +7,24 @@ using Repositories.Repositories;
 using Repository.Contracts.Interfaces;
 using Service.Contracts.Interfaces;
 using Services.Services;
+using System.Net.Http;
 
 namespace Online_Shopping.Controllers
 {
     [Route("api/arc-shop")]
     [ApiController]
-    [Authorize(Roles = "Admin, Staff")]
+    [Authorize(Roles = "Admin")]
     public class ARCController : ControllerBase
     {
         private readonly IUserRepo _userRepo;
-        private readonly ILoginRepo _loginRepo;
         private readonly IEmployeeService _employeeService;
         private readonly ITokenService _tokenService;
 
         public ARCController(IUserRepo userRepo, 
-            ILoginRepo loginRepo,
             ITokenService tokenService,
             IEmployeeService employeeRepo)
         {
             _userRepo = userRepo;
-            _loginRepo = loginRepo;
             _employeeService = employeeRepo;
             _tokenService = tokenService;
         }
@@ -51,51 +49,44 @@ namespace Online_Shopping.Controllers
 
             EmployeeDTO empDTO = await _employeeService.AddNewEmployee(requestEmployee);
 
-            return CreatedAtAction("GetProile", new { id = empDTO.Id }, empDTO);
+            return CreatedAtAction("GetProfile", new { id = empDTO.Id }, empDTO);
         }
 
-        [HttpDelete("profile")]
-        public async Task<IActionResult> DeleteStaff()
+        [HttpDelete("profile/{employeeId}")]
+        public async Task<IActionResult> DeleteStaff(Guid employeeId)
         {
-            Guid id = await _tokenService.GetIdEmployeeByToken();
-            var emp = await _employeeService.GetProfileEmployee(id);
-            
+            var emp = await _employeeService.GetProfileEmployee(employeeId);
+
             if (emp != null)
-            {
-                await _employeeService.DeleteEmployee(id);
-            }
+                await _employeeService.DeleteEmployee(employeeId);
+
             else
-            {
                 return NotFound(new Response<string>
                 {
                     Message = "This staff does not exist!"
                 });
-            }
 
             return NoContent();
         }
-        
-        [HttpPut("profile")]
-        public async Task<IActionResult> UpdateProfileStaff([FromBody] RequestEmployee requestEmployee)
+
+        [HttpPut("profile/{employeeId}")]
+        public async Task<IActionResult> UpdateProfileStaff(Guid employeeId, [FromBody] RequestEmployee requestEmployee)
         {
-            Guid id = await _tokenService.GetIdEmployeeByToken();
-            var check = await _employeeService.UpdateProfile(id, requestEmployee);
+            //Admin cap nhat cua Staff
+            var check = await _employeeService.UpdateProfile(employeeId, requestEmployee);
             if (!check)
-            {
                 return BadRequest(new Response<string>
                 {
                     Message = "Invalid information!"
                 });
-            }
+
             return NoContent();
         }
 
-        [HttpGet("profile")]
-        public async Task<IActionResult> GetProfile()
+        [HttpGet("profile/{employeeId}")]
+        public async Task<IActionResult> GetProfile(Guid employeeId)
         {
-            Guid id = await _tokenService.GetIdEmployeeByToken();
-
-            var profile = await _employeeService.GetProfileEmployee(id);
+            var profile = await _employeeService.GetProfileEmployee(employeeId);
             if (profile == null)
             {
                 return NotFound(new Response<string>
