@@ -45,7 +45,7 @@ namespace Services.Services
             await _employeeRepo.AddNewStaff(emp);
             
 
-            Address address = new Address
+            Address address = new()
             {
                 Id = Guid.NewGuid(),
                 EmployeeId = emp.Id,
@@ -82,26 +82,31 @@ namespace Services.Services
 
             empDTO = await _addressService.SetAddress(empDTO, empDTO.Id);
 
-            var branch = await _branchRepo.GetBranchAsync(empDTO.BranchId);
-            if (branch != null)
+            if (emp.BranchId == Guid.Empty)
             {
-                empDTO.BranchName = branch.Name;
-            }
+                emp.BranchId = null;
 
+                var branch = await _branchRepo.GetBranchAsync(empDTO.BranchId);
+                if (branch != null)
+                {
+                    empDTO.BranchName = branch.Name;
+                }
+            }
             return empDTO;
         }
 
         public async Task<bool> UpdateProfile(Guid id, RequestEmployee requestEmployee)
         {
             var emp = await _employeeRepo.GetStaffAsync(id);
+            if (emp.BranchId == Guid.Empty)
+                emp.BranchId = null;
+            
             if (emp == null)
             {
-                throw new ArgumentNullException("User cannot be found");
                 return false;
             }
             if (requestEmployee == null)
             {
-                throw new ArgumentNullException("Information cannot be null");
                 return false;
             }
 

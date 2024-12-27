@@ -23,6 +23,6 @@ namespace DTOs.Request
         [Required]
         public string Street { get; set; } = null!;
         public string RoleId { get; set; } = null!;
-        public Guid BranchId { get; set; }
+        public Guid? BranchId { get; set; }
     }
 }
