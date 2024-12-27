@@ -42,30 +42,29 @@ namespace Online_Shopping.Controllers
             _mapper = mapper;
         }
         [HttpPost("signup-google")]
-        public async Task<IActionResult> SignUpGG([FromForm] RequestCustomer requestCustomer, 
-            [FromQuery] string idGG)
+        public async Task<IActionResult> SignUpGG([FromBody] RequestSignupGoogle requestSignupGoogle)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (await _userRepo.checkEmailExist(requestCustomer.Email))
+            if (await _userRepo.checkEmailExist(requestSignupGoogle.email))
             {
                 return BadRequest("Email is existed");
             }
 
-            if (!_userRepo.checkDOB(requestCustomer.Year))
+            if (!_userRepo.checkDOB(requestSignupGoogle.year))
             {
                 return BadRequest("DoB is invalid");
             }
 
-            var newCustomer = await _userService.CreateNewUser(requestCustomer);
+            var newCustomer = await _userService.CreateNewUserByGoogle(requestSignupGoogle);
             Order order = await _orderService.CreateNewCart(newCustomer.Id);
 
             Credential credential = new()
             {
-                Id = idGG,
+                Id = requestSignupGoogle.googleId,
                 Provider = "Google",
                 CustomerId = newCustomer.Id,
             };
@@ -74,11 +73,10 @@ namespace Online_Shopping.Controllers
             DistributedCustomer distributedCustomer = new()
             {
                 Id = newCustomer.Id,
-                Picture = newCustomer.Picture,
                 OrderId = order.Id,
             };
 
-            distributedCustomer = _mapper.Map(requestCustomer, distributedCustomer);
+            distributedCustomer = _mapper.Map(requestSignupGoogle, distributedCustomer);
 
             return CreatedAtAction("GetProfileUser", new { id = newCustomer.Id }, distributedCustomer);
         }

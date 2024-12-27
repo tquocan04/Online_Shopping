@@ -83,6 +83,31 @@ namespace Services.Services
             return customer;
         }
 
+        public async Task<Customer> CreateNewUserByGoogle(RequestSignupGoogle requestSignupGoogle)
+        {
+            Customer customer = new()
+            {
+                Id = Guid.NewGuid(),
+                Dob = new DateOnly(requestSignupGoogle.year, requestSignupGoogle.month, requestSignupGoogle.day)
+            };
+
+            _mapper.Map(requestSignupGoogle, customer);
+            await _userRepo.CreateNewCustomer(customer);
+
+            Address address = new()
+            {
+                Id = Guid.NewGuid(),
+                CustomerId = customer.Id,
+                IsDefault = true,
+            };
+            _mapper.Map(requestSignupGoogle, address);
+
+            await _addressRepo.CreateNewAddress(address);
+
+            //await _metadataService.CreateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(customer));
+            return customer;
+        }
+
         public async Task<Customer> UpdateInforUser(Customer customer, RequestCustomer requestCustomer)
         {
             if (!_userRepo.checkDOB(requestCustomer.Year)

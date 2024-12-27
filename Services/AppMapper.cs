@@ -49,6 +49,13 @@ namespace Services
             CreateMap<RequestCustomer, DistributedCustomer>()
                 .ForMember(dest => dest.Picture,
                             opt => opt.Ignore());
+            //GOOGLE
+            CreateMap<RequestSignupGoogle, Customer>()
+                .ForMember(dest => dest.Dob,
+                            opt => opt.Ignore());
+            CreateMap<RequestSignupGoogle, Address>();
+            CreateMap<RequestSignupGoogle, DistributedCustomer>();
+            //
 
             CreateMap<Order, OrderCartDTO>().ReverseMap();
             CreateMap<Order, OrderBillDTO>().ReverseMap();
