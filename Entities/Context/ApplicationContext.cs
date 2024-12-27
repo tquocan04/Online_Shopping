@@ -207,27 +207,27 @@ namespace Online_Shopping.Context
                     //Quảng Ninh
                     new District
                     {
-                        Id = Guid.Parse("4af1f7fa-cd35-4940-b2f9-8811ca9a2b75"),
+                        Id = Guid.Parse("289f3f8b-7b77-491e-9892-043cee73f0a3"),
                         CityId = Guid.Parse("14b0bd4d-27af-496e-aa9c-3e1d532f5038"),
                         Name = "Cẩm Phả"
                     },
                     new District
                     {
-                        Id = Guid.Parse("4af1f7fa-cd35-4940-b2f9-8811ca9a2b75"),
+                        Id = Guid.Parse("412da1ea-5f1b-4aa3-9c13-cf5d557b59e3"),
                         CityId = Guid.Parse("14b0bd4d-27af-496e-aa9c-3e1d532f5038"),
-                        Name = "Cẩm Phả"
+                        Name = "Móng Cái"
                     },
                     new District
                     {
-                        Id = Guid.Parse("4af1f7fa-cd35-4940-b2f9-8811ca9a2b75"),
+                        Id = Guid.Parse("1bc7754e-bacc-484f-b5cc-7e2df41f1f30"),
                         CityId = Guid.Parse("14b0bd4d-27af-496e-aa9c-3e1d532f5038"),
-                        Name = "Cẩm Phả"
+                        Name = "Hạ Long"
                     },
                     new District
                     {
-                        Id = Guid.Parse("4af1f7fa-cd35-4940-b2f9-8811ca9a2b75"),
+                        Id = Guid.Parse("1be59787-ee81-4824-b7e1-766e71fffa6b"),
                         CityId = Guid.Parse("14b0bd4d-27af-496e-aa9c-3e1d532f5038"),
-                        Name = "Cẩm Phả"
+                        Name = "Uông Bí"
                     },
                     //Hải Dương
                     new District
@@ -311,7 +311,14 @@ namespace Online_Shopping.Context
                         CityId = Guid.Parse("1b84594b-aa7f-4a69-b54a-96cbf9b17c6e"),
                         Name = "Hoàn Kiếm"
                     },
-                    //DN
+                    //Huế
+                    new District
+                    {
+                        Id = Guid.Parse("4b1dd408-19c8-40cc-a39a-02ecaf53cfbe"),
+                        CityId = Guid.Parse("3321ed88-441b-4121-9ead-e154544185e1"),
+                        Name = "Phong Điền"
+                    },
+                    //Đà Nẵng
                     new District 
                     {
                         Id = Guid.Parse("2e8e7f13-ca6a-42c7-a1a0-fc5b4c872b3f"),
