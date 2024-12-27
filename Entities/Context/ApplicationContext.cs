@@ -204,8 +204,69 @@ namespace Online_Shopping.Context
             {
                 entity.HasIndex(d => d.Name).IsUnique();
                 entity.HasData(
+                    //Quảng Ninh
+                    new District
+                    {
+                        Id = Guid.Parse("4af1f7fa-cd35-4940-b2f9-8811ca9a2b75"),
+                        CityId = Guid.Parse("14b0bd4d-27af-496e-aa9c-3e1d532f5038"),
+                        Name = "Cẩm Phả"
+                    },
+                    new District
+                    {
+                        Id = Guid.Parse("4af1f7fa-cd35-4940-b2f9-8811ca9a2b75"),
+                        CityId = Guid.Parse("14b0bd4d-27af-496e-aa9c-3e1d532f5038"),
+                        Name = "Cẩm Phả"
+                    },
+                    new District
+                    {
+                        Id = Guid.Parse("4af1f7fa-cd35-4940-b2f9-8811ca9a2b75"),
+                        CityId = Guid.Parse("14b0bd4d-27af-496e-aa9c-3e1d532f5038"),
+                        Name = "Cẩm Phả"
+                    },
+                    new District
+                    {
+                        Id = Guid.Parse("4af1f7fa-cd35-4940-b2f9-8811ca9a2b75"),
+                        CityId = Guid.Parse("14b0bd4d-27af-496e-aa9c-3e1d532f5038"),
+                        Name = "Cẩm Phả"
+                    },
+                    //Hải Dương
+                    new District
+                    {
+                        Id = Guid.Parse("4af1f7fa-cd35-4940-b2f9-8811ca9a2b75"),
+                        CityId = Guid.Parse("4a486645-052b-4a56-bb36-75c7e876ae2d"),
+                        Name = "Chí Linh"
+                    },
+                    new District
+                    {
+                        Id = Guid.Parse("2f657b93-1d8b-4024-bfd9-827009d98c67"),
+                        CityId = Guid.Parse("4a486645-052b-4a56-bb36-75c7e876ae2d"),
+                        Name = "Hải Dương"
+                    },
+                    new District
+                    {
+                        Id = Guid.Parse("1f461ef4-7dbc-4f7c-b51e-a16a5cfca7d3"),
+                        CityId = Guid.Parse("4a486645-052b-4a56-bb36-75c7e876ae2d"),
+                        Name = "Gia Lộc"
+                    },
                     //Phú Thọ
-
+                    new District
+                    {
+                        Id = Guid.Parse("eef65a95-e294-46a3-828f-5e44ca4b2c77"),
+                        CityId = Guid.Parse("2df88e32-3919-494d-b489-dbf4258fc245"),
+                        Name = "Hạ Hòa"
+                    },
+                    new District
+                    {
+                        Id = Guid.Parse("91d1c4dd-f364-412d-a7a2-8857f4b8a9c9"),
+                        CityId = Guid.Parse("2df88e32-3919-494d-b489-dbf4258fc245"),
+                        Name = "Thanh Thủy"
+                    },
+                    new District
+                    {
+                        Id = Guid.Parse("db4e7867-1156-44d9-825b-8f42ae9712fe"),
+                        CityId = Guid.Parse("2df88e32-3919-494d-b489-dbf4258fc245"),
+                        Name = "Yên Lập"
+                    },
                     //Hải Phòng
                     new District
                     {

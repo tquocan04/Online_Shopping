@@ -10,7 +10,7 @@ namespace Online_Shopping.Controllers
 {
     [Route("api/arc-shop")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Staff")]
     public class ARCController : ControllerBase
     {
         private readonly IUserRepo _userRepo;
@@ -49,13 +49,14 @@ namespace Online_Shopping.Controllers
             return CreatedAtAction("GetProfile", new { id = empDTO.Id }, empDTO);
         }
 
-        [HttpDelete("profile/{employeeId}")]
-        public async Task<IActionResult> DeleteStaff(Guid employeeId)
+        [HttpDelete("profile")]
+        public async Task<IActionResult> DeleteStaff()
         {
-            var emp = await _employeeService.GetProfileEmployee(employeeId);
+            Guid id = await _tokenService.GetIdEmployeeByToken();
+            var emp = await _employeeService.GetProfileEmployee(id);
 
             if (emp != null)
-                await _employeeService.DeleteEmployee(employeeId);
+                await _employeeService.DeleteEmployee(id);
 
             else
                 return NotFound(new Response<string>
@@ -66,11 +67,12 @@ namespace Online_Shopping.Controllers
             return NoContent();
         }
 
-        [HttpPut("profile/{employeeId}")]
-        public async Task<IActionResult> UpdateProfileStaff(Guid employeeId, [FromBody] RequestEmployee requestEmployee)
+        [HttpPut("profile")]
+        public async Task<IActionResult> UpdateProfileStaff([FromBody] RequestEmployee requestEmployee)
         {
-            //Admin cap nhat cua Staff
-            var check = await _employeeService.UpdateProfile(employeeId, requestEmployee);
+            Guid id = await _tokenService.GetIdEmployeeByToken();
+            
+            var check = await _employeeService.UpdateProfile(id, requestEmployee);
             if (!check)
                 return BadRequest(new Response<string>
                 {
@@ -80,10 +82,11 @@ namespace Online_Shopping.Controllers
             return NoContent();
         }
 
-        [HttpGet("profile/{employeeId}")]
-        public async Task<IActionResult> GetProfile(Guid employeeId)
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetProfile()
         {
-            var profile = await _employeeService.GetProfileEmployee(employeeId);
+            Guid id = await _tokenService.GetIdEmployeeByToken();
+            var profile = await _employeeService.GetProfileEmployee(id);
             if (profile == null)
             {
                 return NotFound(new Response<string>
