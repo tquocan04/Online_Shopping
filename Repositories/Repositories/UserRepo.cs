@@ -111,7 +111,7 @@ namespace Repositories.Repositories
                 .FirstOrDefaultAsync();
         }
         
-        public async Task<strin> GetCustomerNameByIdAsync(Guid id)
+        public async Task<string> GetCustomerNameByIdAsync(Guid id)
         {
             return await _applicationContext.Customers
                 .AsNoTracking()

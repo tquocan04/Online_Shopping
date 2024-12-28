@@ -1,9 +1,9 @@
 
 ## Tech Stack
 
-**Database:** SQL Server
+**Database:** SQL Server, MongoDB
 
-**Skill:** C#, ASP.Net Core Web API
+**Skill:** C#, ASP.Net Core Web API, JWT
 
 **Framework:** AspNetCore
 
