@@ -42,7 +42,7 @@ Open SSMS, select *Window Authentication* and connect to your server.
 
 Next, you choose *New Query* (or ctrl+N) to create a new query file.
 
-![](https://drive.google.com/file/d/1_fu8GHeyzp1KWF4-FeGgKZ-xSYDns1KB/view?usp=drive_link)
+![](https://drive.google.com/uc?id=1_fu8GHeyzp1KWF4-FeGgKZ-xSYDns1KB)
 
 After that, you will enter:
 
