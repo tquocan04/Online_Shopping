@@ -94,7 +94,12 @@ namespace Online_Shopping.Controllers
                     Message = "This staff does not exist!"
                 });
             }
-            return Ok(profile);
+
+            return Ok(new Response<EmployeeDTO>
+            {
+                Message = "This is staff's profile.",
+                Data = profile
+            });
         }
     }
 }

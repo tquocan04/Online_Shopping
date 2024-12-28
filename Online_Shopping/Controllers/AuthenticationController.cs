@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CloudinaryDotNet.Actions;
+using DTOs.DTOs;
 using DTOs.Request;
 using DTOs.Responses;
 using Entities.Entities;
@@ -19,7 +20,6 @@ namespace Online_Shopping.Controllers
         private readonly IOrderService _orderService;
         private readonly IOrderRepo _orderRepo;
         private readonly IAddressService<Customer> _addressService;
-        private readonly ILoginRepo _loginRepo;
         private readonly ITokenService _tokenService;
         private readonly ICredentialRepo _credentialRepo;
         private readonly IMapper _mapper;
@@ -27,7 +27,7 @@ namespace Online_Shopping.Controllers
         public AuthenticationController(IUserRepo userRepo, IUserService userService,
             IOrderService orderService, IMapper mapper,
             IAddressService<Customer> addressService, IOrderRepo orderRepo,
-            ILoginRepo loginRepo, ITokenService tokenService,
+            ITokenService tokenService,
             ICredentialRepo credentialRepo
             ) 
         {
@@ -36,7 +36,6 @@ namespace Online_Shopping.Controllers
             _orderService = orderService;
             _orderRepo = orderRepo;
             _addressService = addressService;
-            _loginRepo = loginRepo;
             _tokenService = tokenService;
             _credentialRepo = credentialRepo;
             _mapper = mapper;
@@ -155,8 +154,18 @@ namespace Online_Shopping.Controllers
         public async Task<IActionResult> GetProfileUser()
         {
             Guid id = await _tokenService.GetIdCustomerByToken();
-            
-            return Ok(await _userService.GetProfileUser(id));
+
+            if (id == Guid.Empty)
+                return NotFound(new Response<string>
+                {
+                    Message = "Does not exist customer."
+                });
+
+            return Ok(new Response<CustomerDTO>
+            {
+                Message = "Profile customer.",
+                Data = await _userService.GetProfileUser(id)
+            });            
         }
 
         [HttpGet("email")]

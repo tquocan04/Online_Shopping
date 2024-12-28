@@ -45,7 +45,18 @@ namespace Online_Shopping.Controllers
                 });
 
             var cart = await _orderService.GetOrderCart(id);
-            return Ok(cart);
+
+            if (cart == null)
+                return NotFound(new Response<string>
+                {
+                    Message = "Does not have cart!"
+                });
+
+            return Ok(new Response<OrderCartDTO>
+            {
+                Message = "This is cart.",
+                Data = cart
+            });
         }
 
         [HttpPost("new-item")]

@@ -134,14 +134,5 @@ namespace Online_Shopping.Controllers
                 Message = "The information is updated successfully"
             });
         }
-
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin, Staff")]
-        public async Task<IActionResult> DeleteProduct(Guid id)
-        {
-            await _productService.DeleteProduct(id);
-
-            return NoContent();
-        }
     }
 }

@@ -94,7 +94,11 @@ namespace Online_Shopping.Controllers
                     Message = "Does not have any bills!"
                 });
 
-            return Ok(listBills);
+            return Ok(new Response<List<OrderBillDTO>>
+            {
+                Message = "All bills",
+                Data = listBills
+            });
         }
 
         [HttpPatch("{id}")]
@@ -112,7 +116,7 @@ namespace Online_Shopping.Controllers
         {
             string role = _tokenService.GetRoleByToken();
             
-            List<OrderBillDTO> list = new List<OrderBillDTO>();
+            List<OrderBillDTO> list = new();
 
             if (role == "Admin" || role == "Staff")
                 list = await _billService.EmployeeGetPendingBillList();
@@ -125,7 +129,11 @@ namespace Online_Shopping.Controllers
                     Message = "Does not have any pending bills!"
                 });
 
-            return Ok(list);
+            return Ok(new Response<List<OrderBillDTO>>
+            {
+                Message = "Pending bills list",
+                Data = list
+            });
         }
         
         [HttpGet("completed-bills")]
@@ -134,7 +142,7 @@ namespace Online_Shopping.Controllers
         {
             string role = _tokenService.GetRoleByToken();
 
-            List<OrderBillDTO> list = new List<OrderBillDTO>();
+            List<OrderBillDTO> list = new();
 
             if (role == "Admin" || role == "Staff")
                 list = await _billService.EmployeeGetCompletedBillList();
@@ -148,7 +156,11 @@ namespace Online_Shopping.Controllers
                     Message = "Does not have any completed bills!"
                 });
 
-            return Ok(list);
+            return Ok(new Response<List<OrderBillDTO>>
+            {
+                Message = "Completed bills list",
+                Data = list
+            });
         }
         
         [HttpGet("{id}")]
@@ -163,7 +175,11 @@ namespace Online_Shopping.Controllers
                     Message = "Does not have any completed bills!"
                 });
 
-            return Ok(bill);
+            return Ok(new Response<OrderBillDTO>
+            {
+                Message = "Detail bill",
+                Data = bill
+            });
         }
     }
 }

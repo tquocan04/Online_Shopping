@@ -35,7 +35,7 @@ namespace Services.Services
 
         public async Task<EmployeeDTO> AddNewEmployee(RequestEmployee employee)
         {
-            Employee emp = new Employee
+            Employee emp = new ()
             {
                 Id = Guid.NewGuid(),
                 Dob = new DateOnly(employee.Year, employee.Month, employee.Day)
@@ -72,9 +72,8 @@ namespace Services.Services
             var emp = await _employeeRepo.GetStaffAsync(id);
 
             if (emp == null)
-            {
                 return null;
-            }    
+            
             var empDTO = _mapper.Map<EmployeeDTO>(emp);
             empDTO.Year = emp.Dob.Year;
             empDTO.Month = emp.Dob.Month;
@@ -83,15 +82,12 @@ namespace Services.Services
             empDTO = await _addressService.SetAddress(empDTO, empDTO.Id);
 
             if (emp.BranchId == Guid.Empty)
-            {
                 emp.BranchId = null;
 
-                var branch = await _branchRepo.GetBranchAsync(empDTO.BranchId);
-                if (branch != null)
-                {
-                    empDTO.BranchName = branch.Name;
-                }
-            }
+            var branch = await _branchRepo.GetBranchAsync(empDTO.BranchId);
+            if (branch != null)
+                empDTO.BranchName = branch.Name;
+            
             return empDTO;
         }
 
@@ -102,14 +98,11 @@ namespace Services.Services
                 emp.BranchId = null;
             
             if (emp == null)
-            {
                 return false;
-            }
+            
             if (requestEmployee == null)
-            {
                 return false;
-            }
-
+            
             var existingAddress = await _addressRepo.GetAddressByObjectIdAsync(id);
 
             if (existingAddress != null)
@@ -119,17 +112,12 @@ namespace Services.Services
                     _mapper.Map(requestEmployee, existingAddress);
                     await _addressRepo.UpdateAddress(existingAddress);
                 }
-
             }
-                
-
+            
             DateOnly dob = new DateOnly(requestEmployee.Year, requestEmployee.Month, requestEmployee.Day);
             if (!_userRepo.checkDOB(requestEmployee.Year))
-            {
-                throw new Exception("Dob is invalid");
                 return false;
-            }
-
+            
             if (!await _employeeRepo.CheckUsername(emp.Id, requestEmployee.Username))
             {
                 return false;
