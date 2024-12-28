@@ -91,7 +91,7 @@ Firstly, if you  don't have MongoDB already, you need to download it: [Download 
 
 Secondly, open MongoDBCompass, you will add new connection. In this connection, you need to create a new database name *Online_Shopping* and collection name *customer* and *product*.
 
-![Database in MongoDB]("https://drive.google.com/uc?id=1WCUeKiEvVMeNGqBehtAQv2wYfqCfR82J")
+![]("https://drive.google.com/uc?id=1WCUeKiEvVMeNGqBehtAQv2wYfqCfR82J")
 
 Thirdly, open *application.json* file in *Online_Shopping* project, change information of *DbConnection* of MongoDB configuration to your MongoDB information.
 ## Running Project
