@@ -21,7 +21,7 @@ Open terminal/cmd and navigate to the path where you want to download the projec
 ```
 or click on Code to download zip file
 
-![Download ZIP]("https://drive.google.com/file/d/1CnkPWVIswMmcif1cu-E9fHcXrjqjJKZs/view")
+![Download ZIP]("https://drive.google.com/uc?id=1CnkPWVIswMmcif1cu-E9fHcXrjqjJKZs")
 
 
 **Step 2: Create a server in SQL Server**
@@ -65,7 +65,7 @@ In SSMS, press F4 to copy name of Server Name.
 
 In toolbar of Visual Studio 2022, you will select View -> Server Explorer (ctrl+alt+s) and click on *Connect to Database* icon. 
 
-![Connect to Database icon]("https://drive.google.com/file/d/1YNtc6zeLg0Iq9E6kq5vHaDwDdfK28rBH/view")
+![Connect to Database icon]("https://drive.google.com/uc?id=1YNtc6zeLg0Iq9E6kq5vHaDwDdfK28rBH")
 
 Next, you need to paste the server name in Server Name. Then you choose log on method similar to the way you log in to server in SSMS and select database name *Online_Shopping* which is created and click OK to connect.
 
@@ -73,7 +73,7 @@ Next, you need to paste the server name in Server Name. Then you choose log on m
 
 Firstly, you will open Server Explorer and right click on database is connected -> choose properties -> copy information of Connection String.
 
-![Connection String]("https://drive.google.com/file/d/19l4YFqp7DhaZ0MgZXP_MuvwrHak6wXFv/view?usp=drive_link")
+![Connection String]("https://drive.google.com/uc?id=19l4YFqp7DhaZ0MgZXP_MuvwrHak6wXFv")
 
 Secondly, you right click on Online_Shopping project(not solution) -> choose *New item* -> enter *.env* to create .env file.
 
@@ -91,7 +91,7 @@ Firstly, if you  don't have MongoDB already, you need to download it: [Download 
 
 Secondly, open MongoDBCompass, you will add new connection. In this connection, you need to create a new database name *Online_Shopping* and collection name *customer* and *product*.
 
-![Database in MongoDB]("https://drive.google.com/file/d/1WCUeKiEvVMeNGqBehtAQv2wYfqCfR82J/view?usp=drive_link")
+![Database in MongoDB]("https://drive.google.com/uc?id=1WCUeKiEvVMeNGqBehtAQv2wYfqCfR82J")
 
 Thirdly, open *application.json* file in *Online_Shopping* project, change information of *DbConnection* of MongoDB configuration to your MongoDB information.
 ## Running Project
