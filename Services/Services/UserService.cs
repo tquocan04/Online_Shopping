@@ -78,8 +78,8 @@ namespace Services.Services
             _mapper.Map(requestCustomer, address);
                         
             await _addressRepo.CreateNewAddress(address);
-            
-            //await _metadataService.CreateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(customer));
+
+            await _metadataService.CreateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(customer));
             return customer;
         }
 
@@ -104,7 +104,7 @@ namespace Services.Services
 
             await _addressRepo.CreateNewAddress(address);
 
-            //await _metadataService.CreateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(customer));
+            await _metadataService.CreateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(customer));
             return customer;
         }
 
@@ -137,7 +137,7 @@ namespace Services.Services
 
             await _userRepo.UpdateInforCustomer(customer);
 
-            //await _metadataService.UpdateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(customer));
+            await _metadataService.UpdateCustomerMetadataAsync(await ConvertCustomerToCustomerMetadata(customer));
 
             return customer;
         }

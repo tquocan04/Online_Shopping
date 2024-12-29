@@ -115,8 +115,8 @@ namespace Services.Services
 
             await _productRepo.CreateNewProductAsync(product);
 
-            //var prodMetadata = await ConvertProductToProductMetadata(product);
-            //await _metadataService.CreateProductMetadataAsync(prodMetadata);
+            var prodMetadata = await ConvertProductToProductMetadata(product);
+            await _metadataService.CreateProductMetadataAsync(prodMetadata);
 
             return product;
         }
@@ -135,7 +135,7 @@ namespace Services.Services
                 return null;
 
             // khi click vao xem chi tiet san pham
-            //await _metadataService.UpdateProductActionAsync(id.ToString());
+            await _metadataService.UpdateProductActionAsync(id.ToString());
 
             return await ConvertToProductDTO(product);
         }
@@ -169,7 +169,7 @@ namespace Services.Services
 
             await _productRepo.UpdateInforProduct(product);
 
-            //await _metadataService.UpdateProductMetadataAsync(await ConvertProductToProductMetadata(product));
+            await _metadataService.UpdateProductMetadataAsync(await ConvertProductToProductMetadata(product));
 
             return product;
         }
